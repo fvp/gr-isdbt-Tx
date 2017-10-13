@@ -48,7 +48,8 @@ list(APPEND isdbt_sources
     viterbi_decoder_impl.cc
     ofdm_synchronization_impl.cc
     ofdm_synchronization_1seg_impl.cc
-    tmcc_decoder_1seg_impl.cc )
+    tmcc_decoder_1seg_impl.cc
+    agregar_cp_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
