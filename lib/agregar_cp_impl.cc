@@ -62,7 +62,7 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode) + mode*(sizeof(gr_complex)*pow(2.0,10+mode)))
                  )
     {
-    /* aca podemos acceder a una variable y setearla con cp_length*/
+    /* Seteo la variable privada b_cp_length*/
        b_cp_length = (int)round(cp_length); 
     }
 
