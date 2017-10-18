@@ -38,10 +38,10 @@ namespace gr {
     class agregar_cp_impl : public agregar_cp
     {
      private:
-      // Nothing to declare in this block.
+      int b_cp_length;
 
      public:
-      agregar_cp_impl();
+      agregar_cp_impl(int mode, float cp_length);
       ~agregar_cp_impl();
 
       // Where all the action really happens

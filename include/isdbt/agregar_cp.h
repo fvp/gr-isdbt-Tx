@@ -55,7 +55,7 @@ namespace gr {
        * class. isdbt::agregar_cp::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int mode, float cp_length);
     };
 
   } // namespace isdbt

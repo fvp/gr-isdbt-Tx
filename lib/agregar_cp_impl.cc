@@ -37,21 +37,34 @@
 namespace gr {
   namespace isdbt {
 
+    
+    /*  BLOQUE CP
+    Este bloque recibe un vector complejo, y como salida devuelve el mismo vector complejop
+    al que se le ha agregado al final, la secuencia de n primeros bits. 
+    */
+    
     agregar_cp::sptr
-    agregar_cp::make()
+          /*Agregamos las variables que se configuran en el bloque pero no son entradas ni salidas*/
+    agregar_cp::make(int mode, float cp_length)
     {
       return gnuradio::get_initial_sptr
-        (new agregar_cp_impl());
+        (new agregar_cp_impl(mode, cp_length));
     }
 
     /*
      * The private constructor
      */
-    agregar_cp_impl::agregar_cp_impl()
+    agregar_cp_impl::agregar_cp_impl(int mode, float cp_length)
       : gr::block("agregar_cp",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+                  /* Entra el parametro CP (ej 1/4, 1/8) y el vector de bits de tamano 2^(10+modo) */
+              gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode)),
+                  /* Sale solo el vector de bits, con su largo cambiado, ahora es 2^(10+modo) + (CP)*(2^(10+modo)) */
+              gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode) + mode*(sizeof(gr_complex)*pow(2.0,10+mode)))
+                 )
+    {
+    /* aca podemos acceder a una variable y setearla con cp_length*/
+       b_cp_length = (int)round(cp_length); 
+    }
 
     /*
      * Our virtual destructor.
@@ -60,22 +73,35 @@ namespace gr {
     {
     }
 
-    void
-    agregar_cp_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    void agregar_cp_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items;
     }
 
-    int
-    agregar_cp_impl::general_work (int noutput_items,
+    int agregar_cp_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-      <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
-
-      // Do <+signal processing+>
+      const gr_complex *in = (const gr_complex *) input_items[0];
+            gr_complex *out = (gr_complex *) output_items[0];
+      
+      int vector_size = sizeof(ninput_items);
+      // Agregamos las CP muestras del final, al princpio
+      int first = vector_size - b_cp_length*vector_size;
+      int j = 0;
+      for (int i=first; i<vector_size; i++)
+      {
+        out[j] = in[i];
+        j++;
+      }
+      //Copio todo el vector de entrada
+      for (int i =0; i<vector_size; i++)
+      {
+        out[j] = in[i];
+        j++;
+      }
+           
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);
