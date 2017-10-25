@@ -30,12 +30,28 @@
  </param>
 
 
- <param>
-     <name>CPLength</name>
-     <key>cp_length</key>
-     <value>1</value>
-     <type>float</type>
- </param>
+  <param>
+	<name>CP Length</name>
+	<key>cp_length</key>
+	<value>0.125</value>
+	<type>enum</type>
+	<option>
+		<name>1/4</name>
+		<key>0.250</key>
+	</option>
+	<option>
+		<name>1/8</name>
+		<key>0.125</key>
+	</option>
+	<option>
+		<name>1/16</name>
+		<key>0.0625</key>
+	</option>
+    <option>
+		<name>1/32</name>
+		<key>0.03125</key>
+	</option>
+  </param>
 
  <!-- Make one 'sink' node per input. Sub-nodes:
       * name (an identifier for the GUI)
