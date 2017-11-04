@@ -1,15 +1,11 @@
 <?xml version="1.0"?>
 <block>
- <name>Agregar_Cp</name>
+ <name>Agregar CP</name>
  <key>isdbt_agregar_cp</key>
  <category>ISDBT</category>
  <import>import isdbt</import>
  <make>isdbt.agregar_cp($mode, $cp_length)</make>
- <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-      Sub-nodes:
-      * name
-      * key (makes the value accessible as $keyname, e.g. in the make node)
-      * type -->
+
 <param>
      <name>Transmission Mode</name>
    <key>mode</key>
@@ -53,24 +49,15 @@
 	</option>
   </param>
 
- <!-- Make one 'sink' node per input. Sub-nodes:
-      * name (an identifier for the GUI)
-      * type
-      * vlen
-      * optional (set to 1 for optional inputs) -->
  <sink>
    <name>in</name>
-   <!-- e.g. int, float, complex, byte, short, xxx_vector, ...-->
    <type>complex</type>
+   <vlen>(2**(10+$mode))</vlen>
  </sink>
 
- <!-- Make one 'source' node per output. Sub-nodes:
-      * name (an identifier for the GUI)
-      * type
-      * vlen
-      * optional (set to 1 for optional inputs) -->
  <source>
    <name>out</name>
    <type>complex</type>
+   <vlen>((1+$cp_length)*(2**(10+$mode)))</vlen>
  </source>
 </block>

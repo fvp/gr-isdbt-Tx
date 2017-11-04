@@ -38,7 +38,9 @@ namespace gr {
     class agregar_cp_impl : public agregar_cp
     {
      private:
-      int b_cp_length;
+      // Input variable definitions
+      int d_mode;
+      float d_cp_length;
 
      public:
       agregar_cp_impl(int mode, float cp_length);

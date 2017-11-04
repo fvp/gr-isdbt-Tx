@@ -33,6 +33,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "agregar_cp_impl.h"
+#include <stdio.h>
 
 namespace gr {
   namespace isdbt {
@@ -59,11 +60,12 @@ namespace gr {
                   /* Entra el parametro CP (ej 1/4, 1/8) y el vector de bits de tamano 2^(10+modo) */
               gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode)),
                   /* Sale solo el vector de bits, con su largo cambiado, ahora es 2^(10+modo) + (CP)*(2^(10+modo)) */
-              gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode) + mode*(sizeof(gr_complex)*pow(2.0,10+mode)))
+              gr::io_signature::make(1, 1, (1+cp_length)*sizeof(gr_complex)*pow(2.0,10+mode))
                  )
     {
-    /* Seteo la variable privada b_cp_length*/
-       b_cp_length = (int)round(cp_length); 
+      //Set block global variables
+      d_mode = mode;
+      d_cp_length = cp_length;
     }
 
     /*
@@ -78,35 +80,31 @@ namespace gr {
       ninput_items_required[0] = noutput_items;
     }
 
-    int agregar_cp_impl::general_work (int noutput_items,
-                       gr_vector_int &ninput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    int agregar_cp_impl::general_work (int noutput_items,         /* Number of output vectors required by grc */
+                       gr_vector_int &ninput_items,               /* Vector containing input size for all inputs */
+                       gr_vector_const_void_star &input_items,    /* Vector containing a pointer to the first element of every input stream */
+                       gr_vector_void_star &output_items)         /* Vector containing a pointer to the first element of every output stream */
     {
-      const gr_complex *in = (const gr_complex *) input_items[0];
-            gr_complex *out = (gr_complex *) output_items[0];
-      
-      int vector_size = sizeof(ninput_items);
-      // Agregamos las CP muestras del final, al princpio
-      int first = vector_size - b_cp_length*vector_size;
+      //Obtain input vector from stream
+      const gr_complex *in = (const gr_complex *) input_items[0];   /* in stores the input data*/
+      gr_complex *out = (gr_complex *) output_items[0];             /* out stores pointer to output array*/
+      // Fill output buffer
+      int d_cp_items =  static_cast<int> ((d_cp_length)*pow(2.0,10+d_mode));            /* d_cp_items is the number of samples in cp*/
       int j = 0;
-      for (int i=first; i<vector_size; i++)
+      for (int i=0; i<noutput_items; i++)
       {
-        out[j] = in[i];
-        j++;
+        if (j < d_cp_items)
+        {
+          printf("Copiando CP \n");
+          //Copying Prefix values
+          out[i] = in[(ninput_items[0]-d_cp_items+j)];
+        } else {
+          printf("Copiando datos \n");
+          //Copiying input data 
+          out[i] = in[i-j];
+        }
+        j++;      
       }
-      //Copio todo el vector de entrada
-      for (int i =0; i<vector_size; i++)
-      {
-        out[j] = in[i];
-        j++;
-      }
-           
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      consume_each (noutput_items);
-
-      // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 

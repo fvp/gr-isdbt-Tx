@@ -40,10 +40,26 @@ class qa_agregar_cp (gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-    def test_001_t (self):
+	def test_001_t (self):
         # set up fg
         self.tb.run ()
         # check data
+
+    #test_001(self):
+   	#	"Prueba de tamanio"
+   	#	modo = -5
+	#	cp_length = (1/4)
+	#	src_data = range(12)
+	#	expected_data = [9 10 11 0 1 2 3 4 5 6 7 8 9 10 11]
+ 	#	src = blocks.vector_source_f(src_data)
+     #   sqr = isdbt.agregar_cp(modo, cp_length)
+      #  dst = blocks.vector_sink_f()
+      #  self.tb.connect(src,sqr)
+       # self.tb.connect(sqr,dst)
+        #self.tb.run ()
+       # result_data = dst.data()
+        #self.assertFloatTuplesAlmostEqual(expected_data, result_data, 6)
+        # check data		
 
 
 if __name__ == '__main__':
