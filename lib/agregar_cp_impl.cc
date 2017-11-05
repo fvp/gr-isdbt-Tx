@@ -85,28 +85,36 @@ namespace gr {
                        gr_vector_const_void_star &input_items,    /* Vector containing a pointer to the first element of every input stream */
                        gr_vector_void_star &output_items)         /* Vector containing a pointer to the first element of every output stream */
     {
-      //Obtain input vector from stream
+      // 1-> Cast buffers
       const gr_complex *in = (const gr_complex *) input_items[0];   /* in stores the input data*/
       gr_complex *out = (gr_complex *) output_items[0];             /* out stores pointer to output array*/
-      // Fill output buffer
+      
+      // 2-> Process Data
       int d_cp_items =  static_cast<int> ((d_cp_length)*pow(2.0,10+d_mode));            /* d_cp_items is the number of samples in cp*/
-      int j = 0;
-      for (int i=0; i<noutput_items; i++)
+      int d_total_input_size = static_cast<int> (pow(2.0, 10+d_mode));
+      int output_size = static_cast<int> ((1 + d_cp_length)*pow(2.0,10+d_mode));
+      for (int i=0; i<noutput_items; i++)   
       {
-        if (j < d_cp_items)
+        for (int j=0; j<output_size; j++)
         {
-          printf("Copiando CP \n");
-          //Copying Prefix values
-          out[i] = in[(ninput_items[0]-d_cp_items+j)];
-        } else {
-          printf("Copiando datos \n");
-          //Copiying input data 
-          out[i] = in[i-j];
-        }
-        j++;      
+          if (j < d_cp_items)
+          {
+            //Copying Prefix values
+            out[j] = in[(d_total_input_size - d_cp_items + j)];
+          } else {
+            //Copiying raw input data 
+            out[j] =in[j - d_cp_items];
+          }
+        }    
       }
+
+      // 3-> Consume the inputs
+      this->consume(0, noutput_items); //consume port 0 input
+      //this->consume_each(noutput_items); //or shortcut to consume on all inputs
+
+      // 4-> Return produced
       return noutput_items;
-    }
+    } /* general_work*/
 
   } /* namespace isdbt */
 } /* namespace gr */

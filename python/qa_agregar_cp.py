@@ -40,27 +40,126 @@ class qa_agregar_cp (gr_unittest.TestCase):
     def tearDown (self):
         self.tb = None
 
-	def test_001_t (self):
-        # set up fg
-        self.tb.run ()
-        # check data
+    def test_agregar_cp_Mode1_CP_1_4 (self):
+        modo = 1
+        cp_length = 1.0/4.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
 
-    #test_001(self):
-   	#	"Prueba de tamanio"
-   	#	modo = -5
-	#	cp_length = (1/4)
-	#	src_data = range(12)
-	#	expected_data = [9 10 11 0 1 2 3 4 5 6 7 8 9 10 11]
- 	#	src = blocks.vector_source_f(src_data)
-     #   sqr = isdbt.agregar_cp(modo, cp_length)
-      #  dst = blocks.vector_sink_f()
-      #  self.tb.connect(src,sqr)
-       # self.tb.connect(sqr,dst)
-        #self.tb.run ()
-       # result_data = dst.data()
-        #self.assertFloatTuplesAlmostEqual(expected_data, result_data, 6)
-        # check data		
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
 
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
 
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+    def test_agregar_cp_Mode1_CP_1_8 (self):
+        modo = 1
+        cp_length = 1.0/8.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
+
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
+
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
+
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+    def test_agregar_cp_Mode1_CP_1_16 (self):
+        modo = 1
+        cp_length = 1.0/16.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
+
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
+
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
+
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+    def test_agregar_cp_Mode1_CP_1_32 (self):
+        modo = 1
+        cp_length = 1.0/32.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
+
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
+
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
+
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+    def test_agregar_cp_Mode2_CP_1_8 (self):
+        modo = 2
+        cp_length = 1.0/8.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
+
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
+
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
+
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+    def test_agregar_cp_Mode3_CP_1_8 (self):
+        modo = 3
+        cp_length = 1.0/8.0
+        src_data = range(pow(2,10+modo))
+        
+        n_portadoras = pow(2,10+modo)
+        expected_result = range(n_portadoras-(int)(n_portadoras*cp_length), n_portadoras, 1)+range(n_portadoras)
+
+        src = blocks.vector_source_c(src_data, False, n_portadoras)
+        agregar_cp = isdbt.agregar_cp(modo, cp_length)
+        dst = blocks.vector_sink_c(int(n_portadoras*(1+cp_length)))
+
+        
+        self.tb.connect(src, agregar_cp)
+        self.tb.connect(agregar_cp, dst)
+        self.tb.run()
+
+        result_data = dst.data()
+        self.assertFloatTuplesAlmostEqual(expected_result, result_data)
+
+   	    
 if __name__ == '__main__':
     gr_unittest.run(qa_agregar_cp, "qa_agregar_cp.xml")
