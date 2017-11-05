@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<block>
+ <name>Agregar CP</name>
+ <key>isdbt_agregar_cp</key>
+ <category>ISDBT</category>
+ <import>import isdbt</import>
+ <make>isdbt.agregar_cp($mode, $cp_length)</make>
+
+<param>
+     <name>Transmission Mode</name>
+   <key>mode</key>
+   <value>3</value>
+   <type>enum</type>
+     <option>
+     <name>MODE1(2K)</name>
+     <key>1</key>
+     </option>
+   <option>
+     <name>MODE2(4K)</name>
+     <key>2</key>
+   </option>
+   <option>
+     <name>MODE3(8K)</name>
+     <key>3</key>
+   </option>
+ </param>
+
+
+  <param>
+	<name>CP Length</name>
+	<key>cp_length</key>
+	<value>0.125</value>
+	<type>enum</type>
+	<option>
+		<name>1/4</name>
+		<key>0.250</key>
+	</option>
+	<option>
+		<name>1/8</name>
+		<key>0.125</key>
+	</option>
+	<option>
+		<name>1/16</name>
+		<key>0.0625</key>
+	</option>
+    <option>
+		<name>1/32</name>
+		<key>0.03125</key>
+	</option>
+  </param>
+
+ <sink>
+   <name>in</name>
+   <type>complex</type>
+   <vlen>(2**(10+$mode))</vlen>
+ </sink>
+
+ <source>
+   <name>out</name>
+   <type>complex</type>
+   <vlen>((1+$cp_length)*(2**(10+$mode)))</vlen>
+ </source>
+</block>
