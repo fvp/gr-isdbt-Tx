@@ -43,5 +43,6 @@ install(FILES
     ofdm_synchronization.h
     ofdm_synchronization_1seg.h
     tmcc_decoder_1seg.h
-    agregar_cp.h DESTINATION include/isdbt
+    agregar_cp.h
+    ofdm_frame_structure.h DESTINATION include/isdbt
 )
