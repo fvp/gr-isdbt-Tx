@@ -49,7 +49,7 @@ namespace gr {
      */
     ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode)
       : gr::block("ofdm_frame_structure",
-              gr::io_signature::make(1, 1, sizeof(int)*1298*pow(2.0,mode-1)),
+              gr::io_signature::make(1, 1, sizeof(int)*1248*pow(2.0,mode-1)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode)))
     {
       d_symbol = 0;
@@ -66,7 +66,7 @@ namespace gr {
     void
     ofdm_frame_structure_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -76,25 +76,40 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
     const int *in = (const int *) input_items[0];
-
-      for (int i = 0; i < noutput_items ; i++) 
+    gr_complex *out = (gr_complex *) output_items[0];
+    for (int i = 0; i < noutput_items ; i++) 
       {
-        switch (d_mode)
+      int starting_index, k;
+      switch (d_mode)
         {
-          case 1:
-            break;
-          case 2:
-            break;
-          case 3:
-            break;
-          default:
-            printf("Error: incorrect mode \n");
-            break; 
+        case 1:
+          printf("Mode 1 \n");
+          for (int j = 0; j < 2048; j++)
+          {
+            out[j] = 1;
           }
-          
+          break;
+        case 2:
+          printf("Mode 2 \n");
+          for (int j = 0; j < 4096; j++)
+          {
+            out[j] = 2;
+          }
+          break;
+        case 3:
+          printf("Mode 3 \n");
+          for (int j = 0; j < 8192; j++)
+          {
+            out[j] = 3;
+          }
+          break;
+        default:
+          printf("Error: incorrect mode \n");
+          break; 
+        }   
       }
       d_symbol +=1;
-      
+      //printf("Sequence number: %d \n", d_symbol);
       consume_each (noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;
