@@ -49,8 +49,9 @@ namespace gr {
      */
     ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode)
       : gr::block("ofdm_frame_structure",
-              gr::io_signature::make(1, 1, sizeof(int)*1248*pow(2.0,mode-1)),
-              gr::io_signature::make(1, 1, sizeof(gr_complex)*pow(2.0,10+mode)))
+              gr::io_signature::make(1, 1, sizeof(unsigned char) * 13 * 96 * ((int)pow(2.0,mode-1))),
+              gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
+              )
     {
       d_symbol = 0;
       d_mode = mode;
@@ -79,28 +80,27 @@ namespace gr {
     gr_complex *out = (gr_complex *) output_items[0];
     for (int i = 0; i < noutput_items ; i++) 
       {
-      int starting_index, k;
       switch (d_mode)
         {
         case 1:
           printf("Mode 1 \n");
           for (int j = 0; j < 2048; j++)
           {
-            out[j] = 1;
+          out[j] = {100, 200};
           }
           break;
         case 2:
           printf("Mode 2 \n");
           for (int j = 0; j < 4096; j++)
           {
-            out[j] = 2;
+          out[j] = {100, 200};
           }
           break;
         case 3:
           printf("Mode 3 \n");
           for (int j = 0; j < 8192; j++)
           {
-            out[j] = 3;
+          out[j] = {100, 200};
           }
           break;
         default:
@@ -110,7 +110,7 @@ namespace gr {
       }
       d_symbol +=1;
       //printf("Sequence number: %d \n", d_symbol);
-      consume_each (noutput_items);
+      this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
