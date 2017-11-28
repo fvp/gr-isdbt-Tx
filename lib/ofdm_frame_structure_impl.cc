@@ -49,11 +49,13 @@ namespace gr {
      */
     ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode)
       : gr::block("ofdm_frame_structure",
-              gr::io_signature::make(1, 1, sizeof(unsigned char) * 13 * 96 * ((int)pow(2.0,mode-1))),
+              gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
               )
     {
-      d_symbol = 0;
+      d_frame_counter = 0;
+      d_symbol_number = 0;
+      d_carrier_pos = 0;
       d_mode = mode;
     }
 
@@ -76,39 +78,55 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-    const int *in = (const int *) input_items[0];
+    const gr_complex *in = (const gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
+    int k = 0;
     for (int i = 0; i < noutput_items ; i++) 
-      {
+    {
       switch (d_mode)
         {
         case 1:
           printf("Mode 1 \n");
-          for (int j = 0; j < 2048; j++)
+          for (int j = 0; j < 96; j++)
+          /* Segment 0*/ 
           {
-          out[j] = {100, 200};
+            if ((j % 12) == (3*d_carrier_pos))
+            {
+              /*Entonces es una portadora*/
+              out[108*6+j] = std::complex<double>(10, 10);
+            }/* else if (TMCC) {
+
+            } else if (AC0) {
+              out[108*6+j] = std::complex<double>(0, 0);
+            }*/ else {
+              /* Fill with data*/
+              out[108*6+j] = in[k];
+              k++;
+            }
           }
           break;
         case 2:
           printf("Mode 2 \n");
           for (int j = 0; j < 4096; j++)
           {
-          out[j] = {100, 200};
+          out[j] = std::complex<double>(100, 200);
           }
           break;
         case 3:
           printf("Mode 3 \n");
           for (int j = 0; j < 8192; j++)
           {
-          out[j] = {100, 200};
+          out[j] = std::complex<double>(100, 200);
           }
           break;
         default:
           printf("Error: incorrect mode \n");
           break; 
-        }   
+        } 
+      d_frame_counter++;  
+      d_carrier_pos = (d_frame_counter % 4);
+      d_frame_counter = (d_frame_counter % 204);
       }
-      d_symbol +=1;
       //printf("Sequence number: %d \n", d_symbol);
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.

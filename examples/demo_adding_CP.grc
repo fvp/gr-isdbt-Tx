@@ -155,7 +155,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(160, 285)</value>
+      <value>(160, 253)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -183,7 +183,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>byte</value>
+      <value>complex</value>
     </param>
     <param>
       <key>vlen</key>
@@ -230,11 +230,11 @@
     </param>
     <param>
       <key>type</key>
-      <value>byte</value>
+      <value>complex</value>
     </param>
     <param>
       <key>repeat</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>tags</key>

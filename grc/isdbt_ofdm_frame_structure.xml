@@ -27,7 +27,7 @@
 
  <sink>
    <name>in</name>
-   <type>byte</type>
+   <type>complex</type>
    <vlen>(1248*pow(2.0,$mode-1))</vlen>
  </sink>
 

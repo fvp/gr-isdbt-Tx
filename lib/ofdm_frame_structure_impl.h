@@ -47,7 +47,7 @@ namespace gr {
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       
-      int d_mode, d_symbol;
+      int d_mode, d_symbol_number, d_frame_counter, d_carrier_pos;
 
       int general_work(int noutput_items,
            gr_vector_int &ninput_items,
