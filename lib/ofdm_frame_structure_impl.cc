@@ -53,10 +53,12 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
               )
     {
-      d_frame_counter = 0;
-      d_symbol_number = 0;
-      d_carrier_pos = 0;
-      d_mode = mode;
+      d_frame_counter = 0;  /* Counts frames */
+      d_symbol_number = 0;  /* 204 cyclic simbol counter*/
+      d_carrier_pos = 0;    /* 4 cyclic counter, scattered pilot rotation reference*/
+      TMCCindex = 0;        /* TMCC word position counter, accross block */
+      SPindex = 0;          /* Scattered pilot counter, accross segment */
+      d_mode = mode;        /* Transmission Mode */
     }
 
     /*
@@ -65,6 +67,37 @@ namespace gr {
     ofdm_frame_structure_impl::~ofdm_frame_structure_impl()
     {
     }
+
+    /*
+    Writes corresponding Scattered Pilot into symbol
+    */
+    gr_complex 
+    ofdm_frame_structure_impl::write_SP(int SPindex)
+    {
+      bool bit = ((SPindex % 2) == 0);
+      if (bit)
+      {
+        return std::complex<float>(-4.0/3.0, 0);   
+      } else {
+        return std::complex<float>(4.0/3.0, 0);
+      }
+    }
+
+    /*
+    Writes bits of the TMCC into symbol
+    */
+    gr_complex 
+    ofdm_frame_structure_impl::write_TMCC(char* TMCCword, int TMCCindex)
+    {
+      bool bit = ((TMCCindex % 2) == 0);
+      if (bit)
+      {
+        return std::complex<float>(-4.0/3.0, 0);   
+      } else {
+        return std::complex<float>(4.0/3.0, 0);
+      }
+    }
+
 
     void
     ofdm_frame_structure_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
@@ -80,30 +113,39 @@ namespace gr {
     {
     const gr_complex *in = (const gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
+    char* TMCCword = NULL;
     int k = 0;
     for (int i = 0; i < noutput_items ; i++) 
     {
       switch (d_mode)
         {
         case 1:
-          printf("Mode 1 \n");
-          for (int j = 0; j < 96; j++)
-          /* Segment 0*/ 
+          /* Segment 0*/
+          for (int j = 0; j < 96; j++) 
           {
             if ((j % 12) == (3*d_carrier_pos))
             {
-              /*Entonces es una portadora*/
-              out[108*6+j] = std::complex<double>(10, 10);
-            }/* else if (TMCC) {
-
-            } else if (AC0) {
+              /*Scattered Pilot*/
+              out[108*6+j] = this->write_SP(SPindex);
+              SPindex++;
+              //printf("SPindex: %d \n", SPindex);
+              //printf("out[SP]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
+            } else if (j == 49) {
+              /* TMCC */
+              out[108*6+j] = this->write_TMCC(TMCCword, TMCCindex);
+              TMCCindex++;
+              //printf("TMCCindex: %d \n", TMCCindex);
+              //printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
+            } else if ((j == 35) || (j == 79)) {
+              /* AC1 or AC2 */
               out[108*6+j] = std::complex<double>(0, 0);
-            }*/ else {
+            } else {
               /* Fill with data*/
               out[108*6+j] = in[k];
               k++;
             }
           }
+          SPindex = 0;
           break;
         case 2:
           printf("Mode 2 \n");
@@ -123,9 +165,14 @@ namespace gr {
           printf("Error: incorrect mode \n");
           break; 
         } 
-      d_frame_counter++;  
-      d_carrier_pos = (d_frame_counter % 4);
-      d_frame_counter = (d_frame_counter % 204);
+        d_frame_counter++;  
+        d_carrier_pos = (d_frame_counter % 4);
+        d_frame_counter = (d_frame_counter % 204);
+        if (d_frame_counter == 0)
+        {
+          //printf("Estoy en el primer simbolo del cuadro\n");
+          TMCCindex = 0;
+        }
       }
       //printf("Sequence number: %d \n", d_symbol);
       this->consume(0, noutput_items);

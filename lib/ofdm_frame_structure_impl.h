@@ -38,7 +38,15 @@ namespace gr {
     class ofdm_frame_structure_impl : public ofdm_frame_structure
     {
      private:
-      // Nothing to declare in this block.
+      /*!
+      * \brief Given an incoming complex symbol, it outputs the corresponding bit-word assuming a 
+      * 16QAM modulation. 
+      *
+      * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
+      */
+      gr_complex write_TMCC(char* TMCCword, int TMCCindex);
+
+      gr_complex write_SP(int SPindex);
 
      public:
       ofdm_frame_structure_impl(int mode);
@@ -47,7 +55,7 @@ namespace gr {
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       
-      int d_mode, d_symbol_number, d_frame_counter, d_carrier_pos;
+      int d_mode, d_symbol_number, d_frame_counter, d_carrier_pos, TMCCindex, SPindex;
 
       int general_work(int noutput_items,
            gr_vector_int &ninput_items,
