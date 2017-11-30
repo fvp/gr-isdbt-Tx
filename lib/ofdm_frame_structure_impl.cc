@@ -59,6 +59,7 @@ namespace gr {
       TMCCindex = 0;        /* TMCC word position counter, accross block */
       SPindex = 0;          /* Scattered pilot counter, accross segment */
       d_mode = mode;        /* Transmission Mode */
+      sp_keyword = 0b00000000000; /* SP keyword default*/
     }
 
     /*
@@ -68,14 +69,76 @@ namespace gr {
     {
     }
 
+    
+    bitset<11> 
+    ofdm_frame_structure_impl::ObtainStartingWord(int SegmentNumber, int d_mode)
+    {
+      switch(d_mode) // 
+      {
+      case 1 :  
+        sp_segment_keywords[0] = 0b11001000010;
+        sp_segment_keywords[1] = 0b00101111010;
+        sp_segment_keywords[2] = 0b00010000100;
+        sp_segment_keywords[3] = 0b11011100101;
+        sp_segment_keywords[4] = 0b10010100000;
+        sp_segment_keywords[5] = 0b01000101110;
+        sp_segment_keywords[6] = 0b11110110000;
+        sp_segment_keywords[7] = 0b01101011110;
+        sp_segment_keywords[8] = 0b00001011000;
+        sp_segment_keywords[9] = 0b11011001111;
+        sp_segment_keywords[10]= 0b10100100111;
+        sp_segment_keywords[11]= 0b11111111111;
+        sp_segment_keywords[12]= 0b01110001001;
+        break;       
+      case 2 : 
+        sp_segment_keywords[0] = 0b11011100101;
+        sp_segment_keywords[1] = 0b00010011100;
+        sp_segment_keywords[2] = 0b00000100100;
+        sp_segment_keywords[3] = 0b10010100000;
+        sp_segment_keywords[4] = 0b00100011001;
+        sp_segment_keywords[5] = 0b11001000010;
+        sp_segment_keywords[6] = 0b01100111001;
+        sp_segment_keywords[7] = 0b11011100101;
+        sp_segment_keywords[8] = 0b11100110110;
+        sp_segment_keywords[9] = 0b01101011110;
+        sp_segment_keywords[10]= 0b00101010001;
+        sp_segment_keywords[11]= 0b11111111111;
+        sp_segment_keywords[12]= 0b00100001011;
+        break;
+      case 3 :
+        sp_segment_keywords[0] = 0b10010100000;
+        sp_segment_keywords[1] = 0b11100110110;
+        sp_segment_keywords[2] = 0b11100111101;
+        sp_segment_keywords[3] = 0b00100011001;
+        sp_segment_keywords[4] = 0b01101010011;
+        sp_segment_keywords[5] = 0b01110001001;
+        sp_segment_keywords[6] = 0b10111010010;
+        sp_segment_keywords[7] = 0b10010100000;
+        sp_segment_keywords[8] = 0b01100010010;
+        sp_segment_keywords[9] = 0b11011100101;
+        sp_segment_keywords[10] = 0b11110100101;
+        sp_segment_keywords[11] = 0b11111111111;
+        sp_segment_keywords[12] = 0b00010011100;
+        break;
+      default:
+        printf("Error: invalid Transmission mode \n");
+        break;
+      }
+      bitset<11> Keyword = (sp_segment_keywords[SegmentNumber]);
+      return Keyword;
+    }
+
     /*
     Writes corresponding Scattered Pilot into symbol
     */
     gr_complex 
-    ofdm_frame_structure_impl::write_SP(int SPindex)
+    ofdm_frame_structure_impl::write_SP(int SPindex, int d_mode, int SegmentNumber)
     {
-      bool bit = ((SPindex % 2) == 0);
-      if (bit)
+      if (SPindex == 0)
+      {
+        sp_keyword = this->ObtainStartingWord(SegmentNumber, d_mode);
+      }
+      if (sp_keyword.test(SPindex)) /*Return bit value in keyword for SPindex*/
       {
         return std::complex<float>(-4.0/3.0, 0);   
       } else {
@@ -126,10 +189,10 @@ namespace gr {
             if ((j % 12) == (3*d_carrier_pos))
             {
               /*Scattered Pilot*/
-              out[108*6+j] = this->write_SP(SPindex);
+              out[108*6+j] = this->write_SP(SPindex, d_mode, 0 /*Segment number*/);
               SPindex++;
-              //printf("SPindex: %d \n", SPindex);
-              //printf("out[SP]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
+              printf("SPindex: %d \n", SPindex);
+              printf("out[SP]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
             } else if (j == 49) {
               /* TMCC */
               out[108*6+j] = this->write_TMCC(TMCCword, TMCCindex);

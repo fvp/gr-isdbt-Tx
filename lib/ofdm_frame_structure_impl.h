@@ -31,6 +31,9 @@
 #define INCLUDED_ISDBT_OFDM_FRAME_STRUCTURE_IMPL_H
 
 #include <isdbt/ofdm_frame_structure.h>
+#include <bitset>
+
+using namespace std;
 
 namespace gr {
   namespace isdbt {
@@ -44,9 +47,12 @@ namespace gr {
       *
       * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
       */
+           
+      bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
+
       gr_complex write_TMCC(char* TMCCword, int TMCCindex);
 
-      gr_complex write_SP(int SPindex);
+      gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber);
 
      public:
       ofdm_frame_structure_impl(int mode);
@@ -56,6 +62,10 @@ namespace gr {
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       
       int d_mode, d_symbol_number, d_frame_counter, d_carrier_pos, TMCCindex, SPindex;
+
+      int sp_segment_keywords[12];
+
+      bitset<11> sp_keyword;
 
       int general_work(int noutput_items,
            gr_vector_int &ninput_items,
