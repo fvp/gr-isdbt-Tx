@@ -53,13 +53,15 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
               )
     {
-      d_frame_counter = 0;  /* Counts frames */
-      d_symbol_number = 0;  /* 204 cyclic simbol counter*/
+      Frame_counter = 0;      /* Counts frames*/
+      d_symbol_counter = 0;  /* Counts symbols across frames */
       d_carrier_pos = 0;    /* 4 cyclic counter, scattered pilot rotation reference*/
       TMCCindex = 0;        /* TMCC word position counter, accross block */
       SPindex = 0;          /* Scattered pilot counter, accross segment */
       d_mode = mode;        /* Transmission Mode */
       sp_keyword = 0b00000000000; /* SP keyword default*/
+      TMCCword.set();
+      TMCC_sync_word = 0b0011010111101110;
     }
 
     /*
@@ -150,16 +152,68 @@ namespace gr {
     Writes bits of the TMCC into symbol
     */
     gr_complex 
-    ofdm_frame_structure_impl::write_TMCC(char* TMCCword, int TMCCindex)
+    ofdm_frame_structure_impl::write_TMCC(int SymbolNumber, int Frame_counter)
     {
-      bool bit = ((TMCCindex % 2) == 0);
-      if (bit)
+      printf("Dentro de write TMCC, SymbolNumber: %d \n", SymbolNumber);
+      //Test TMCC word for writing bit, returns symbol mapped into DBPSK
+      bool current_bit, previous_bit;
+      //First bit, only decide on it
+      if (SymbolNumber == 0)
       {
+        //Assign b0, check for SP0 value
+        gr_complex sp0 = this->write_SP(SPindex, d_mode, 0);
+        //Todo: Reemplazar el 0 por Segment Number
+        if(sp0.real() < 0)
+        {
+          TMCCword.set(0);
+        } else {
+          TMCCword.reset(0);
+        }
+        //Assign b1-b16
+        bool EsPar = ((Frame_counter % 2) == 0);
+        for (int i = 0; i < 16; i++)
+        {
+          if (EsPar)
+          {
+            if (TMCC_sync_word.test(i))
+            {
+              TMCCword.set(i+1);
+            } else {
+              TMCCword.reset(i+1);
+            }
+          }
+          else
+          {
+            if (TMCC_sync_word.test(i))
+            {
+              TMCCword.reset(i+1);
+            } else {
+              TMCCword.set(i+1);
+            }
+          }
+        }
+        //Syncronism signal
+        //Assign b17-b19
+        //Segment type identifier
+        //Assign b20-b121
+        //TMCC information bits
+        //Assign b122-b203
+        // Return bit0
+        return sp0;
+      }
+      //General case, decision based on current bit and previous bit
+      current_bit = TMCCword.test(SymbolNumber);
+      previous_bit = TMCCword.test(SymbolNumber - 1);
+      if (!((current_bit & previous_bit) || (!current_bit & !previous_bit)))
+      {
+        // Send 1
         return std::complex<float>(-4.0/3.0, 0);   
       } else {
+        // Send 0
         return std::complex<float>(4.0/3.0, 0);
       }
     }
+
 
 
     void
@@ -176,10 +230,15 @@ namespace gr {
     {
     const gr_complex *in = (const gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
-    char* TMCCword = NULL;
     int k = 0;
     for (int i = 0; i < noutput_items ; i++) 
     {
+        if (d_symbol_counter == 0)
+        {
+          //printf("Estoy en el primer simbolo del cuadro\n");
+          Frame_counter++;
+          TMCCindex = 0;
+        }
       switch (d_mode)
         {
         case 1:
@@ -191,14 +250,13 @@ namespace gr {
               /*Scattered Pilot*/
               out[108*6+j] = this->write_SP(SPindex, d_mode, 0 /*Segment number*/);
               SPindex++;
-              printf("SPindex: %d \n", SPindex);
-              printf("out[SP]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
             } else if (j == 49) {
               /* TMCC */
-              out[108*6+j] = this->write_TMCC(TMCCword, TMCCindex);
+              printf("Antes de llamar a writeTMCC, d_symbol_counter %d\n", d_symbol_counter);
+              out[108*6+j] = this->write_TMCC(d_symbol_counter, Frame_counter);
               TMCCindex++;
-              //printf("TMCCindex: %d \n", TMCCindex);
-              //printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
+              printf("TMCCindex: %d \n", TMCCindex);
+              printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
             } else if ((j == 35) || (j == 79)) {
               /* AC1 or AC2 */
               out[108*6+j] = std::complex<double>(0, 0);
@@ -228,16 +286,10 @@ namespace gr {
           printf("Error: incorrect mode \n");
           break; 
         } 
-        d_frame_counter++;  
-        d_carrier_pos = (d_frame_counter % 4);
-        d_frame_counter = (d_frame_counter % 204);
-        if (d_frame_counter == 0)
-        {
-          //printf("Estoy en el primer simbolo del cuadro\n");
-          TMCCindex = 0;
-        }
+        d_symbol_counter++;  
+        d_carrier_pos = (d_symbol_counter % 4);
+        d_symbol_counter = (d_symbol_counter % 204);
       }
-      //printf("Sequence number: %d \n", d_symbol);
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;

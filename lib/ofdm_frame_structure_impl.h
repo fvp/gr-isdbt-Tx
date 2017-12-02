@@ -50,7 +50,7 @@ namespace gr {
            
       bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
 
-      gr_complex write_TMCC(char* TMCCword, int TMCCindex);
+      gr_complex write_TMCC(int SymbolNumber, int Frame_counter);
 
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber);
 
@@ -61,11 +61,13 @@ namespace gr {
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       
-      int d_mode, d_symbol_number, d_frame_counter, d_carrier_pos, TMCCindex, SPindex;
+      int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
 
       int sp_segment_keywords[12];
 
       bitset<11> sp_keyword;
+      bitset<16> TMCC_sync_word;
+      bitset<204> TMCCword;
 
       int general_work(int noutput_items,
            gr_vector_int &ninput_items,
