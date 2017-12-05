@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_frame_structure</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_frame_structure($mode)</make>
+  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC)</make>
   
 <param>
      <name>Transmission Mode</name>
@@ -24,6 +24,102 @@
      <key>3</key>
    </option>
  </param>
+
+ <param>
+     <name>Layer A Constelattion</name>
+   <key>ModeA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+ <param>
+     <name>Layer B Constelattion</name>
+   <key>ModeB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+ <param>
+     <name>Layer C Constelattion</name>
+   <key>ModeC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+  <param>
+      <name>OneSeg Tx</name>
+      <key>IsOneSeg</key>
+      <value>False</value>
+      <type>enum</type>
+      <option>
+          <name>Yes</name>
+          <key>True</key>
+      </option>
+      <option>
+          <name>No</name>
+          <key>False</key>
+      </option>
+  </param>
 
  <sink>
    <name>in</name>

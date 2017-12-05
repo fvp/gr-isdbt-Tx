@@ -136,6 +136,189 @@
     </param>
   </block>
   <block>
+    <key>variable_struct</key>
+    <param>
+      <key>value1</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value10</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value11</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value12</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value13</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value14</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value15</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value16</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value17</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value18</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value19</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value2</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value3</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value4</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value5</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value6</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value7</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value8</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>value9</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>field0</key>
+      <value>field0</value>
+    </param>
+    <param>
+      <key>field1</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field10</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field11</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field12</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field13</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field14</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field15</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field16</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field17</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field18</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field19</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field2</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field3</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field4</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field5</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field6</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field7</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field8</key>
+      <value></value>
+    </param>
+    <param>
+      <key>field9</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(552, 64)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>variable_struct_0</value>
+    </param>
+    <param>
+      <key>value0</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_file_sink</key>
     <param>
       <key>append</key>
@@ -481,7 +664,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(296, 201)</value>
+      <value>(264, 196)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -492,12 +675,28 @@
       <value>isdbt_ofdm_frame_structure_0</value>
     </param>
     <param>
+      <key>ModeA</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>ModeB</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>ModeC</key>
+      <value>4</value>
+    </param>
+    <param>
       <key>maxoutbuf</key>
       <value>0</value>
     </param>
     <param>
       <key>minoutbuf</key>
       <value>0</value>
+    </param>
+    <param>
+      <key>IsOneSeg</key>
+      <value>True</value>
     </param>
     <param>
       <key>mode</key>

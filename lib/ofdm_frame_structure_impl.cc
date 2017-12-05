@@ -38,21 +38,22 @@ namespace gr {
   namespace isdbt {
 
     ofdm_frame_structure::sptr
-    ofdm_frame_structure::make(int mode)
+    ofdm_frame_structure::make(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC)
     {
       return gnuradio::get_initial_sptr
-        (new ofdm_frame_structure_impl(mode));
+        (new ofdm_frame_structure_impl(mode, IsOneSeg, ModSchemeA, ModSchemeB, ModSchemeC));
     }
 
     /*
      * The private constructor
      */
-    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode)
+    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC)
       : gr::block("ofdm_frame_structure",
               gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
               )
     {
+      d_IsOneSeg = IsOneSeg;  /* Transmission mdoe, one seg or full seg*/
       Frame_counter = 0;      /* Counts frames*/
       d_symbol_counter = 0;  /* Counts symbols across frames */
       d_carrier_pos = 0;    /* 4 cyclic counter, scattered pilot rotation reference*/
@@ -62,6 +63,9 @@ namespace gr {
       sp_keyword = 0b00000000000; /* SP keyword default*/
       TMCCword.set();
       TMCC_sync_word = 0b0011010111101110;
+      d_ModSchemeA = (carrier_mod_scheme) ModSchemeA;
+      d_ModSchemeB = (carrier_mod_scheme) ModSchemeB;
+      d_ModSchemeC = (carrier_mod_scheme) ModSchemeC;
     }
 
     /*
@@ -152,17 +156,16 @@ namespace gr {
     Writes bits of the TMCC into symbol
     */
     gr_complex 
-    ofdm_frame_structure_impl::write_TMCC(int SymbolNumber, int Frame_counter)
+    ofdm_frame_structure_impl::write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber)
     {
-      printf("Dentro de write TMCC, SymbolNumber: %d \n", SymbolNumber);
+      //printf("Dentro de write TMCC, SymbolNumber: %d \n", SymbolNumber);
       //Test TMCC word for writing bit, returns symbol mapped into DBPSK
       bool current_bit, previous_bit;
       //First bit, only decide on it
       if (SymbolNumber == 0)
       {
         //Assign b0, check for SP0 value
-        gr_complex sp0 = this->write_SP(SPindex, d_mode, 0);
-        //Todo: Reemplazar el 0 por Segment Number
+        gr_complex sp0 = this->write_SP(SPindex, d_mode, SegmentNumber);
         if(sp0.real() < 0)
         {
           TMCCword.set(0);
@@ -192,12 +195,166 @@ namespace gr {
             }
           }
         }
-        //Syncronism signal
-        //Assign b17-b19
-        //Segment type identifier
-        //Assign b20-b121
-        //TMCC information bits
+      //Segment type identifier
+        //This example only uses Coherent modulation
+        TMCCword.set(17);
+        TMCCword.set(18);
+        TMCCword.set(19);
+      //TMCC information bits
+        //20-21 system id, 00 for terrestrial
+        TMCCword.reset(20);
+        TMCCword.reset(21);
+        //Transmission parameters
+        TMCCword.set(22);
+        TMCCword.set(23);
+        TMCCword.set(24); //TODO: Verificar los cambios del sistema
+        TMCCword.set(25);
+        // Alarm bit, defaulted in 0
+        TMCCword.reset(26); //TODO: fijar parametrico, desde fuera del bloque
+        if (d_IsOneSeg){
+          TMCCword.set(27);
+        } else {
+          TMCCword.reset(27);
+        }
+        // Current info
+        // Layer A
+        switch(d_ModSchemeA) {
+         case DQPSK:
+          {
+            TMCCword.reset(28);
+            TMCCword.reset(29);
+            TMCCword.reset(30);
+             break; 
+          }      
+          case QPSK:
+          {
+            TMCCword.reset(28);
+            TMCCword.reset(29);
+            TMCCword.set(30);
+             break; 
+          } 
+          case QAM_16:
+          {
+            TMCCword.reset(28);
+            TMCCword.set(29);
+            TMCCword.reset(30);
+             break; 
+          } 
+          case QAM_64:
+          {
+            TMCCword.reset(28);
+            TMCCword.set(29);
+            TMCCword.set(30);
+             break; 
+          } 
+          case UNUSED:
+          {
+            TMCCword.set(28);
+            TMCCword.set(29);
+            TMCCword.set(30);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode A modulation scheme \n");
+            break;
+          }
+        }
+        // LAYER B
+        switch(d_ModSchemeB) {
+         case DQPSK:
+          {
+            TMCCword.reset(41);
+            TMCCword.reset(42);
+            TMCCword.reset(43);
+             break; 
+          }      
+          case QPSK:
+          {
+            TMCCword.reset(41);
+            TMCCword.reset(42);
+            TMCCword.set(43);
+             break; 
+          } 
+          case QAM_16:
+          {
+            TMCCword.reset(41);
+            TMCCword.set(42);
+            TMCCword.reset(43);
+             break; 
+          } 
+          case QAM_64:
+          {
+            TMCCword.reset(41);
+            TMCCword.set(42);
+            TMCCword.set(43);
+             break; 
+          } 
+          case UNUSED:
+          {
+            TMCCword.set(41);
+            TMCCword.set(42);
+            TMCCword.set(43);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode B modulation scheme \n");
+            break;
+          }
+        }
+        // LAYER C
+        switch(d_ModSchemeC) {
+         case DQPSK:
+          {
+            TMCCword.reset(56);
+            TMCCword.reset(55);
+            TMCCword.reset(54);
+             break; 
+          }      
+          case QPSK:
+          {
+            TMCCword.reset(54);
+            TMCCword.reset(55);
+            TMCCword.set(56);
+             break; 
+          } 
+          case QAM_16:
+          {
+            TMCCword.reset(54);
+            TMCCword.set(55);
+            TMCCword.reset(56);
+             break; 
+          } 
+          case QAM_64:
+          {
+            TMCCword.reset(54);
+            TMCCword.set(55);
+            TMCCword.set(56);
+             break; 
+          } 
+          case UNUSED:
+          {
+            TMCCword.set(54);
+            TMCCword.set(55);
+            TMCCword.set(56);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode C modulation scheme \n");
+            break;
+          }
+        }
+        for (int i = 107; i < 122; i++)
+        {
+          //107-109 parity bits
+          //110-121 reserved, always 1
+          TMCCword.set(i);
+        }
+      //Bits de paridad
         //Assign b122-b203
+
         // Return bit0
         return sp0;
       }
@@ -231,6 +388,8 @@ namespace gr {
     const gr_complex *in = (const gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
     int k = 0;
+    //TODO: Si IsOneSeg es TRUE, solo rellenamos el segmento 0, de lo
+    // contrario, rellenamos todos menos el 0
     for (int i = 0; i < noutput_items ; i++) 
     {
         if (d_symbol_counter == 0)
@@ -252,11 +411,11 @@ namespace gr {
               SPindex++;
             } else if (j == 49) {
               /* TMCC */
-              printf("Antes de llamar a writeTMCC, d_symbol_counter %d\n", d_symbol_counter);
-              out[108*6+j] = this->write_TMCC(d_symbol_counter, Frame_counter);
+              //printf("Antes de llamar a writeTMCC, d_symbol_counter %d\n", d_symbol_counter);
+              out[108*6+j] = this->write_TMCC(d_symbol_counter, Frame_counter, 0);
               TMCCindex++;
-              printf("TMCCindex: %d \n", TMCCindex);
-              printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
+              //printf("TMCCindex: %d \n", TMCCindex);
+              //printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
             } else if ((j == 35) || (j == 79)) {
               /* AC1 or AC2 */
               out[108*6+j] = std::complex<double>(0, 0);

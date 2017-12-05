@@ -47,15 +47,16 @@ namespace gr {
       *
       * Taking advantage of the Grey's coding used in the standard, this method is relatively fast. 
       */
-           
+      bool d_IsOneSeg;
+
       bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
 
-      gr_complex write_TMCC(int SymbolNumber, int Frame_counter);
+      gr_complex write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber);
 
-      gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber);
+      gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
 
      public:
-      ofdm_frame_structure_impl(int mode);
+      ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC);
       ~ofdm_frame_structure_impl();
 
       // Where all the action really happens
@@ -64,6 +65,17 @@ namespace gr {
       int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
 
       int sp_segment_keywords[12];
+
+      enum carrier_mod_scheme
+      {
+        DQPSK,
+        QPSK,
+        QAM_16,
+        QAM_64,
+        UNUSED
+      };
+
+      carrier_mod_scheme d_ModSchemeA, d_ModSchemeB, d_ModSchemeC; 
 
       bitset<11> sp_keyword;
       bitset<16> TMCC_sync_word;
