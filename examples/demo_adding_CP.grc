@@ -655,6 +655,18 @@
       <value></value>
     </param>
     <param>
+      <key>ConvCodeA</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>ConvCodeB</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>ConvCodeC</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>affinity</key>
       <value></value>
     </param>
@@ -676,15 +688,15 @@
     </param>
     <param>
       <key>ModeA</key>
-      <value>4</value>
+      <value>1</value>
     </param>
     <param>
       <key>ModeB</key>
-      <value>4</value>
+      <value>1</value>
     </param>
     <param>
       <key>ModeC</key>
-      <value>4</value>
+      <value>0</value>
     </param>
     <param>
       <key>maxoutbuf</key>

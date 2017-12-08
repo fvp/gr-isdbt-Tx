@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_frame_structure</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC)</make>
+  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC)</make>
   
 <param>
      <name>Transmission Mode</name>
@@ -53,6 +53,41 @@
  </param>
 
  <param>
+     <name>Convolutional Coding Rate Layer A</name>
+   <key>ConvCodeA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
+     </option>
+ </param>
+
+ <param>
      <name>Layer B Constelattion</name>
    <key>ModeB</key>
    <value>0</value>
@@ -76,6 +111,41 @@
     <option>
      <name>Unused</name>
      <key>4</key>
+     </option>
+ </param>
+
+<param>
+     <name>Convolutional Coding Rate Layer B</name>
+   <key>ConvCodeB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
      </option>
  </param>
 
@@ -103,6 +173,41 @@
     <option>
      <name>Unused</name>
      <key>4</key>
+     </option>
+ </param>
+
+<param>
+     <name>Convolutional Coding Rate Layer C</name>
+   <key>ConvCodeC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
      </option>
  </param>
 

@@ -38,16 +38,16 @@ namespace gr {
   namespace isdbt {
 
     ofdm_frame_structure::sptr
-    ofdm_frame_structure::make(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC)
+    ofdm_frame_structure::make(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC)
     {
       return gnuradio::get_initial_sptr
-        (new ofdm_frame_structure_impl(mode, IsOneSeg, ModSchemeA, ModSchemeB, ModSchemeC));
+        (new ofdm_frame_structure_impl(mode, IsOneSeg, ModSchemeA, ModSchemeB, ModSchemeC, ConvCodeA, ConvCodeB, ConvCodeC));
     }
 
     /*
      * The private constructor
      */
-    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC)
+    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC)
       : gr::block("ofdm_frame_structure",
               gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
@@ -66,6 +66,9 @@ namespace gr {
       d_ModSchemeA = (carrier_mod_scheme) ModSchemeA;
       d_ModSchemeB = (carrier_mod_scheme) ModSchemeB;
       d_ModSchemeC = (carrier_mod_scheme) ModSchemeC;
+      d_ConvCodeA  = (convolutional_coding_rate) ConvCodeA;
+      d_ConvCodeB  = (convolutional_coding_rate) ConvCodeB;
+      d_ConvCodeC  = (convolutional_coding_rate) ConvCodeC;
     }
 
     /*
@@ -81,7 +84,8 @@ namespace gr {
     {
       switch(d_mode) // 
       {
-      case 1 :  
+      case 1 :
+      {  
         sp_segment_keywords[0] = 0b11001000010;
         sp_segment_keywords[1] = 0b00101111010;
         sp_segment_keywords[2] = 0b00010000100;
@@ -95,7 +99,8 @@ namespace gr {
         sp_segment_keywords[10]= 0b10100100111;
         sp_segment_keywords[11]= 0b11111111111;
         sp_segment_keywords[12]= 0b01110001001;
-        break;       
+        break;
+      }       
       case 2 : 
         sp_segment_keywords[0] = 0b11011100101;
         sp_segment_keywords[1] = 0b00010011100;
@@ -260,6 +265,63 @@ namespace gr {
             break;
           }
         }
+        //b31-b40
+        switch(d_ConvCodeA) {
+         case c_1_2:
+          {
+            TMCCword.reset(31);
+            TMCCword.reset(32);
+            TMCCword.reset(33);
+             break; 
+          }      
+          case c_2_3:
+          {
+            TMCCword.reset(31);
+            TMCCword.reset(32);
+            TMCCword.set(33);
+             break; 
+          } 
+          case c_3_4:
+          {
+            TMCCword.reset(31);
+            TMCCword.set(32);
+            TMCCword.reset(33);
+             break; 
+          } 
+          case c_5_6:
+          {
+            TMCCword.reset(31);
+            TMCCword.set(32);
+            TMCCword.set(33);
+             break; 
+          } 
+          case c_7_8:
+          {
+            TMCCword.set(31);
+            TMCCword.reset(32);
+            TMCCword.reset(33);
+             break; 
+          }
+          case RESERVED:
+          {
+            //TMCCword.set(28);
+            //TMCCword.reset(29);
+            //TMCCword.reset(30);
+             break; 
+          }
+          case UNUSED_HL:
+          {
+            TMCCword.set(31);
+            TMCCword.set(32);
+            TMCCword.set(33);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode A convolutional_coding_rate \n");
+            break;
+          }
+        }
         // LAYER B
         switch(d_ModSchemeB) {
          case DQPSK:
@@ -300,6 +362,62 @@ namespace gr {
           default:
           {
             printf("Error, incorrect mode B modulation scheme \n");
+            break;
+          }
+        }
+        switch(d_ConvCodeB) {
+         case c_1_2:
+          {
+            TMCCword.reset(44);
+            TMCCword.reset(45);
+            TMCCword.reset(46);
+             break; 
+          }      
+          case c_2_3:
+          {
+            TMCCword.reset(44);
+            TMCCword.reset(45);
+            TMCCword.set(46);
+             break; 
+          } 
+          case c_3_4:
+          {
+            TMCCword.reset(44);
+            TMCCword.set(45);
+            TMCCword.reset(46);
+             break; 
+          } 
+          case c_5_6:
+          {
+            TMCCword.reset(44);
+            TMCCword.set(45);
+            TMCCword.set(46);
+             break; 
+          } 
+          case c_7_8:
+          {
+            TMCCword.set(44);
+            TMCCword.reset(45);
+            TMCCword.reset(46);
+             break; 
+          }
+          case RESERVED:
+          {
+            //TMCCword.set(44);
+            //TMCCword.reset(45);
+            //TMCCword.reset(45);
+             break; 
+          }
+          case UNUSED_HL:
+          {
+            TMCCword.set(44);
+            TMCCword.set(45);
+            TMCCword.set(46);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode B convolutional_coding_rate \n");
             break;
           }
         }
@@ -346,6 +464,63 @@ namespace gr {
             break;
           }
         }
+        switch(d_ConvCodeC) {
+         case c_1_2:
+          {
+            TMCCword.reset(57);
+            TMCCword.reset(58);
+            TMCCword.reset(59);
+             break; 
+          }      
+          case c_2_3:
+          {
+            TMCCword.reset(57);
+            TMCCword.reset(58);
+            TMCCword.set(59);
+             break; 
+          } 
+          case c_3_4:
+          {
+            TMCCword.reset(57);
+            TMCCword.set(58);
+            TMCCword.reset(59);
+             break; 
+          } 
+          case c_5_6:
+          {
+            TMCCword.reset(57);
+            TMCCword.set(58);
+            TMCCword.set(59);
+             break; 
+          } 
+          case c_7_8:
+          {
+            TMCCword.set(57);
+            TMCCword.reset(58);
+            TMCCword.reset(59);
+             break; 
+          }
+          case RESERVED:
+          {
+            //TMCCword.set(57);
+            //TMCCword.reset(58);
+            //TMCCword.reset(59);
+             break; 
+          }
+          case UNUSED_HL:
+          {
+            TMCCword.set(57);
+            TMCCword.set(58);
+            TMCCword.set(59);
+             break; 
+          }
+          default:
+          {
+            printf("Error, incorrect mode C convolutional_coding_rate \n");
+            break;
+          }
+        }
+        //b60 - b106
         for (int i = 107; i < 122; i++)
         {
           //107-109 parity bits
