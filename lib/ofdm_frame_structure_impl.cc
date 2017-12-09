@@ -38,16 +38,25 @@ namespace gr {
   namespace isdbt {
 
     ofdm_frame_structure::sptr
-    ofdm_frame_structure::make(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC)
+    ofdm_frame_structure::make(int mode, bool IsOneSeg, 
+                                int ModSchemeA, int ModSchemeB, int ModSchemeC, 
+                                int ConvCodeA, int ConvCodeB, int ConvCodeC,
+                                int IntLengthA, int IntLengthB, int IntLengthC)
     {
       return gnuradio::get_initial_sptr
-        (new ofdm_frame_structure_impl(mode, IsOneSeg, ModSchemeA, ModSchemeB, ModSchemeC, ConvCodeA, ConvCodeB, ConvCodeC));
+        (new ofdm_frame_structure_impl(mode, IsOneSeg, 
+                                        ModSchemeA, ModSchemeB, ModSchemeC, 
+                                        ConvCodeA, ConvCodeB, ConvCodeC,
+                                        IntLengthA, IntLengthB, IntLengthC));
     }
 
     /*
      * The private constructor
      */
-    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC)
+    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
+                                  int ModSchemeA, int ModSchemeB, int ModSchemeC, 
+                                  int ConvCodeA, int ConvCodeB, int ConvCodeC,
+                                  int IntLengthA, int IntLengthB, int IntLengthC)
       : gr::block("ofdm_frame_structure",
               gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
@@ -69,6 +78,9 @@ namespace gr {
       d_ConvCodeA  = (convolutional_coding_rate) ConvCodeA;
       d_ConvCodeB  = (convolutional_coding_rate) ConvCodeB;
       d_ConvCodeC  = (convolutional_coding_rate) ConvCodeC;
+      d_IntLengthA = IntLengthA;
+      d_IntLengthB = IntLengthB;
+      d_IntLengthC = IntLengthC;
     }
 
     /*
@@ -265,7 +277,6 @@ namespace gr {
             break;
           }
         }
-        //b31-b40
         switch(d_ConvCodeA) {
          case c_1_2:
           {
@@ -321,6 +332,140 @@ namespace gr {
             printf("Error, incorrect mode A convolutional_coding_rate \n");
             break;
           }
+        }
+        // b34-b40
+        //if (capaA != UNUSED) switch mode
+        if (d_ModSchemeA != UNUSED)
+        {
+          switch (d_mode)
+          {
+            case 1: 
+            {
+              switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 2: 
+            {
+              switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 2:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 3: 
+            {
+              switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.reset(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.reset(36);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(34);
+                  TMCCword.set(35);
+                  TMCCword.set(36);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            default: {
+              printf("Error: Incorrect Transmission mode\n");
+              break;
+            }
+
+          }
+        } else {
+          TMCCword.set(34);
+          TMCCword.set(35);
+          TMCCword.set(36);
         }
         // LAYER B
         switch(d_ModSchemeB) {
@@ -421,6 +566,140 @@ namespace gr {
             break;
           }
         }
+        //Interleaving length
+        if (d_ModSchemeB != UNUSED)
+        {
+          switch (d_mode)
+          {
+            case 1: 
+            {
+              switch (d_IntLengthB) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 2: 
+            {
+              switch (d_IntLengthB) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 2:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 3: 
+            {
+              switch (d_IntLengthB) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.reset(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.reset(49);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(47);
+                  TMCCword.set(48);
+                  TMCCword.set(49);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            default: {
+              printf("Error: Incorrect Transmission mode\n");
+              break;
+            }
+
+          }
+        } else {
+          TMCCword.set(47);
+          TMCCword.set(48);
+          TMCCword.set(49);
+        }
+
         // LAYER C
         switch(d_ModSchemeC) {
          case DQPSK:
@@ -520,6 +799,140 @@ namespace gr {
             break;
           }
         }
+        //Interleaving length
+        if (d_ModSchemeC != UNUSED)
+        {
+          switch (d_mode)
+          {
+            case 1: 
+            {
+              switch (d_IntLengthC) //TODO: Revisar los IntLength que varian segun el modo
+              {                    // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 2: 
+            {
+              switch (d_IntLengthC) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 2:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            case 3: 
+            {
+              switch (d_IntLengthC) //TODO: Revisar los IntLength que varian segun el modo
+              {                     // ahora el user los tiene que poner bien desde grc
+                case 0:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 4:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.reset(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                case 8:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.reset(62);
+                  break;
+                }
+                case 16:
+                {
+                  TMCCword.reset(60);
+                  TMCCword.set(61);
+                  TMCCword.set(62);
+                  break;
+                }
+                default:
+                {
+                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  break;
+                }
+              }
+            }
+            default: {
+              printf("Error: Incorrect Transmission mode\n");
+              break;
+            }
+
+          }
+        } else {
+          TMCCword.set(60);
+          TMCCword.set(61);
+          TMCCword.set(62);
+        }
+
         //b60 - b106
         for (int i = 107; i < 122; i++)
         {

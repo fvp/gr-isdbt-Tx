@@ -85,6 +85,8 @@ namespace gr {
 
       int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
 
+      int d_IntLengthA, d_IntLengthB, d_IntLengthC;
+
       bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
 
       gr_complex write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber);
@@ -92,7 +94,11 @@ namespace gr {
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
 
      public:
-      ofdm_frame_structure_impl(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC);
+      ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
+                                int ModSchemeA, int ModSchemeB, int ModSchemeC, 
+                                int ConvCodeA, int ConvCodeB, int ConvCodeC,
+                                int IntLengthA, int IntLengthB, int IntLengthC);
+
       ~ofdm_frame_structure_impl();
 
       // Where all the action really happens

@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_frame_structure</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC)</make>
+  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC)</make>
   
 <param>
      <name>Transmission Mode</name>
@@ -53,7 +53,7 @@
  </param>
 
  <param>
-     <name>Convolutional Coding Rate Layer A</name>
+     <name>Convolutional Coding Rate A</name>
    <key>ConvCodeA</key>
    <value>0</value>
    <type>enum</type>
@@ -84,6 +84,37 @@
      <option>
      <name>Unused</name>
      <key>6</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Interleaving Length A</name>
+   <key>IntLenA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
      </option>
  </param>
 
@@ -149,6 +180,37 @@
      </option>
  </param>
 
+  <param>
+     <name>Interleaving Length B</name>
+   <key>IntLenB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
+     </option>
+ </param>
+
  <param>
      <name>Layer C Constelattion</name>
    <key>ModeC</key>
@@ -208,6 +270,37 @@
      <option>
      <name>Unused</name>
      <key>6</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Interleaving Length C</name>
+   <key>IntLenC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
      </option>
  </param>
 

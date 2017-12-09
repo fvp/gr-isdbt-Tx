@@ -55,7 +55,10 @@ namespace gr {
        * class. isdbt::ofdm_frame_structure::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int mode, bool IsOneSeg, int ModSchemeA, int ModSchemeB, int ModSchemeC, int ConvCodeA, int ConvCodeB, int ConvCodeC);
+      static sptr make(int mode, bool IsOneSeg, 
+                      int ModSchemeA, int ModSchemeB, int ModSchemeC, 
+                      int ConvCodeA, int ConvCodeB, int ConvCodeC,
+                      int IntLengthA, int IntLengthB, int IntLengthC);
     };
   } // namespace isdbt
 } // namespace gr

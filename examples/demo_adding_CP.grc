@@ -562,7 +562,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(504, 168)</value>
+      <value>(528, 168)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -676,7 +676,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(264, 196)</value>
+      <value>(224, 170)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -685,6 +685,18 @@
     <param>
       <key>id</key>
       <value>isdbt_ofdm_frame_structure_0</value>
+    </param>
+    <param>
+      <key>IntLenA</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>IntLenB</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>IntLenC</key>
+      <value>16</value>
     </param>
     <param>
       <key>ModeA</key>
