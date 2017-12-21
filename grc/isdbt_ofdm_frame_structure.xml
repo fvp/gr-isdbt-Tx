@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_frame_structure</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC)</make>
+  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC, $LayASeg, $LayBSeg, $LayCSeg)</make>
   
 <param>
      <name>Transmission Mode</name>
@@ -118,6 +118,13 @@
      </option>
  </param>
 
+  <param>
+     <name>Layer A Segments</name>
+   <key>LayASeg</key>
+   <value>0</value>
+   <type>int</type>
+ </param>
+
  <param>
      <name>Layer B Constelattion</name>
    <key>ModeB</key>
@@ -211,6 +218,13 @@
      </option>
  </param>
 
+  <param>
+     <name>Layer B Segments</name>
+   <key>LayBSeg</key>
+   <value>0</value>
+   <type>int</type>
+ </param>
+
  <param>
      <name>Layer C Constelattion</name>
    <key>ModeC</key>
@@ -302,6 +316,13 @@
      <name>16</name>
      <key>16</key>
      </option>
+ </param>
+
+   <param>
+     <name>Layer C Segments</name>
+   <key>LayCSeg</key>
+   <value>0</value>
+   <type>int</type>
  </param>
 
   <param>

@@ -41,13 +41,15 @@ namespace gr {
     ofdm_frame_structure::make(int mode, bool IsOneSeg, 
                                 int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                 int ConvCodeA, int ConvCodeB, int ConvCodeC,
-                                int IntLengthA, int IntLengthB, int IntLengthC)
+                                int IntLengthA, int IntLengthB, int IntLengthC,
+                                int LayerA_seg, int LayerB_seg, int LayerC_seg)
     {
       return gnuradio::get_initial_sptr
         (new ofdm_frame_structure_impl(mode, IsOneSeg, 
                                         ModSchemeA, ModSchemeB, ModSchemeC, 
                                         ConvCodeA, ConvCodeB, ConvCodeC,
-                                        IntLengthA, IntLengthB, IntLengthC));
+                                        IntLengthA, IntLengthB, IntLengthC,
+                                        LayerA_seg, LayerB_seg, LayerC_seg));
     }
 
     /*
@@ -56,7 +58,8 @@ namespace gr {
     ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
                                   int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                   int ConvCodeA, int ConvCodeB, int ConvCodeC,
-                                  int IntLengthA, int IntLengthB, int IntLengthC)
+                                  int IntLengthA, int IntLengthB, int IntLengthC,
+                                  int LayerA_seg, int LayerB_seg, int LayerC_seg)
       : gr::block("ofdm_frame_structure",
               gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
@@ -81,6 +84,12 @@ namespace gr {
       d_IntLengthA = IntLengthA;
       d_IntLengthB = IntLengthB;
       d_IntLengthC = IntLengthC;
+      d_LayerA_seg = LayerA_seg;
+      d_LayerB_seg = LayerB_seg;
+      d_LayerC_seg = LayerC_seg;
+      printf("LayerA_seg: %d\n", d_LayerA_seg);
+      printf("LayerB_seg: %d\n", d_LayerB_seg);
+      printf("LayerC_seg: %d\n", d_LayerC_seg);
     }
 
     /*
@@ -472,6 +481,127 @@ namespace gr {
           TMCCword.set(35);
           TMCCword.set(36);
         }
+        //b37 - b40 Layer A number of segments
+        switch (d_LayerA_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+          case 0:
+          {
+            //Unused layer
+            TMCCword.set(37);
+            TMCCword.set(38);
+            TMCCword.set(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 1:
+          {
+            TMCCword.reset(37);
+            TMCCword.reset(38);
+            TMCCword.reset(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 2:
+          {
+            TMCCword.reset(37);
+            TMCCword.reset(38);
+            TMCCword.set(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 3:
+          {
+            TMCCword.reset(37);
+            TMCCword.reset(38);
+            TMCCword.set(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 4:
+          {
+            TMCCword.reset(37);
+            TMCCword.set(38);
+            TMCCword.reset(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 5:
+          {
+            TMCCword.reset(37);
+            TMCCword.set(38);
+            TMCCword.reset(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 6:
+          {
+            TMCCword.reset(37);
+            TMCCword.set(38);
+            TMCCword.set(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 7:
+          {
+            TMCCword.reset(37);
+            TMCCword.set(38);
+            TMCCword.set(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 8:
+          {
+            TMCCword.set(37);
+            TMCCword.reset(38);
+            TMCCword.reset(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 9:
+          {
+            TMCCword.set(37);
+            TMCCword.reset(38);
+            TMCCword.reset(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 10:
+          {
+            TMCCword.set(37);
+            TMCCword.reset(38);
+            TMCCword.set(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 11:
+          {
+            TMCCword.set(37);
+            TMCCword.reset(38);
+            TMCCword.set(39);
+            TMCCword.set(40);
+            break;
+          }
+          case 12:
+          {
+            TMCCword.set(37);
+            TMCCword.set(38);
+            TMCCword.reset(39);
+            TMCCword.reset(40);
+            break;
+          }
+          case 13:
+          {
+            TMCCword.set(37);
+            TMCCword.set(38);
+            TMCCword.reset(39);
+            TMCCword.set(40);
+            break;
+          }
+          default:
+          {
+            printf("Error: Incorrect segment number for layer A");
+            break;
+          }
+        }
         // LAYER B
         switch(d_ModSchemeB) {
          case DQPSK:
@@ -707,7 +837,127 @@ namespace gr {
           TMCCword.set(48);
           TMCCword.set(49);
         }
-
+        switch (d_LayerB_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+          case 0:
+          {
+            //Unused layer
+            TMCCword.set(50);
+            TMCCword.set(51);
+            TMCCword.set(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 1:
+          {
+            TMCCword.reset(50);
+            TMCCword.reset(51);
+            TMCCword.reset(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 2:
+          {
+            TMCCword.reset(50);
+            TMCCword.reset(51);
+            TMCCword.set(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 3:
+          {
+            TMCCword.reset(50);
+            TMCCword.reset(51);
+            TMCCword.set(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 4:
+          {
+            TMCCword.reset(50);
+            TMCCword.set(51);
+            TMCCword.reset(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 5:
+          {
+            TMCCword.reset(50);
+            TMCCword.set(51);
+            TMCCword.reset(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 6:
+          {
+            TMCCword.reset(50);
+            TMCCword.set(51);
+            TMCCword.set(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 7:
+          {
+            TMCCword.reset(50);
+            TMCCword.set(51);
+            TMCCword.set(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 8:
+          {
+            TMCCword.set(50);
+            TMCCword.reset(51);
+            TMCCword.reset(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 9:
+          {
+            TMCCword.set(50);
+            TMCCword.reset(51);
+            TMCCword.reset(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 10:
+          {
+            TMCCword.set(50);
+            TMCCword.reset(51);
+            TMCCword.set(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 11:
+          {
+            TMCCword.set(50);
+            TMCCword.reset(51);
+            TMCCword.set(52);
+            TMCCword.set(53);
+            break;
+          }
+          case 12:
+          {
+            TMCCword.set(50);
+            TMCCword.set(51);
+            TMCCword.reset(52);
+            TMCCword.reset(53);
+            break;
+          }
+          case 13:
+          {
+            TMCCword.set(50);
+            TMCCword.set(51);
+            TMCCword.reset(52);
+            TMCCword.set(53);
+            break;
+          }
+          default:
+          {
+            printf("Error: Incorrect segment number for layer B");
+            break;
+          }
+        }
+        //TODO: b53 - b55
         // LAYER C
         switch(d_ModSchemeC) {
          case DQPSK:
@@ -943,16 +1193,134 @@ namespace gr {
           TMCCword.set(61);
           TMCCword.set(62);
         }
-
-        //b60 - b106
+        switch (d_LayerC_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+          case 0:
+          {
+            //Unused layer
+            TMCCword.set(63);
+            TMCCword.set(64);
+            TMCCword.set(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 1:
+          {
+            TMCCword.reset(63);
+            TMCCword.reset(64);
+            TMCCword.reset(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 2:
+          {
+            TMCCword.reset(63);
+            TMCCword.reset(64);
+            TMCCword.set(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 3:
+          {
+            TMCCword.reset(63);
+            TMCCword.reset(64);
+            TMCCword.set(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 4:
+          {
+            TMCCword.reset(63);
+            TMCCword.set(64);
+            TMCCword.reset(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 5:
+          {
+            TMCCword.reset(63);
+            TMCCword.set(64);
+            TMCCword.reset(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 6:
+          {
+            TMCCword.reset(63);
+            TMCCword.set(64);
+            TMCCword.set(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 7:
+          {
+            TMCCword.reset(63);
+            TMCCword.set(64);
+            TMCCword.set(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 8:
+          {
+            TMCCword.set(63);
+            TMCCword.reset(64);
+            TMCCword.reset(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 9:
+          {
+            TMCCword.set(63);
+            TMCCword.reset(64);
+            TMCCword.reset(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 10:
+          {
+            TMCCword.set(63);
+            TMCCword.reset(64);
+            TMCCword.set(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 11:
+          {
+            TMCCword.set(63);
+            TMCCword.reset(64);
+            TMCCword.set(65);
+            TMCCword.set(66);
+            break;
+          }
+          case 12:
+          {
+            TMCCword.set(63);
+            TMCCword.set(64);
+            TMCCword.reset(65);
+            TMCCword.reset(66);
+            break;
+          }
+          case 13:
+          {
+            TMCCword.set(63);
+            TMCCword.set(64);
+            TMCCword.reset(65);
+            TMCCword.set(66);
+            break;
+          }
+          default:
+          {
+            printf("Error: Incorrect segment number for layer C");
+            break;
+          }
+        }
+        //TODO: b67 - b106
+        //NEXT INFORMATION
+        //Unused in this example
         for (int i = 107; i < 122; i++)
         {
-          //107-109 parity bits
-          //110-121 reserved, always 1
           TMCCword.set(i);
         }
-      //Bits de paridad
-        //Assign b122-b203
+        //TODO: Assign b122-b203 (Parity bits)
 
         // Return bit0
         return sp0;
@@ -1015,8 +1383,6 @@ namespace gr {
               //printf("Antes de llamar a writeTMCC, d_symbol_counter %d\n", d_symbol_counter);
               out[108*6+j] = this->write_TMCC(d_symbol_counter, Frame_counter, 0);
               TMCCindex++;
-              //printf("TMCCindex: %d \n", TMCCindex);
-              //printf("out[TMCC]: (%f,%f) \n", out[108*6+j].real(), out[108*6+j].imag());
             } else if ((j == 35) || (j == 79)) {
               /* AC1 or AC2 */
               out[108*6+j] = std::complex<double>(0, 0);

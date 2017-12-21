@@ -58,7 +58,8 @@ namespace gr {
       static sptr make(int mode, bool IsOneSeg, 
                       int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                       int ConvCodeA, int ConvCodeB, int ConvCodeC,
-                      int IntLengthA, int IntLengthB, int IntLengthC);
+                      int IntLengthA, int IntLengthB, int IntLengthC,
+                      int LayerA_seg, int LayerB_seg, int LayerC_seg);
     };
   } // namespace isdbt
 } // namespace gr

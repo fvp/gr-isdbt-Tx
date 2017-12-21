@@ -85,7 +85,7 @@ namespace gr {
 
       int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
 
-      int d_IntLengthA, d_IntLengthB, d_IntLengthC;
+      int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
 
       bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
 
@@ -97,7 +97,8 @@ namespace gr {
       ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
                                 int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                 int ConvCodeA, int ConvCodeB, int ConvCodeC,
-                                int IntLengthA, int IntLengthB, int IntLengthC);
+                                int IntLengthA, int IntLengthB, int IntLengthC,
+                                int LayerA_seg, int LayerB_seg, int LayerC_seg);
 
       ~ofdm_frame_structure_impl();
 
