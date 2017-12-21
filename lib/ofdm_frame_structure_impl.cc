@@ -161,6 +161,7 @@ namespace gr {
       {
         sp_keyword = this->ObtainStartingWord(SegmentNumber, d_mode);
       }
+      /* TODO: Evolve starting word*/
       if (sp_keyword.test(SPindex)) /*Return bit value in keyword for SPindex*/
       {
         return std::complex<float>(-4.0/3.0, 0);   
@@ -175,10 +176,9 @@ namespace gr {
     gr_complex 
     ofdm_frame_structure_impl::write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber)
     {
-      //printf("Dentro de write TMCC, SymbolNumber: %d \n", SymbolNumber);
       //Test TMCC word for writing bit, returns symbol mapped into DBPSK
       bool current_bit, previous_bit;
-      //First bit, only decide on it
+      //First bit, define TMCC word
       if (SymbolNumber == 0)
       {
         //Assign b0, check for SP0 value
@@ -212,22 +212,21 @@ namespace gr {
             }
           }
         }
-      //Segment type identifier
-        //This example only uses Coherent modulation
+        //Segment type identifier
+          //This example only uses Coherent modulation
         TMCCword.set(17);
         TMCCword.set(18);
         TMCCword.set(19);
-      //TMCC information bits
+        //TMCC information bits
         //20-21 system id, 00 for terrestrial
         TMCCword.reset(20);
         TMCCword.reset(21);
         //Transmission parameters
         TMCCword.set(22);
         TMCCword.set(23);
-        TMCCword.set(24); //TODO: Verificar los cambios del sistema
-        TMCCword.set(25);
-        // Alarm bit, defaulted in 0
-        TMCCword.reset(26); //TODO: fijar parametrico, desde fuera del bloque
+        TMCCword.set(24); //Test case: No changes in system
+        TMCCword.set(25); 
+        TMCCword.reset(26); //Alarm bit, defaulted in 0 //TODO: fijar parametrico, desde fuera del bloque
         if (d_IsOneSeg){
           TMCCword.set(27);
         } else {
@@ -334,11 +333,11 @@ namespace gr {
           }
         }
         // b34-b40
-        //if (capaA != UNUSED) switch mode
         if (d_ModSchemeA != UNUSED)
         {
           switch (d_mode)
           {
+            printf("Entra al switch con d_mode: %d \n", d_mode);
             case 1: 
             {
               switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
@@ -373,13 +372,15 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
-                  break;
+                  printf("Error: Incorrect Interleaving length for layer A (Tx mode = %d) \n", d_mode);
+                  break; 
                 }
               }
+            break;
             }
             case 2: 
             {
+              printf("Entra al case 2 \n");
               switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
               {                     // ahora el user los tiene que poner bien desde grc
                 case 0:
@@ -412,13 +413,15 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer A (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             case 3: 
             {
+              printf("Entra al case 3 \n");
               switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
               {                     // ahora el user los tiene que poner bien desde grc
                 case 0:
@@ -451,16 +454,18 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer A (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
-            default: {
-              printf("Error: Incorrect Transmission mode\n");
+            default: 
+            {
+              printf("Entra al default \n");
+              printf("Error: Incorrect Transmission mode for layer A, mode: %d\n", d_mode);
               break;
             }
-
           }
         } else {
           TMCCword.set(34);
@@ -605,10 +610,11 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer B (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             case 2: 
             {
@@ -644,10 +650,11 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
-                  break;
+                  printf("Error: Incorrect Interleaving length for layer B (Tx mode = %d) \n", d_mode);
+                  break; 
                 }
               }
+            break;
             }
             case 3: 
             {
@@ -683,13 +690,14 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer B (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             default: {
-              printf("Error: Incorrect Transmission mode\n");
+              printf("Error: Incorrect Transmission mode for layer B, mode: %d\n", d_mode);
               break;
             }
 
@@ -838,10 +846,11 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer C (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             case 2: 
             {
@@ -877,10 +886,11 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer C (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             case 3: 
             {
@@ -916,14 +926,15 @@ namespace gr {
                 }
                 default:
                 {
-                  printf("Error: Incorrect Interleaving length for this mode\n");
+                  printf("Error: Incorrect Interleaving length for layer C (Tx mode = %d) \n", d_mode);
                   break;
                 }
               }
+            break;
             }
             default: {
-              printf("Error: Incorrect Transmission mode\n");
-              break;
+              printf("Error: Incorrect Transmission mode for layer C, mode: %d\n", d_mode);
+              break; 
             }
 
           }
@@ -946,7 +957,9 @@ namespace gr {
         // Return bit0
         return sp0;
       }
+      //
       //General case, decision based on current bit and previous bit
+      //
       current_bit = TMCCword.test(SymbolNumber);
       previous_bit = TMCCword.test(SymbolNumber - 1);
       if (!((current_bit & previous_bit) || (!current_bit & !previous_bit)))
@@ -990,7 +1003,7 @@ namespace gr {
         {
         case 1:
           /* Segment 0*/
-          for (int j = 0; j < 96; j++) 
+          for (int j = 0; j < 108; j++) 
           {
             if ((j % 12) == (3*d_carrier_pos))
             {
