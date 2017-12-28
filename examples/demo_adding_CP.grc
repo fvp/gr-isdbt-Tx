@@ -105,7 +105,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1</value>
+      <value>3</value>
     </param>
   </block>
   <block>
@@ -421,7 +421,7 @@
     </param>
     <param>
       <key>vlen</key>
-      <value>1248</value>
+      <value>4992</value>
     </param>
   </block>
   <block>
@@ -476,11 +476,11 @@
     </param>
     <param>
       <key>vlen</key>
-      <value>1248</value>
+      <value>4992</value>
     </param>
     <param>
       <key>vector</key>
-      <value>[0]*1248</value>
+      <value>[0]*4992</value>
     </param>
   </block>
   <block>
@@ -499,7 +499,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -527,7 +527,7 @@
     </param>
     <param>
       <key>num_items</key>
-      <value>2304</value>
+      <value>9216</value>
     </param>
     <param>
       <key>vlen</key>
@@ -550,7 +550,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -601,11 +601,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>fft_size</key>
-      <value>2048</value>
+      <value>8192</value>
     </param>
     <param>
       <key>forward</key>
@@ -645,7 +645,7 @@
     </param>
     <param>
       <key>window</key>
-      <value>window.blackmanharris(2048)</value>
+      <value>window.blackmanharris(8192)</value>
     </param>
   </block>
   <block>
@@ -668,11 +668,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(728, 196)</value>
+      <value>(752, 124)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -692,7 +692,7 @@
     </param>
     <param>
       <key>mode</key>
-      <value>1</value>
+      <value>3</value>
     </param>
   </block>
   <block>
@@ -783,11 +783,11 @@
     </param>
     <param>
       <key>IsOneSeg</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>mode</key>
-      <value>1</value>
+      <value>3</value>
     </param>
   </block>
   <block>
@@ -810,7 +810,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -1161,7 +1161,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>

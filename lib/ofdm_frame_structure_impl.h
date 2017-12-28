@@ -82,7 +82,7 @@ namespace gr {
       bitset<204> TMCCword;
 
       bool d_IsOneSeg;
-
+      int InputIndex;     //Variable to cover input array
       int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
 
       int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
@@ -92,6 +92,10 @@ namespace gr {
       gr_complex write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber);
 
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
+
+      void fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber);
+      void fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber);
+      void fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber);
 
      public:
       ofdm_frame_structure_impl(int mode, bool IsOneSeg, 

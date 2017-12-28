@@ -75,6 +75,7 @@ namespace gr {
       sp_keyword = 0b00000000000; /* SP keyword default*/
       TMCCword.set();
       TMCC_sync_word = 0b0011010111101110;
+      InputIndex = 0;
       d_ModSchemeA = (carrier_mod_scheme) ModSchemeA;
       d_ModSchemeB = (carrier_mod_scheme) ModSchemeB;
       d_ModSchemeC = (carrier_mod_scheme) ModSchemeC;
@@ -1340,7 +1341,605 @@ namespace gr {
       }
     }
 
+    void
+    ofdm_frame_structure_impl::fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber)
+    {
+      int SegmentPos = 0;   //Segment position on transmision
+      int TMCCPos = 0;      //TMCC position on transmision
+      int ACpos1 = 0;       //AC1 position on Transmission
+      int ACpos2 = 0;       //AC2 position on Transmission
+      switch(SegmentNumber)
+      {
+        case 0:
+        {
+          SegmentPos = 6;
+          TMCCPos = 49;
+          ACpos1 = 35;
+          ACpos2 = 79;
+          break;
+        }
+        case 1:
+        {
+          SegmentPos = 5;
+          TMCCPos = 47;
+          ACpos1 = 74;
+          ACpos2 = 100;
+          break;
+        }
+        case 2:
+        {
+          SegmentPos = 7;
+          TMCCPos = 31;
+          ACpos1 = 76;
+          ACpos2 = 97;
+          break;
+        }
+        case 3:
+        {
+          SegmentPos = 4;
+          TMCCPos = 44;
+          ACpos1 = 20;
+          ACpos2 = 40;
+          break;
+        }
+        case 4:
+        {
+          SegmentPos = 8;
+          TMCCPos = 83;
+          ACpos1 = 4;
+          ACpos2 = 89;
+          break;
+        }
+        case 5:
+        {
+          SegmentPos = 3;
+          TMCCPos = 86;
+          ACpos1 = 11;
+          ACpos2 = 101;
+          break;
+        }
+        case 6:
+        {
+          SegmentPos = 9;
+          TMCCPos = 61;
+          ACpos1 = 40;
+          ACpos2 = 89;
+          break;
+        }
+        case 7:
+        {
+          SegmentPos = 2;
+          TMCCPos = 17;
+          ACpos1 = 61;
+          ACpos2 = 100;
+          break;
+        }
+        case 8:
+        {
+          SegmentPos = 10;
+          TMCCPos = 85;
+          ACpos1 = 8;
+          ACpos2 = 64;
+          break;
+        }
+        case 9:
+        {
+          SegmentPos = 1;
+          TMCCPos = 25;
+          ACpos1 = 53;
+          ACpos2 = 83;
+          break;
+        }
+        case 10:
+        {
+          SegmentPos = 11;
+          TMCCPos = 101;
+          ACpos1 = 7;
+          ACpos2 = 89;
+          break;
+        }
+        case 11:
+        {
+          SegmentPos = 0;
+          TMCCPos = 70;
+          ACpos1 = 10;
+          ACpos2 = 28;
+          break;
+        }
+        case 12:
+        {
+          SegmentPos = 12;
+          TMCCPos = 23;
+          ACpos1 = 98;
+          ACpos2 = 101;
+          break;
+        }
+        default:
+        {
+          printf("Error, incorrect segment number\n");
+          break;
+        }
+      }
+      SPindex = 0;
+      InputIndex = SegmentPos*96;
+      for (int j = 0; j < 108; j++) 
+      {
+        /*Scattered Pilot*/   
+        if ((j % 12) == (3*d_carrier_pos))
+        {
+        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
+        SPindex++;
+        /* TMCC */
+        } else if (j == TMCCPos) {
+        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        TMCCindex++;
+        /* AC1 or AC2 */
+        } else if ((j == ACpos1) || (j == ACpos2)) {
+        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        /* Fill with data*/
+        } else {
+        out[108*SegmentPos+j] = in[InputIndex];
+        InputIndex++;
+        }
+      }
+      return;  
+    }
 
+        void
+    ofdm_frame_structure_impl::fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber)
+    {
+      int SegmentPos = 0;   //Segment position on transmision
+      int TMCCPos1 = 0;      //TMCC position on transmision
+      int TMCCPos2 = 0;      //TMCC position on transmision
+      int ACpos1 = 0;       //AC1 position on Transmission
+      int ACpos2 = 0;       //AC2 position on Transmission
+      int ACpos3 = 0;       //AC1 position on Transmission
+      int ACpos4 = 0;       //AC2 position on Transmission
+      switch(SegmentNumber)
+      {
+        case 0:
+        {
+          SegmentPos = 6;
+          TMCCPos1 = 23;     
+          TMCCPos2 = 178;     
+          ACpos1 = 98;       
+          ACpos2 = 101;       
+          ACpos3 = 118;  
+          ACpos4 = 136; 
+          break;
+        }
+        case 1:
+        {
+          SegmentPos = 5;
+          TMCCPos1 = 85;     
+          TMCCPos2 = 209;     
+          ACpos1 = 8;       
+          ACpos2 = 64;       
+          ACpos3 = 115;  
+          ACpos4 = 197; 
+          break;
+        }
+        case 2:
+        {
+          SegmentPos = 7;
+          TMCCPos1 = 25;     
+          TMCCPos2 = 125;     
+          ACpos1 = 53;       
+          ACpos2 = 83;       
+          ACpos3 = 169;  
+          ACpos4 = 208;
+          break;
+        }
+        case 3:
+        {
+          SegmentPos = 4;
+          TMCCPos1 = 83;     
+          TMCCPos2 = 169;     
+          ACpos1 = 4;       
+          ACpos2 = 89;       
+          ACpos3 = 148;  
+          ACpos4 = 197;
+          break;
+        }
+        case 4:
+        {
+          SegmentPos = 8;
+          TMCCPos1 = 86;     
+          TMCCPos2 = 152;     
+          ACpos1 = 11;       
+          ACpos2 = 101;       
+          ACpos3 = 128;  
+          ACpos4 = 148;
+          break;
+        }
+        case 5:
+        {
+          SegmentPos = 3;
+          TMCCPos1 = 49;     
+          TMCCPos2 = 139;     
+          ACpos1 = 35;       
+          ACpos2 = 79;       
+          ACpos3 = 184;  
+          ACpos4 = 205;
+          break;
+        }
+        case 6:
+        {
+          SegmentPos = 9;
+          TMCCPos1 = 47;     
+          TMCCPos2 = 157;     
+          ACpos1 = 74;       
+          ACpos2 = 100;       
+          ACpos3 = 143;  
+          ACpos4 = 187;
+          break;
+        }
+        case 7:
+        {
+          SegmentPos = 2;
+          TMCCPos1 = 44;     
+          TMCCPos2 = 155;     
+          ACpos1 = 20;       
+          ACpos2 = 40;       
+          ACpos3 = 182;  
+          ACpos4 = 208;
+          break;
+        }
+        case 8:
+        {
+          SegmentPos = 10;
+          TMCCPos1 = 31;     
+          TMCCPos2 = 191;     
+          ACpos1 = 76;       
+          ACpos2 = 97;       
+          ACpos3 = 112;  
+          ACpos4 = 197;
+          break;
+        }
+        case 9:
+        {
+          SegmentPos = 1;
+          TMCCPos1 = 17;     
+          TMCCPos2 = 194;     
+          ACpos1 = 61;       
+          ACpos2 = 100;       
+          ACpos3 = 119;  
+          ACpos4 = 209;
+          break;
+        }
+        case 10:
+        {
+          SegmentPos = 11;
+          TMCCPos1 = 61;     
+          TMCCPos2 = 193;     
+          ACpos1 = 40;       
+          ACpos2 = 89;       
+          ACpos3 = 116;  
+          ACpos4 = 172;
+          break;
+        }
+        case 11:
+        {
+          SegmentPos = 0;
+          TMCCPos1 = 70;     
+          TMCCPos2 = 133;     
+          ACpos1 = 10;       
+          ACpos2 = 28;       
+          ACpos3 = 161;  
+          ACpos4 = 191;
+          break;
+        }
+        case 12:
+        {
+          SegmentPos = 12;
+          TMCCPos1 = 101;     
+          TMCCPos2 = 131;     
+          ACpos1 = 7;       
+          ACpos2 = 89;       
+          ACpos3 = 206;  
+          ACpos4 = 209;
+          break;
+        }
+        default:
+        {
+          printf("Error, incorrect segment number\n");
+          break;
+        }
+      }
+      SPindex = 0;
+      InputIndex = SegmentPos*96;
+      for (int j = 0; j < 108; j++) 
+      {
+        /*Scattered Pilot*/   
+        if ((j % 12) == (3*d_carrier_pos))
+        {
+        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
+        SPindex++;
+        /* TMCC 1 and 2*/
+        } else if ((j == TMCCPos1) || (j == TMCCPos2)) {
+        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        TMCCindex++;
+        /* AC1, AC2, AC3 or AC4 */
+        } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) {
+        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        /* Fill with data*/
+        } else {
+        out[108*SegmentPos+j] = in[InputIndex];
+        InputIndex++;
+        }
+      }
+      return;  
+    }
+
+        void
+    ofdm_frame_structure_impl::fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber)
+    {
+      int SegmentPos = 0;   //Segment position on transmision
+      int TMCCPos1 = 0;      //TMCC position on transmision
+      int TMCCPos2 = 0;      //TMCC position on transmision
+      int TMCCPos3 = 0;      //TMCC position on transmision
+      int TMCCPos4 = 0;      //TMCC position on transmision
+      int ACpos1 = 0;       //AC1 position on Transmission
+      int ACpos2 = 0;       //AC2 position on Transmission
+      int ACpos3 = 0;       //AC3 position on Transmission
+      int ACpos4 = 0;       //AC4 position on Transmission
+      int ACpos5 = 0;       //AC5 position on Transmission
+      int ACpos6 = 0;       //AC6 position on Transmission
+      int ACpos7 = 0;       //AC7 position on Transmission
+      int ACpos8 = 0;       //AC8 position on Transmission
+      switch(SegmentNumber)
+      {
+        case 0:
+        {
+          SegmentPos = 6;
+          TMCCPos1 = 101;   
+          TMCCPos2 = 131;
+          TMCCPos3 = 286;     
+          TMCCPos4 = 349;      
+          ACpos1 = 7;       
+          ACpos2 = 89;       
+          ACpos3 = 206;  
+          ACpos4 = 209;
+          ACpos5 = 226;       
+          ACpos6 = 244;       
+          ACpos7 = 377;  
+          ACpos8 = 407; 
+          break;
+        }
+        case 1:
+        {
+          SegmentPos = 5;
+          TMCCPos1 = 31;     
+          TMCCPos2 = 191;
+          TMCCPos3 = 277;     
+          TMCCPos4 = 409;      
+          ACpos1 = 76;       
+          ACpos2 = 97;       
+          ACpos3 = 112;  
+          ACpos4 = 197;
+          ACpos5 = 256;       
+          ACpos6 = 305;       
+          ACpos7 = 332;  
+          ACpos8 = 388; 
+          break;
+        }
+        case 2:
+        {
+          SegmentPos = 7;
+          TMCCPos1 = 17;     
+          TMCCPos2 = 194;
+          TMCCPos3 = 260;     
+          TMCCPos4 = 371;      
+          ACpos1 = 61;       
+          ACpos2 = 100;       
+          ACpos3 = 119;  
+          ACpos4 = 209;
+          ACpos5 = 236;       
+          ACpos6 = 256;       
+          ACpos7 = 398;  
+          ACpos8 = 424; 
+          break;
+        }
+        case 3:
+        {
+          SegmentPos = 4;
+          TMCCPos1 = 86;     
+          TMCCPos2 = 152;
+          TMCCPos3 = 263;     
+          TMCCPos4 = 373;      
+          ACpos1 = 11;       
+          ACpos2 = 101;       
+          ACpos3 = 128;  
+          ACpos4 = 148;
+          ACpos5 = 290;       
+          ACpos6 = 316;       
+          ACpos7 = 359;  
+          ACpos8 = 403; 
+          break;
+        }
+        case 4:
+        {
+          SegmentPos = 8;
+          TMCCPos1 = 49;     
+          TMCCPos2 = 139;
+          TMCCPos3 = 299;     
+          TMCCPos4 = 385;      
+          ACpos1 = 35;       
+          ACpos2 = 79;       
+          ACpos3 = 184;  
+          ACpos4 = 205;
+          ACpos5 = 220;       
+          ACpos6 = 305;       
+          ACpos7 = 364;  
+          ACpos8 = 413; 
+          break;
+        }
+        case 5:
+        {
+          SegmentPos = 3;
+          TMCCPos1 = 23;     
+          TMCCPos2 = 178;
+          TMCCPos3 = 241;     
+          TMCCPos4 = 341;      
+          ACpos1 = 98;       
+          ACpos2 = 101;       
+          ACpos3 = 118;  
+          ACpos4 = 136;
+          ACpos5 = 269;       
+          ACpos6 = 299;       
+          ACpos7 = 385;  
+          ACpos8 = 424; 
+          break;
+        }
+        case 6:
+        {
+          SegmentPos = 9;
+          TMCCPos1 = 85;     
+          TMCCPos2 = 209;
+          TMCCPos3 = 239;     
+          TMCCPos4 = 394;      
+          ACpos1 = 8;       
+          ACpos2 = 64;       
+          ACpos3 = 115;  
+          ACpos4 = 197;
+          ACpos5 = 314;       
+          ACpos6 = 317;       
+          ACpos7 = 334;  
+          ACpos8 = 352; 
+          break;
+        }
+        case 7:
+        {
+          SegmentPos = 2;
+          TMCCPos1 = 83;     
+          TMCCPos2 = 169;
+          TMCCPos3 = 301;     
+          TMCCPos4 = 425;      
+          ACpos1 = 4;       
+          ACpos2 = 89;       
+          ACpos3 = 148;  
+          ACpos4 = 197;
+          ACpos5 = 224;       
+          ACpos6 = 280;       
+          ACpos7 = 331;  
+          ACpos8 = 413; 
+          break;
+        }
+        case 8:
+        {
+          SegmentPos = 10;
+          TMCCPos1 = 25;     
+          TMCCPos2 = 125;
+          TMCCPos3 = 302;     
+          TMCCPos4 = 368;      
+          ACpos1 = 53;       
+          ACpos2 = 83;       
+          ACpos3 = 169;  
+          ACpos4 = 208;
+          ACpos5 = 227;       
+          ACpos6 = 317;       
+          ACpos7 = 344;  
+          ACpos8 = 364; 
+          break;
+        }
+        case 9:
+        {
+          SegmentPos = 1;
+          TMCCPos1 = 44;     
+          TMCCPos2 = 155;
+          TMCCPos3 = 265;     
+          TMCCPos4 = 355;      
+          ACpos1 = 20;       
+          ACpos2 = 40;       
+          ACpos3 = 182;  
+          ACpos4 = 208;
+          ACpos5 = 251;       
+          ACpos6 = 295;       
+          ACpos7 = 400;  
+          ACpos8 = 421; 
+          break;
+        }
+        case 10:
+        {
+          SegmentPos = 11;
+          TMCCPos1 = 47;     
+          TMCCPos2 = 157;
+          TMCCPos3 = 247;     
+          TMCCPos4 = 407;      
+          ACpos1 = 74;       
+          ACpos2 = 100;       
+          ACpos3 = 143;  
+          ACpos4 = 187;
+          ACpos5 = 292;       
+          ACpos6 = 313;       
+          ACpos7 = 328;  
+          ACpos8 = 413; 
+          break;
+        }
+        case 11:
+        {
+          SegmentPos = 0;
+          TMCCPos1 = 70;     
+          TMCCPos2 = 133;
+          TMCCPos3 = 233;     
+          TMCCPos4 = 410;      
+          ACpos1 = 10;       
+          ACpos2 = 28;       
+          ACpos3 = 161;  
+          ACpos4 = 191;
+          ACpos5 = 277;       
+          ACpos6 = 316;       
+          ACpos7 = 335;  
+          ACpos8 = 425; 
+          break;
+        }
+        case 12:
+        {
+          SegmentPos = 12;
+          TMCCPos1 = 61;     
+          TMCCPos2 = 193;
+          TMCCPos3 = 317;     
+          TMCCPos4 = 347;      
+          ACpos1 = 40;       
+          ACpos2 = 89;       
+          ACpos3 = 116;  
+          ACpos4 = 172;
+          ACpos5 = 223;       
+          ACpos6 = 305;       
+          ACpos7 = 422;  
+          ACpos8 = 425; 
+          break;
+        }
+        default:
+        {
+          printf("Error, incorrect segment number\n");
+          break;
+        }
+      }
+      SPindex = 0;
+      InputIndex = SegmentPos*96;
+      for (int j = 0; j < 108; j++) 
+      {
+        /*Scattered Pilot*/   
+        if ((j % 12) == (3*d_carrier_pos))
+        {
+        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
+        SPindex++;
+        /* TMCC 1 and 2*/
+        } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
+        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        TMCCindex++;
+        /* AC1, AC2, AC3 or AC4 */
+        } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) || (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) {
+        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        /* Fill with data*/
+        } else {
+        out[108*SegmentPos+j] = in[InputIndex];
+        InputIndex++;
+        }
+      }
+      return;  
+    }
 
     void
     ofdm_frame_structure_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
@@ -1354,16 +1953,14 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-    const gr_complex *in = (const gr_complex *) input_items[0];
+    gr_complex *in = (gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
-    int k = 0;
-    //TODO: Si IsOneSeg es TRUE, solo rellenamos el segmento 0, de lo
-    // contrario, rellenamos todos menos el 0
+
     for (int i = 0; i < noutput_items ; i++) 
     {
         if (d_symbol_counter == 0)
         {
-          //printf("Estoy en el primer simbolo del cuadro\n");
+          //First symbol of OFDM structure
           Frame_counter++;
           TMCCindex = 0;
         }
@@ -1371,41 +1968,38 @@ namespace gr {
         {
         case 1:
           /* Segment 0*/
-          for (int j = 0; j < 108; j++) 
+          this->fill_segment_mode1(in, out, 0);
+          if (!d_IsOneSeg)
           {
-            if ((j % 12) == (3*d_carrier_pos))
+            for (int k=1; k<13;k++)
             {
-              /*Scattered Pilot*/
-              out[108*6+j] = this->write_SP(SPindex, d_mode, 0 /*Segment number*/);
-              SPindex++;
-            } else if (j == 49) {
-              /* TMCC */
-              //printf("Antes de llamar a writeTMCC, d_symbol_counter %d\n", d_symbol_counter);
-              out[108*6+j] = this->write_TMCC(d_symbol_counter, Frame_counter, 0);
-              TMCCindex++;
-            } else if ((j == 35) || (j == 79)) {
-              /* AC1 or AC2 */
-              out[108*6+j] = std::complex<double>(0, 0);
-            } else {
-              /* Fill with data*/
-              out[108*6+j] = in[k];
-              k++;
+              /*Segments 1 to 12*/
+              this->fill_segment_mode1(in, out, k);
             }
           }
-          SPindex = 0;
           break;
         case 2:
-          printf("Mode 2 \n");
-          for (int j = 0; j < 4096; j++)
+          /* Segment 0*/
+          this->fill_segment_mode2(in, out, 0);
+          if (!d_IsOneSeg)
           {
-          out[j] = std::complex<double>(100, 200);
+            for (int k=1; k<13;k++)
+            {
+              /*Segments 1 to 12*/
+              this->fill_segment_mode2(in, out, k);
+            }
           }
           break;
         case 3:
-          printf("Mode 3 \n");
-          for (int j = 0; j < 8192; j++)
+          /* Segment 0*/
+          this->fill_segment_mode3(in, out, 0);
+          if (!d_IsOneSeg)
           {
-          out[j] = std::complex<double>(100, 200);
+            for (int k=1; k<13;k++)
+            {
+              /*Segments 1 to 12*/
+              this->fill_segment_mode3(in, out, k);
+            }
           }
           break;
         default:
