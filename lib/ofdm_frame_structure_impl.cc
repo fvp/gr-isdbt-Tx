@@ -100,79 +100,28 @@ namespace gr {
     {
     }
 
-    
-    bitset<11> 
-    ofdm_frame_structure_impl::ObtainStartingWord(int SegmentNumber, int d_mode)
-    {
-      switch(d_mode) // 
-      {
-      case 1 :
-      {  
-        sp_segment_keywords[0] = 0b11001000010;
-        sp_segment_keywords[1] = 0b00101111010;
-        sp_segment_keywords[2] = 0b00010000100;
-        sp_segment_keywords[3] = 0b11011100101;
-        sp_segment_keywords[4] = 0b10010100000;
-        sp_segment_keywords[5] = 0b01000101110;
-        sp_segment_keywords[6] = 0b11110110000;
-        sp_segment_keywords[7] = 0b01101011110;
-        sp_segment_keywords[8] = 0b00001011000;
-        sp_segment_keywords[9] = 0b11011001111;
-        sp_segment_keywords[10]= 0b10100100111;
-        sp_segment_keywords[11]= 0b11111111111;
-        sp_segment_keywords[12]= 0b01110001001;
-        break;
-      }       
-      case 2 : 
-        sp_segment_keywords[0] = 0b11011100101;
-        sp_segment_keywords[1] = 0b00010011100;
-        sp_segment_keywords[2] = 0b00000100100;
-        sp_segment_keywords[3] = 0b10010100000;
-        sp_segment_keywords[4] = 0b00100011001;
-        sp_segment_keywords[5] = 0b11001000010;
-        sp_segment_keywords[6] = 0b01100111001;
-        sp_segment_keywords[7] = 0b11011100101;
-        sp_segment_keywords[8] = 0b11100110110;
-        sp_segment_keywords[9] = 0b01101011110;
-        sp_segment_keywords[10]= 0b00101010001;
-        sp_segment_keywords[11]= 0b11111111111;
-        sp_segment_keywords[12]= 0b00100001011;
-        break;
-      case 3 :
-        sp_segment_keywords[0] = 0b10010100000;
-        sp_segment_keywords[1] = 0b11100110110;
-        sp_segment_keywords[2] = 0b11100111101;
-        sp_segment_keywords[3] = 0b00100011001;
-        sp_segment_keywords[4] = 0b01101010011;
-        sp_segment_keywords[5] = 0b01110001001;
-        sp_segment_keywords[6] = 0b10111010010;
-        sp_segment_keywords[7] = 0b10010100000;
-        sp_segment_keywords[8] = 0b01100010010;
-        sp_segment_keywords[9] = 0b11011100101;
-        sp_segment_keywords[10] = 0b11110100101;
-        sp_segment_keywords[11] = 0b11111111111;
-        sp_segment_keywords[12] = 0b00010011100;
-        break;
-      default:
-        printf("Error: invalid Transmission mode \n");
-        break;
-      }
-      bitset<11> Keyword = (sp_segment_keywords[SegmentNumber]);
-      return Keyword;
-    }
-
     /*
     Writes corresponding Scattered Pilot into symbol
     */
     gr_complex 
     ofdm_frame_structure_impl::write_SP(int SPindex, int d_mode, int SegmentNumber)
     {
-      if (SPindex == 0)
+      bitset<11> keyword = 0b11111111111;
+      bitset<1> temp, bit9, bit11;
+      /* Evolve starting word to generate PRBS*/
+      for (int i=0; i<SPindex; i++)
       {
-        sp_keyword = this->ObtainStartingWord(SegmentNumber, d_mode);
+        bit9 = keyword.test(8);
+        bit11 = keyword.test(10);
+        temp = bit9 ^ bit11;
+        keyword = (keyword >> 1);
+        if (temp.test(0)){
+          keyword.set(0);
+        } else {
+          keyword.reset(0);
+        }
       }
-      /* TODO: Evolve starting word*/
-      if (sp_keyword.test(SPindex)) /*Return bit value in keyword for SPindex*/
+      if (keyword.test(10)) /*Return bit value in keyword for SPindex*/
       {
         return std::complex<float>(-4.0/3.0, 0);   
       } else {
@@ -1969,11 +1918,11 @@ namespace gr {
         case 1:
           /* Segment 0*/
           this->fill_segment_mode1(in, out, 0);
+          /*Segments 1 to 12*/
           if (!d_IsOneSeg)
           {
             for (int k=1; k<13;k++)
             {
-              /*Segments 1 to 12*/
               this->fill_segment_mode1(in, out, k);
             }
           }
@@ -1981,11 +1930,11 @@ namespace gr {
         case 2:
           /* Segment 0*/
           this->fill_segment_mode2(in, out, 0);
+          /*Segments 1 to 12*/
           if (!d_IsOneSeg)
           {
             for (int k=1; k<13;k++)
             {
-              /*Segments 1 to 12*/
               this->fill_segment_mode2(in, out, k);
             }
           }
@@ -1993,11 +1942,11 @@ namespace gr {
         case 3:
           /* Segment 0*/
           this->fill_segment_mode3(in, out, 0);
+          /*Segments 1 to 12*/
           if (!d_IsOneSeg)
           {
             for (int k=1; k<13;k++)
             {
-              /*Segments 1 to 12*/
               this->fill_segment_mode3(in, out, k);
             }
           }

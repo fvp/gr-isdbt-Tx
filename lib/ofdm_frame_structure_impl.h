@@ -87,8 +87,6 @@ namespace gr {
 
       int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
 
-      bitset<11> ObtainStartingWord(int SegmentNumber, int d_mode);
-
       gr_complex write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber);
 
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
