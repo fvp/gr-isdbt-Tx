@@ -83,11 +83,11 @@ namespace gr {
 
       bool d_IsOneSeg;
       int InputIndex;     //Variable to cover input array
-      int d_mode, d_symbol_counter, d_carrier_pos, TMCCindex, SPindex, Frame_counter;
+      int d_mode, d_carrier_pos, TMCCindex, SPindex, frame_counter;
 
       int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
 
-      gr_complex write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber);
+      gr_complex write_TMCC(int frame_counter, int SegmentNumber);
 
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
 

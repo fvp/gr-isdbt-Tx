@@ -66,8 +66,7 @@ namespace gr {
               )
     {
       d_IsOneSeg = IsOneSeg;  /* Transmission mdoe, one seg or full seg*/
-      Frame_counter = 0;      /* Counts frames*/
-      d_symbol_counter = 0;  /* Counts symbols across frames */
+      frame_counter = 0;      /* Counts frames*/
       d_carrier_pos = 0;    /* 4 cyclic counter, scattered pilot rotation reference*/
       TMCCindex = 0;        /* TMCC word position counter, accross block */
       SPindex = 0;          /* Scattered pilot counter, accross segment */
@@ -133,12 +132,12 @@ namespace gr {
     Writes bits of the TMCC into symbol
     */
     gr_complex 
-    ofdm_frame_structure_impl::write_TMCC(int SymbolNumber, int Frame_counter, int SegmentNumber)
+    ofdm_frame_structure_impl::write_TMCC(int frame_counter, int SegmentNumber)
     {
       //Test TMCC word for writing bit, returns symbol mapped into DBPSK
       bool current_bit, previous_bit;
       //First bit, define TMCC word
-      if (SymbolNumber == 0)
+      if (frame_counter == 0)
       {
         //Assign b0, check for SP0 value
         gr_complex sp0 = this->write_SP(SPindex, d_mode, SegmentNumber);
@@ -149,7 +148,7 @@ namespace gr {
           TMCCword.reset(0);
         }
         //Assign b1-b16
-        bool EsPar = ((Frame_counter % 2) == 0);
+        bool EsPar = ((frame_counter % 2) == 0);
         for (int i = 0; i < 16; i++)
         {
           if (EsPar)
@@ -907,7 +906,6 @@ namespace gr {
             break;
           }
         }
-        //TODO: b53 - b55
         // LAYER C
         switch(d_ModSchemeC) {
          case DQPSK:
@@ -1262,24 +1260,39 @@ namespace gr {
             printf("Error: Incorrect segment number for layer C");
             break;
           }
-        }
-        //TODO: b67 - b106
-        //NEXT INFORMATION
+        } 
+        //NEXT INFORMATION b67 - b106
         //Unused in this example
+        for (int i = 67; i < 107; i++)
+        {
+          if (TMCCword.test(i)){
+            TMCCword.set(i);
+          } else {
+          TMCCword.reset(i);
+          }
+        }
+        // b107-b122 Phase shift correcction
         for (int i = 107; i < 122; i++)
         {
           TMCCword.set(i);
         }
-        //TODO: Assign b122-b203 (Parity bits)
-
+        //Parity bits b122-b203
+        for (int i = 122; i < 203; i++)
+        {
+          if (TMCCword.test(i)){
+            TMCCword.set(i);
+          } else {
+          TMCCword.reset(i);
+          }
+        }
         // Return bit0
         return sp0;
       }
       //
       //General case, decision based on current bit and previous bit
       //
-      current_bit = TMCCword.test(SymbolNumber);
-      previous_bit = TMCCword.test(SymbolNumber - 1);
+      current_bit = TMCCword.test(frame_counter);
+      previous_bit = TMCCword.test(frame_counter - 1);
       if (!((current_bit & previous_bit) || (!current_bit & !previous_bit)))
       {
         // Send 1
@@ -1420,7 +1433,7 @@ namespace gr {
         SPindex++;
         /* TMCC */
         } else if (j == TMCCPos) {
-        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1 or AC2 */
         } else if ((j == ACpos1) || (j == ACpos2)) {
@@ -1606,7 +1619,7 @@ namespace gr {
         SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2)) {
-        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1, AC2, AC3 or AC4 */
         } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) {
@@ -1876,7 +1889,7 @@ namespace gr {
         SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
-        out[108*SegmentPos+j] = this->write_TMCC(d_symbol_counter, Frame_counter, SegmentNumber);
+        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1, AC2, AC3 or AC4 */
         } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) || (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) {
@@ -1907,12 +1920,11 @@ namespace gr {
 
     for (int i = 0; i < noutput_items ; i++) 
     {
-        if (d_symbol_counter == 0)
-        {
-          //First symbol of OFDM structure
-          Frame_counter++;
-          TMCCindex = 0;
-        }
+      if (frame_counter == 0)
+      {
+        //First symbol of OFDM structure
+        TMCCindex = 0;      //TMCC word position across symbol
+      }
       switch (d_mode)
         {
         case 1:
@@ -1955,9 +1967,9 @@ namespace gr {
           printf("Error: incorrect mode \n");
           break; 
         } 
-        d_symbol_counter++;  
-        d_carrier_pos = (d_symbol_counter % 4);
-        d_symbol_counter = (d_symbol_counter % 204);
+        frame_counter++;  
+        d_carrier_pos = (frame_counter % 4);
+        frame_counter = (frame_counter % 204);
       }
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.
