@@ -30,6 +30,7 @@
 #include "isdbt/tmcc_decoder_1seg.h"
 #include "isdbt/agregar_cp.h"
 #include "isdbt/ofdm_frame_structure.h"
+#include "isdbt/time_interleaver.h"
 %}
 
 
@@ -83,3 +84,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, tmcc_decoder_1seg);
 GR_SWIG_BLOCK_MAGIC2(isdbt, agregar_cp);
 %include "isdbt/ofdm_frame_structure.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, ofdm_frame_structure);
+%include "isdbt/time_interleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);

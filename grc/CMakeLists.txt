@@ -40,5 +40,6 @@ install(FILES
     isdbt_ofdm_synchronization_1seg.xml
     isdbt_tmcc_decoder_1seg.xml
     isdbt_agregar_cp.xml
-    isdbt_ofdm_frame_structure.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_ofdm_frame_structure.xml
+    isdbt_time_interleaver.xml DESTINATION share/gnuradio/grc/blocks
 )

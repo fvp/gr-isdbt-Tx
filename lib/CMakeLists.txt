@@ -50,7 +50,8 @@ list(APPEND isdbt_sources
     ofdm_synchronization_1seg_impl.cc
     tmcc_decoder_1seg_impl.cc
     agregar_cp_impl.cc
-    ofdm_frame_structure_impl.cc )
+    ofdm_frame_structure_impl.cc
+    time_interleaver_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
