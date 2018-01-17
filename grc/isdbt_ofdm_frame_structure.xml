@@ -1,0 +1,354 @@
+<?xml version="1.0"?>
+<block>
+  <name>OFDM Frame Structure</name>
+  <key>isdbt_ofdm_frame_structure</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC, $LayASeg, $LayBSeg, $LayCSeg)</make>
+  
+<param>
+     <name>Transmission Mode</name>
+   <key>mode</key>
+   <value>3</value>
+   <type>enum</type>
+     <option>
+     <name>MODE1(2K)</name>
+     <key>1</key>
+     </option>
+   <option>
+     <name>MODE2(4K)</name>
+     <key>2</key>
+   </option>
+   <option>
+     <name>MODE3(8K)</name>
+     <key>3</key>
+   </option>
+ </param>
+
+ <param>
+     <name>Layer A Constelattion</name>
+   <key>ModeA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+ <param>
+     <name>Convolutional Coding Rate A</name>
+   <key>ConvCodeA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Interleaving Length A</name>
+   <key>IntLenA</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Layer A Segments</name>
+   <key>LayASeg</key>
+   <value>0</value>
+   <type>int</type>
+ </param>
+
+ <param>
+     <name>Layer B Constelattion</name>
+   <key>ModeB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+<param>
+     <name>Convolutional Coding Rate Layer B</name>
+   <key>ConvCodeB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Interleaving Length B</name>
+   <key>IntLenB</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Layer B Segments</name>
+   <key>LayBSeg</key>
+   <value>0</value>
+   <type>int</type>
+ </param>
+
+ <param>
+     <name>Layer C Constelattion</name>
+   <key>ModeC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>DQPSK</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>QPSK</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>16QAM</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>64QAM</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>Unused</name>
+     <key>4</key>
+     </option>
+ </param>
+
+<param>
+     <name>Convolutional Coding Rate Layer C</name>
+   <key>ConvCodeC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>1/2</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>2/3</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>3/4</name>
+     <key>2</key>
+     </option>
+      <option>
+     <name>5/6</name>
+     <key>3</key>
+     </option>
+    <option>
+     <name>7/8</name>
+     <key>4</key>
+     </option>
+     <option>
+     <name>Reserved</name>
+     <key>5</key>
+     </option>
+     <option>
+     <name>Unused</name>
+     <key>6</key>
+     </option>
+ </param>
+
+  <param>
+     <name>Interleaving Length C</name>
+   <key>IntLenC</key>
+   <value>0</value>
+   <type>enum</type>
+    <option>
+     <name>0</name>
+     <key>0</key>
+     </option>
+    <option>
+     <name>1</name>
+     <key>1</key>
+     </option>
+    <option>
+     <name>2</name>
+     <key>2</key>
+     </option>
+    <option>
+     <name>4</name>
+     <key>4</key>
+     </option>
+      <option>
+     <name>8</name>
+     <key>8</key>
+     </option>
+    <option>
+     <name>16</name>
+     <key>16</key>
+     </option>
+ </param>
+
+   <param>
+     <name>Layer C Segments</name>
+   <key>LayCSeg</key>
+   <value>0</value>
+   <type>int</type>
+ </param>
+
+  <param>
+      <name>OneSeg Tx</name>
+      <key>IsOneSeg</key>
+      <value>False</value>
+      <type>enum</type>
+      <option>
+          <name>Yes</name>
+          <key>True</key>
+      </option>
+      <option>
+          <name>No</name>
+          <key>False</key>
+      </option>
+  </param>
+
+ <sink>
+   <name>in</name>
+   <type>complex</type>
+   <vlen>(1248*pow(2.0,$mode-1))</vlen>
+ </sink>
+
+ <source>
+   <name>out</name>
+   <type>complex</type>
+   <vlen>(pow(2.0,10+$mode))</vlen>
+ </source>
+</block>
