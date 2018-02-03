@@ -38,11 +38,15 @@ namespace gr {
     class time_interleaver_impl : public time_interleaver
     {
      private:
-      // Nothing to declare in this block.
-      int d_mode, d_I;
-      int d_delay[96];
+
+      static const int d_data_carriers_mode1; 
+
+      int d_mode, d_I, d_carriers_per_segment, d_noutput;
+      bool d_IsFullSeg;
+      std::vector< std::deque<gr_complex> *> delay_vector;
+
      public:
-      time_interleaver_impl(int mode, int I);
+      time_interleaver_impl(int mode, int I, bool IsFullSeg);
       ~time_interleaver_impl();
 
       // Where all the action really happens

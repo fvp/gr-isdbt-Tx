@@ -37,34 +37,47 @@
 namespace gr {
   namespace isdbt {
 
+
+    const int time_interleaver_impl::d_data_carriers_mode1 = 96;
+    int time_interleaver::d_total_segments = 1; 
+  
+
     time_interleaver::sptr
-    time_interleaver::make(int mode, int I)
+    time_interleaver::make(int mode, int I, bool IsFullSeg)
     {
+      if (IsFullSeg){
+        d_total_segments = 13;
+      }else {
+        d_total_segments = 1;
+      }
       return gnuradio::get_initial_sptr
-        (new time_interleaver_impl(mode, I));
+        (new time_interleaver_impl(mode, I, IsFullSeg));
     }
 
     /*
      * The private constructor
      */
-    time_interleaver_impl::time_interleaver_impl(int mode, int I)
+    time_interleaver_impl::time_interleaver_impl(int mode, int I, bool IsFullSeg)
       : gr::sync_block("time_interleaver",
-              gr::io_signature::make(1, 1, sizeof(gr_complex)*1*96*((int)pow(2.0,mode-1))),
-              gr::io_signature::make(1, 1, sizeof(gr_complex)*1*96*((int)pow(2.0,mode-1))))
-    {
-      //TODO: Hay que crear el vector.
-      d_I = I;
-      d_mode = mode;
+              gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))),
+              gr::io_signature::make(1, 1, sizeof(gr_complex)*d_total_segments*d_data_carriers_mode1*((int)pow(2.0,mode-1))))
+      {
+      d_mode = mode; 
+      //TODO the length of the interleaver may change from segment to segment. This should be corrected...
+      d_I = I; 
+      d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
+      d_noutput = d_total_segments*d_carriers_per_segment;
 
       int mi = 0;
-      for (int carrier = 0; carrier<96; carrier++)
+
+      for (int segment=0; segment<d_total_segments; segment++)
       {
-        mi = (5*carrier) % 96; 
-        d_delay[carrier] = d_I*mi;
+        for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
+        {
+          mi = (5*carrier) % d_data_carriers_mode1; 
+          delay_vector.push_back(new std::deque<gr_complex>(d_I*mi,0)); 
+        }
       }
-      //1. Calcular los retardos mi
-      //2. crear el vector
-      //3. para cada elemento del vector, crear el tren de retardos
     }
 
     /*
@@ -72,6 +85,10 @@ namespace gr {
      */
     time_interleaver_impl::~time_interleaver_impl()
     {
+      for (unsigned int i=0; i<delay_vector.size();i++){
+        delete delay_vector.back();
+        delay_vector.pop_back();
+      }
     }
 
     int
@@ -79,17 +96,25 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      const gr_complex *in  = (const gr_complex *)  input_items[0];
-            gr_complex *out = (gr_complex *)        output_items[0];
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
 
-      for (int i = 0; i<96; i++)
+      printf("d_total_segments: %i\n", d_total_segments);
+      // TODO CHECK the tag propagatio policy for the frame 
+      // beginnning. 
+
+      for (int i=0; i<noutput_items; i++)
       {
-        int coso_retardo = d_delay[i];
-        printf("coso_retardo[%d] = %d\n", i, coso_retardo);
+        for (int carrier=0; carrier<d_noutput; carrier++)
+        {
+          // a simple FIFO queue performs the interleaving. 
+          // The "difficult" part is setting the correct sizes 
+          // for each queue. 
+          delay_vector[carrier]->push_back(in[i*d_noutput + carrier]);
+          out[i*d_noutput + carrier] = delay_vector[carrier]->front();
+          delay_vector[carrier]->pop_front(); 
+        }
       }
-      // TODO: Hay que rearmar la entrada
-      //1. Recorrer el vector, buscando datos validos
-      //2. Si encuentro un dato valido, lo pongo a la salida, y todos avanzan uno
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

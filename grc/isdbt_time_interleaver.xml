@@ -4,7 +4,7 @@
   <key>isdbt_time_interleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.time_interleaver($mode, $I)</make>
+  <make>isdbt.time_interleaver($mode, $I, $IsFullSeg)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
@@ -38,6 +38,14 @@
     <name>0</name>
     <key>0</key>
   </option>
+    <option>
+    <name>1</name>
+    <key>1</key>
+  </option>
+  <option>
+    <name>2</name>
+    <key>2</key>
+  </option>
   <option>
     <name>4</name>
     <key>4</key>
@@ -52,16 +60,31 @@
   </option>
   </param>
 
+  <param>
+      <name>FullSeg Tx</name>
+      <key>IsFullSeg</key>
+      <value>True</value>
+      <type>enum</type>
+      <option>
+          <name>Yes</name>
+          <key>True</key>
+      </option>
+      <option>
+          <name>No</name>
+          <key>False</key>
+      </option>
+  </param>
+
   <sink>
     <name>in</name>
     <type>complex</type>
-    <vlen>1*96*(2**($mode-1))</vlen>
+    <vlen>(12*($IsFullSeg) + 1)*96*(2**($mode-1))</vlen>
   </sink>
 
   <source>
     <name>out</name>
     <type>complex</type>
-    <vlen>1*96*(2**($mode-1))</vlen>
+    <vlen>(12*($IsFullSeg) + 1)*96*(2**($mode-1))</vlen>
   </source>
 
 </block>

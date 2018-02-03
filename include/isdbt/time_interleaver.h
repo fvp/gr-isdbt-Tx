@@ -47,6 +47,7 @@ namespace gr {
      public:
       typedef boost::shared_ptr<time_interleaver> sptr;
 
+      static int d_total_segments; 
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::time_interleaver.
        *
@@ -55,7 +56,7 @@ namespace gr {
        * class. isdbt::time_interleaver::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int mode, int I);
+      static sptr make(int mode, int I, bool IsFullSeg);
     };
 
   } // namespace isdbt
