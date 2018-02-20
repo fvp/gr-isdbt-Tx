@@ -45,6 +45,7 @@ namespace gr {
     time_interleaver::sptr
     time_interleaver::make(int mode, int I, bool IsFullSeg)
     {
+      //Define number of segments in transmission
       if (IsFullSeg){
         d_total_segments = 13;
       }else {
@@ -67,6 +68,10 @@ namespace gr {
       d_I = I; 
       d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
       d_noutput = d_total_segments*d_carriers_per_segment;
+      
+      int sync_delay = 204 - ((95*d_I)%204);
+
+      printf("Delay calculado: %d \n", sync_delay);
 
       int mi = 0;
 
@@ -74,10 +79,14 @@ namespace gr {
       {
         for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
         {
+          //Add delay in order to make total time multiplex of OFDM period
+          delay_vector.push_back(new std::deque<gr_complex>(sync_delay,0)); 
+          //Add delay given by interleaver
           mi = (5*carrier) % d_data_carriers_mode1; 
           delay_vector.push_back(new std::deque<gr_complex>(d_I*mi,0)); 
         }
       }
+
     }
 
     /*
@@ -99,7 +108,6 @@ namespace gr {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
 
-      printf("d_total_segments: %i\n", d_total_segments);
       // TODO CHECK the tag propagatio policy for the frame 
       // beginnning. 
 
