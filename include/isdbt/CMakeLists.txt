@@ -45,5 +45,6 @@ install(FILES
     tmcc_decoder_1seg.h
     agregar_cp.h
     ofdm_frame_structure.h
-    time_interleaver.h DESTINATION include/isdbt
+    time_interleaver.h
+    frec_interleaver.h DESTINATION include/isdbt
 )

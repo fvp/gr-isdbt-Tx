@@ -65,3 +65,4 @@ GR_ADD_TEST(qa_tmcc_decoder_1seg ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR
 GR_ADD_TEST(qa_agregar_cp ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_agregar_cp.py)
 GR_ADD_TEST(qa_ofdm_frame_structure ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ofdm_frame_structure.py)
 GR_ADD_TEST(qa_time_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.py)
+GR_ADD_TEST(qa_frec_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_frec_interleaver.py)
