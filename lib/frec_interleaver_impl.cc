@@ -37,6 +37,11 @@
 namespace gr {
   namespace isdbt {
 
+
+    const int frec_interleaver_impl::d_data_carriers_mode1 = 96;
+    int frec_interleaver::d_total_segments = 1; 
+
+
     frec_interleaver::sptr
     frec_interleaver::make(int mode, bool IsFullSeg)
     {

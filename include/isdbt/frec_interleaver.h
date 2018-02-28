@@ -48,7 +48,6 @@ namespace gr {
       typedef boost::shared_ptr<frec_interleaver> sptr;
 
       static int d_total_segments; 
-
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::frec_interleaver.
        *

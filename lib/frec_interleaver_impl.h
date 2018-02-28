@@ -38,12 +38,13 @@ namespace gr {
     class frec_interleaver_impl : public frec_interleaver
     {
      private:
-      static const int d_data_carriers_mode1; 
-
       int d_mode, d_carriers_per_segment, d_noutput;
       bool d_IsFullSeg;
+      
+      static const int d_data_carriers_mode1;
 
      public:
+
       frec_interleaver_impl(int mode, bool IsFullSeg);
       ~frec_interleaver_impl();
 
