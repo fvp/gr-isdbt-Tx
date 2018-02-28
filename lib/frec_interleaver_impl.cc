@@ -83,9 +83,14 @@ namespace gr {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
       gr_complex data[d_total_segments][d_carriers_per_segment] = {}; //TODO: Preguntar: Se borra solo al salir del scope??
+      gr_complex data_interleaved[d_total_segments][d_carriers_per_segment] = {};
+      gr_complex out_before_rand[d_noutput] = {};
       int k=0;
 
-      printf("aaa1 \n");
+      if (!d_IsFullSeg)
+      {
+        goto Randomizer;
+      }
 
       //1. Intra-Segment interleaving
       for(int i=0; i<d_total_segments; i++){
@@ -94,19 +99,53 @@ namespace gr {
           data[i][j] = in[k];
           k++;
         }
-      }
-      printf("aaa2 \n");
+      }     
+      //2. Inter-segment rotation
       k = 0;
-      for (int j=0; j<d_carriers_per_segment; j++){
-        for(int i=0; i<d_total_segments; i++){
-          // Then we read the matrix column-first
-          out[k] = data[i][j];
+      for(int i=0; i<d_total_segments; i++){
+        for (int j=0; j<d_carriers_per_segment; j++){
+          // First we re-write the data matrix, rows-first
+          data_interleaved[i][j] = data[i][(i + j) % d_carriers_per_segment];
+          out_before_rand[k] = data_interleaved[i][j];
           k++;
         }
       }
-      printf("aaa3 \n");
-      //2. Inter-segment rotation
+
       //3. Inter-segment randomizer
+Randomizer:
+      switch(d_mode)
+      {
+        case 1:
+        {
+          for(int i=0; i<d_noutput; i++)
+          {
+            out[i] = out_before_rand[rand_mode_1[i]];
+          }
+          break;
+        }
+        case 2:
+        {
+          for(int i=0; i<d_noutput; i++)
+          {
+            out[i] = out_before_rand[rand_mode_2[i]];
+          }
+          break;
+        }
+        case 3:
+        {
+          for(int i=0; i<d_noutput; i++)
+          {
+            out[i] = out_before_rand[rand_mode_3[i]];
+          }
+          break;
+        }
+        default:
+        {
+          printf("Error: Incorrect mode\n");
+          break;
+        }
+      }
+
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
