@@ -102,6 +102,8 @@ namespace gr {
     /*
     Writes corresponding Scattered Pilot into symbol
     */
+
+    // 1, 
     gr_complex 
     ofdm_frame_structure_impl::write_SP(int SPindex, int d_mode, int SegmentNumber)
     {
@@ -110,17 +112,17 @@ namespace gr {
       /* Evolve starting word to generate PRBS*/
       for (int i=0; i<SPindex; i++)
       {
-        bit9 = keyword.test(8);
-        bit11 = keyword.test(10);
+        bit9 = keyword.test(2);
+        bit11 = keyword.test(0);
         temp = bit9 ^ bit11;
         keyword = (keyword >> 1);
         if (temp.test(0)){
-          keyword.set(0);
+          keyword.set(10);
         } else {
-          keyword.reset(0);
+          keyword.reset(10);
         }
       }
-      if (keyword.test(10)) /*Return bit value in keyword for SPindex*/
+      if (keyword.test(0)) /*Return bit value in keyword for SPindex*/
       {
         return std::complex<float>(-4.0/3.0, 0);   
       } else {
@@ -1310,6 +1312,7 @@ namespace gr {
       int TMCCPos = 0;      //TMCC position on transmision
       int ACpos1 = 0;       //AC1 position on Transmission
       int ACpos2 = 0;       //AC2 position on Transmission
+      int index = 0;        //Index number to write the outputs
       switch(SegmentNumber)
       {
         case 0:
@@ -1424,23 +1427,28 @@ namespace gr {
       }
       SPindex = 0;
       InputIndex = SegmentPos*96;
+
       for (int j = 0; j < 108; j++) 
       {
+        index = (int)pow(2, 10 + d_mode)*frame_counter + 108*SegmentPos + j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
-        SPindex++;
+        //printf("Frame counter %d \n", frame_counter);
+        out[index] = this->write_SP(108*SegmentPos+j, d_mode, SegmentNumber);
+        // TODO PRBS: UNUSED d_mode, segmentNumber
+        // 108*SegmentPos+j instead SPIndex
+
         /* TMCC */
         } else if (j == TMCCPos) {
-        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
+        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1 or AC2 */
         } else if ((j == ACpos1) || (j == ACpos2)) {
-        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        out[index] = std::complex<double>(0, 0);
         /* Fill with data*/
         } else {
-        out[108*SegmentPos+j] = in[InputIndex];
+        out[index] = in[InputIndex];
         InputIndex++;
         }
       }
@@ -1457,6 +1465,7 @@ namespace gr {
       int ACpos2 = 0;       //AC2 position on Transmission
       int ACpos3 = 0;       //AC1 position on Transmission
       int ACpos4 = 0;       //AC2 position on Transmission
+      int index = 0;        //Index to write the outputs
       switch(SegmentNumber)
       {
         case 0:
@@ -1612,21 +1621,22 @@ namespace gr {
       InputIndex = SegmentPos*96;
       for (int j = 0; j < 108; j++) 
       {
+        index = (int) pow(2, 10+d_mode)*frame_counter+216*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
-        SPindex++;
+        out[index] = this->write_SP(216*SegmentPos+j, d_mode, SegmentNumber);
+        //SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2)) {
-        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
+        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1, AC2, AC3 or AC4 */
         } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) {
-        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        out[index] = std::complex<double>(0, 0);
         /* Fill with data*/
         } else {
-        out[108*SegmentPos+j] = in[InputIndex];
+        out[index] = in[InputIndex];
         InputIndex++;
         }
       }
@@ -1649,6 +1659,8 @@ namespace gr {
       int ACpos6 = 0;       //AC6 position on Transmission
       int ACpos7 = 0;       //AC7 position on Transmission
       int ACpos8 = 0;       //AC8 position on Transmission
+      int index = 0;        //Index to write the outputs
+
       switch(SegmentNumber)
       {
         case 0:
@@ -1882,21 +1894,22 @@ namespace gr {
       InputIndex = SegmentPos*96;
       for (int j = 0; j < 108; j++) 
       {
+        index = (int) pow(2, 10+d_mode)*frame_counter+432*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[108*SegmentPos+j] = this->write_SP(SPindex, d_mode, SegmentNumber);
-        SPindex++;
+        out[index] = this->write_SP(432*SegmentPos+j, d_mode, SegmentNumber);
+        //SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
-        out[108*SegmentPos+j] = this->write_TMCC(frame_counter, SegmentNumber);
+        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1, AC2, AC3 or AC4 */
         } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) || (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) {
-        out[108*SegmentPos+j] = std::complex<double>(0, 0);
+        out[index] = std::complex<double>(0, 0);
         /* Fill with data*/
         } else {
-        out[108*SegmentPos+j] = in[InputIndex];
+        out[index] = in[InputIndex];
         InputIndex++;
         }
       }
@@ -1917,6 +1930,11 @@ namespace gr {
     {
     gr_complex *in = (gr_complex *) input_items[0];
     gr_complex *out = (gr_complex *) output_items[0];
+    int size = pow(2,10+d_mode);
+    int sym_size = 13*(48*pow(2, d_mode)+12*pow(2, d_mode-1)); //13*108 Mode 1, 13*216 Mode 2, 13*432 Mode 3
+    int n_zp = size - sym_size; // Number of zero padding carriers
+
+
 
     for (int i = 0; i < noutput_items ; i++) 
     {
@@ -1966,11 +1984,51 @@ namespace gr {
         default:
           printf("Error: incorrect mode \n");
           break; 
-        } 
+        }
+        // Zero padding carriers
+            int c = 0;
+            gr_complex out_temp[sym_size] = {};
+
+            
+            for (int j = frame_counter*size; j<(frame_counter*size + sym_size); j++)
+            {
+              out_temp[c] = out[j];
+              c++;
+            }
+
+            // Left zero padding
+            for (int j = frame_counter*size; j<(frame_counter*size + n_zp/2); j++)
+            {
+              out[j] = 0;
+            }
+
+            // Right zero padding
+            for (int j = (frame_counter+1)*size - n_zp/2; j<(frame_counter+1)*size; j++)
+            {
+              out[j] = 0;
+            }
+
+            // Data
+            c = 0;
+            for (int j = frame_counter*size + n_zp/2; j<(frame_counter+1)*size - n_zp/2; j++)
+            {
+              out[j] = out_temp[c];
+              c++;
+              //TODO: out_temp should be destructed
+            }
+
+
+
         frame_counter++;  
         d_carrier_pos = (frame_counter % 4);
         frame_counter = (frame_counter % 204);
       }
+      /* only for tests*/
+      for (int i=0; i<2600; i++)
+      {
+        printf("out[%d]=%2.6f \n", i, out[i].real());
+      }
+      
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;
