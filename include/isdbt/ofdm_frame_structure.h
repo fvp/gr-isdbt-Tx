@@ -47,6 +47,7 @@ namespace gr {
      public:
       typedef boost::shared_ptr<ofdm_frame_structure> sptr;
 
+      static int d_total_segments; 
       /*!
        * \brief Return a shared_ptr to a new instance of isdbt::ofdm_frame_structure.
        *
@@ -55,7 +56,7 @@ namespace gr {
        * class. isdbt::ofdm_frame_structure::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int mode, bool IsOneSeg, 
+      static sptr make(int mode, bool IsFullSeg, 
                       int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                       int ConvCodeA, int ConvCodeB, int ConvCodeC,
                       int IntLengthA, int IntLengthB, int IntLengthC,

@@ -81,7 +81,7 @@ namespace gr {
       bitset<16> TMCC_sync_word;
       bitset<204> TMCCword;
 
-      bool d_IsOneSeg;
+      bool d_IsFullSeg;
       int InputIndex;     //Variable to cover input array
       int d_mode, d_carrier_pos, TMCCindex, SPindex, frame_counter;
 
@@ -96,7 +96,7 @@ namespace gr {
       void fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber);
 
      public:
-      ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
+      ofdm_frame_structure_impl(int mode, bool IsFullSeg, 
                                 int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                 int ConvCodeA, int ConvCodeB, int ConvCodeC,
                                 int IntLengthA, int IntLengthB, int IntLengthC,

@@ -37,15 +37,22 @@
 namespace gr {
   namespace isdbt {
 
+    int ofdm_frame_structure::d_total_segments = 1; 
+
     ofdm_frame_structure::sptr
-    ofdm_frame_structure::make(int mode, bool IsOneSeg, 
+    ofdm_frame_structure::make(int mode, bool IsFullSeg, 
                                 int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                 int ConvCodeA, int ConvCodeB, int ConvCodeC,
                                 int IntLengthA, int IntLengthB, int IntLengthC,
                                 int LayerA_seg, int LayerB_seg, int LayerC_seg)
     {
+      if (IsFullSeg){
+        d_total_segments = 13;
+      }else {
+        d_total_segments = 1;
+      }
       return gnuradio::get_initial_sptr
-        (new ofdm_frame_structure_impl(mode, IsOneSeg, 
+        (new ofdm_frame_structure_impl(mode, IsFullSeg, 
                                         ModSchemeA, ModSchemeB, ModSchemeC, 
                                         ConvCodeA, ConvCodeB, ConvCodeC,
                                         IntLengthA, IntLengthB, IntLengthC,
@@ -55,17 +62,17 @@ namespace gr {
     /*
      * The private constructor
      */
-    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsOneSeg, 
+    ofdm_frame_structure_impl::ofdm_frame_structure_impl(int mode, bool IsFullSeg, 
                                   int ModSchemeA, int ModSchemeB, int ModSchemeC, 
                                   int ConvCodeA, int ConvCodeB, int ConvCodeC,
                                   int IntLengthA, int IntLengthB, int IntLengthC,
                                   int LayerA_seg, int LayerB_seg, int LayerC_seg)
       : gr::block("ofdm_frame_structure",
-              gr::io_signature::make(1, 1, sizeof(gr_complex) * 13 * 96 * ((int)pow(2.0,mode-1))),
+              gr::io_signature::make(1, 1, sizeof(gr_complex) * d_total_segments * 96 * ((int)pow(2.0,mode-1))),
               gr::io_signature::make(1, 1, sizeof(gr_complex) * ((int)pow(2.0,10 + mode)))
               )
     {
-      d_IsOneSeg = IsOneSeg;  /* Transmission mdoe, one seg or full seg*/
+      d_IsFullSeg = IsFullSeg;  /* Transmission mdoe, one seg or full seg*/
       frame_counter = 0;      /* Counts frames*/
       d_carrier_pos = 0;    /* 4 cyclic counter, scattered pilot rotation reference*/
       TMCCindex = 0;        /* TMCC word position counter, accross block */
@@ -187,7 +194,7 @@ namespace gr {
         TMCCword.set(24); //Test case: No changes in system
         TMCCword.set(25); 
         TMCCword.reset(26); //Alarm bit, defaulted in 0 //TODO: fijar parametrico, desde fuera del bloque
-        if (d_IsOneSeg){
+        if (d_IsFullSeg){
           TMCCword.set(27);
         } else {
           TMCCword.reset(27);
@@ -1949,7 +1956,7 @@ namespace gr {
           /* Segment 0*/
           this->fill_segment_mode1(in, out, 0);
           /*Segments 1 to 12*/
-          if (!d_IsOneSeg)
+          if (!d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
@@ -1961,7 +1968,7 @@ namespace gr {
           /* Segment 0*/
           this->fill_segment_mode2(in, out, 0);
           /*Segments 1 to 12*/
-          if (!d_IsOneSeg)
+          if (!d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
@@ -1973,7 +1980,7 @@ namespace gr {
           /* Segment 0*/
           this->fill_segment_mode3(in, out, 0);
           /*Segments 1 to 12*/
-          if (!d_IsOneSeg)
+          if (!d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
@@ -2023,11 +2030,11 @@ namespace gr {
         d_carrier_pos = (frame_counter % 4);
         frame_counter = (frame_counter % 204);
       }
-      /* only for tests*/
-      for (int i=0; i<2600; i++)
-      {
-        printf("out[%d]=%2.6f \n", i, out[i].real());
-      }
+        /* only for tests*/
+      //  for (int i=0; i<noutput_items ; i++)
+      //  {
+      //    printf("frame: %i out[%d]=%2.6f \n", frame_counter, i, out[i].real());
+      //  }
       
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.

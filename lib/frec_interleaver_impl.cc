@@ -82,24 +82,32 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
-      gr_complex data[d_total_segments][d_carriers_per_segment] = {}; //TODO: Preguntar: Se borra solo al salir del scope??
+
+      //TODO: Preguntar: Se borra solo al salir del scope??  
+      gr_complex data[d_total_segments][d_carriers_per_segment] = {}; 
       gr_complex data_interleaved[d_total_segments][d_carriers_per_segment] = {};
       gr_complex out_before_rand[d_noutput] = {};
+
       int k=0;
 
       if (!d_IsFullSeg)
       {
+        memcpy(&out_before_rand, in, d_noutput*sizeof(gr_complex));
+        printf("Voy directo a randomizer\n");
         goto Randomizer;
       }
 
       //1. Intra-Segment interleaving
+      printf("1. Intra-Segment interleaving\n");  
       for(int i=0; i<d_total_segments; i++){
         for (int j=0; j<d_carriers_per_segment; j++){
           // First we write the matrix rows-first
           data[i][j] = in[k];
           k++;
         }
-      }     
+      }   
+      
+      
       //2. Inter-segment rotation
       k = 0;
       for(int i=0; i<d_total_segments; i++){
@@ -110,16 +118,21 @@ namespace gr {
           k++;
         }
       }
+      printf("2. Inter-segment rotation\n");
 
       //3. Inter-segment randomizer
 Randomizer:
+      printf("3. Inter-segment randomizer\n");
       switch(d_mode)
       {
         case 1:
         {
           for(int i=0; i<d_noutput; i++)
           {
-            out[i] = out_before_rand[rand_mode_1[i]];
+            int index = rand_mode_1[i];
+            out[index] = out_before_rand[i];
+            printf("in[%i] = %f \t out_before_rand[%i] = %f \t", i, in[i].real(), i, out_before_rand[i].real());  
+            printf("out[%i] = %f \n", i, out[i].real());  
           }
           break;
         }
@@ -127,7 +140,8 @@ Randomizer:
         {
           for(int i=0; i<d_noutput; i++)
           {
-            out[i] = out_before_rand[rand_mode_2[i]];
+            int index = rand_mode_2[i];
+            out[i] = out_before_rand[index];
           }
           break;
         }
@@ -135,7 +149,8 @@ Randomizer:
         {
           for(int i=0; i<d_noutput; i++)
           {
-            out[i] = out_before_rand[rand_mode_3[i]];
+            int index = rand_mode_3[i];
+            out[i] = out_before_rand[index];
           }
           break;
         }

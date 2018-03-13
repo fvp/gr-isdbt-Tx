@@ -4,7 +4,7 @@
   <key>isdbt_ofdm_frame_structure</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.ofdm_frame_structure($mode, $IsOneSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC, $LayASeg, $LayBSeg, $LayCSeg)</make>
+  <make>isdbt.ofdm_frame_structure($mode, $IsFullSeg, $ModeA, $ModeB, $ModeC, $ConvCodeA, $ConvCodeB, $ConvCodeC, $IntLenA, $IntLenB, $IntLenC, $LayASeg, $LayBSeg, $LayCSeg)</make>
   
 <param>
      <name>Transmission Mode</name>
@@ -325,10 +325,10 @@
    <type>int</type>
  </param>
 
-  <param>
-      <name>OneSeg Tx</name>
-      <key>IsOneSeg</key>
-      <value>False</value>
+   <param>
+      <name>FullSeg Tx</name>
+      <key>IsFullSeg</key>
+      <value>True</value>
       <type>enum</type>
       <option>
           <name>Yes</name>
@@ -343,7 +343,7 @@
  <sink>
    <name>in</name>
    <type>complex</type>
-   <vlen>(1248*pow(2.0,$mode-1))</vlen>
+   <vlen>(12*($IsFullSeg) + 1)*96*(2**($mode-1))</vlen> 
  </sink>
 
  <source>
