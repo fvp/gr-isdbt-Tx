@@ -91,9 +91,9 @@ namespace gr {
 
       gr_complex write_SP(int SPindex, int d_mode, int SegmentNumber); 
 
-      void fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber);
-      void fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber);
-      void fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber);
+      void fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item);
+      void fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item);
+      void fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item);
 
      public:
       ofdm_frame_structure_impl(int mode, bool IsFullSeg, 

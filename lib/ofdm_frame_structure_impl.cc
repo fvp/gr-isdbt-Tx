@@ -194,7 +194,7 @@ namespace gr {
         TMCCword.set(24); //Test case: No changes in system
         TMCCword.set(25); 
         TMCCword.reset(26); //Alarm bit, defaulted in 0 //TODO: fijar parametrico, desde fuera del bloque
-        if (d_IsFullSeg){
+        if (!d_IsFullSeg){
           TMCCword.set(27);
         } else {
           TMCCword.reset(27);
@@ -1313,7 +1313,7 @@ namespace gr {
     }
 
     void
-    ofdm_frame_structure_impl::fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber)
+    ofdm_frame_structure_impl::fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item)
     {
       int SegmentPos = 0;   //Segment position on transmision
       int TMCCPos = 0;      //TMCC position on transmision
@@ -1437,7 +1437,7 @@ namespace gr {
 
       for (int j = 0; j < 108; j++) 
       {
-        index = (int)pow(2, 10 + d_mode)*frame_counter + 108*SegmentPos + j;
+        index = (int)pow(2, 10 + d_mode)*output_item + 108*SegmentPos + j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
@@ -1463,7 +1463,7 @@ namespace gr {
     }
 
         void
-    ofdm_frame_structure_impl::fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber)
+    ofdm_frame_structure_impl::fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item)
     {
       int SegmentPos = 0;   //Segment position on transmision
       int TMCCPos1 = 0;      //TMCC position on transmision
@@ -1628,7 +1628,7 @@ namespace gr {
       InputIndex = SegmentPos*96;
       for (int j = 0; j < 108; j++) 
       {
-        index = (int) pow(2, 10+d_mode)*frame_counter+216*SegmentPos+j;
+        index = (int) pow(2, 10+d_mode)*output_item+216*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
@@ -1651,7 +1651,7 @@ namespace gr {
     }
 
         void
-    ofdm_frame_structure_impl::fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber)
+    ofdm_frame_structure_impl::fill_segment_mode3(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item)
     {
       int SegmentPos = 0;   //Segment position on transmision
       int TMCCPos1 = 0;      //TMCC position on transmision
@@ -1901,7 +1901,7 @@ namespace gr {
       InputIndex = SegmentPos*96;
       for (int j = 0; j < 108; j++) 
       {
-        index = (int) pow(2, 10+d_mode)*frame_counter+432*SegmentPos+j;
+        index = (int) pow(2, 10+d_mode)*output_item+432*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
@@ -1954,37 +1954,37 @@ namespace gr {
         {
         case 1:
           /* Segment 0*/
-          this->fill_segment_mode1(in, out, 0);
+          this->fill_segment_mode1(in, out, 0, i);
           /*Segments 1 to 12*/
-          if (!d_IsFullSeg)
+          if (d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
-              this->fill_segment_mode1(in, out, k);
+              this->fill_segment_mode1(in, out, k, i);
             }
           }
           break;
         case 2:
           /* Segment 0*/
-          this->fill_segment_mode2(in, out, 0);
+          this->fill_segment_mode2(in, out, 0, i);
           /*Segments 1 to 12*/
-          if (!d_IsFullSeg)
+          if (d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
-              this->fill_segment_mode2(in, out, k);
+              this->fill_segment_mode2(in, out, k, i);
             }
           }
           break;
         case 3:
           /* Segment 0*/
-          this->fill_segment_mode3(in, out, 0);
+          this->fill_segment_mode3(in, out, 0, i);
           /*Segments 1 to 12*/
-          if (!d_IsFullSeg)
+          if (d_IsFullSeg)
           {
             for (int k=1; k<13;k++)
             {
-              this->fill_segment_mode3(in, out, k);
+              this->fill_segment_mode3(in, out, k, i);
             }
           }
           break;
@@ -1992,32 +1992,33 @@ namespace gr {
           printf("Error: incorrect mode \n");
           break; 
         }
-        // Zero padding carriers
+        // Zero padding carrier
+        
             int c = 0;
             gr_complex out_temp[sym_size] = {};
 
             
-            for (int j = frame_counter*size; j<(frame_counter*size + sym_size); j++)
+            for (int j = i*size; j<(i*size + sym_size); j++)
             {
               out_temp[c] = out[j];
               c++;
             }
 
             // Left zero padding
-            for (int j = frame_counter*size; j<(frame_counter*size + n_zp/2); j++)
+            for (int j = i*size; j<(i*size + n_zp/2); j++)
             {
               out[j] = 0;
             }
 
             // Right zero padding
-            for (int j = (frame_counter+1)*size - n_zp/2; j<(frame_counter+1)*size; j++)
+            for (int j = (i+1)*size - n_zp/2; j<(i+1)*size; j++)
             {
               out[j] = 0;
             }
 
             // Data
             c = 0;
-            for (int j = frame_counter*size + n_zp/2; j<(frame_counter+1)*size - n_zp/2; j++)
+            for (int j = i*size + n_zp/2; j<(i+1)*size - n_zp/2; j++)
             {
               out[j] = out_temp[c];
               c++;
