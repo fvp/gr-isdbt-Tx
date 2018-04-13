@@ -32,6 +32,7 @@
 #include "isdbt/ofdm_frame_structure.h"
 #include "isdbt/time_interleaver.h"
 #include "isdbt/frec_interleaver.h"
+#include "isdbt/mapper.h"
 %}
 
 
@@ -89,3 +90,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, ofdm_frame_structure);
 GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
 %include "isdbt/frec_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, frec_interleaver);
+%include "isdbt/mapper.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, mapper);
