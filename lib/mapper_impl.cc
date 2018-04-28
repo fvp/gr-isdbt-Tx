@@ -42,13 +42,14 @@ namespace gr {
     mapper::sptr
     mapper::make(int mode, int constType, bool isFullSeg)
     {
-      
+      printf("Entrando al make\n");
+
       if (isFullSeg){
         d_total_segments = 13;
       }else {
         d_total_segments = 1;
       }
-      
+
       return gnuradio::get_initial_sptr
         (new mapper_impl(mode, constType, isFullSeg));
     }
@@ -58,15 +59,21 @@ namespace gr {
      */
     mapper_impl::mapper_impl(int mode, int constType, bool isFullSeg)
       : gr::block("mapper",
-              gr::io_signature::make(1, 1, sizeof(bitset<2>)),
+              gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(gr_complex))
                   )
     {
+      printf("Entrando al constructor\n");
       d_mode = mode; 
-      d_carriers_per_segment = d_data_carriers_mode1*((int)pow(2.0,mode-1)); 
       d_noutput = d_total_segments*d_carriers_per_segment;
       d_IsFullSeg = isFullSeg;
       d_constType = constType;
+      d_counter = 0;
+      d_input_counter = 0;
+
+
+      //create delay queue, according to modulation
+      printf("Saliendo del constructor\n");
     }
 
     /*
@@ -79,7 +86,102 @@ namespace gr {
     void
     mapper_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = 96*2*noutput_items*d_constType;
+      printf("Dentro de forecast \n");
+      ninput_items_required[0] = noutput_items;
+    }
+
+    int
+    mapper_impl::next2bits(const unsigned char inputData)
+    {
+      printf("Dentro de next2bits \n");
+      //obtengo siguientes 2 de la entrada
+      int next = 0;
+
+      top:
+      switch (d_counter)
+      {
+        case 0:
+        {
+          next = (inputData & 0x03);
+          d_counter++;
+          break;
+        } 
+        case 1:
+        {
+          next = inputData & 0x0C;
+          next = (next >> 2);
+          d_counter++;
+          break;
+        }
+        case 2:
+                {
+          next = inputData & 0x30;
+          next = (next >> 4);
+          d_counter++;
+          break;
+        }
+        case 3:
+        {
+          next = inputData & 0xC0;
+          next = (next >> 6);
+          d_counter++;
+          break;
+        }
+        default:
+        {
+          d_input_counter++;
+          d_counter = 0;
+          goto top;
+        }
+      }
+      return next;
+    }
+
+    gr_complex
+    mapper_impl::mapQPSK(int data)
+    {
+      printf("dentro de mapQPSK \n");
+      int temp = 0;
+      //QPSK
+      temp = next2bits(data);
+      bitset<1> b0 = temp & 0x01;
+      bitset<1> b1 = temp & 0x02;
+      //b1 goes to queue, b0 goes out
+      printf("ACA SE CAE MIRA\n");
+      //delay_vector[0]->push_back(b1);
+
+      //obtain new b1, delayed 120 samples
+      if (true)
+      {
+        b1.set(0);
+      }
+      else
+      {
+        b1.reset(0);
+      }
+      //convert bits into constelation
+      if (b0.test(0))
+      {
+        if (b1.test(0))
+        {
+          return  ((-1 / sqrt(2)), (-1 / sqrt(2)));
+        }
+        else
+        {
+          return  ((1 / sqrt(2)), (-1 / sqrt(2)));
+        }
+      } 
+      else
+      {
+        if (b1.test(0))
+        {
+          return  ((-1 / sqrt(2)), (1 / sqrt(2)));
+        }
+        else
+        {
+          return ((1 / sqrt(2)), (1 / sqrt(2)));
+        }
+      }
     }
 
     int
@@ -88,14 +190,43 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
+      printf("GENERAL WORK \n");
       const unsigned char *in = (const unsigned char *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
 
+      int j = 0;
+      printf("Antes de entrar. noutput_items: %i\n", noutput_items);
+
       for (int i=0; i<noutput_items; i++)
       {
-        //first, we push n bits into queue
+        //obtengo bits
+        switch (d_constType)
+        {
+          case 1:
+          {
+            printf("Caso QPSK \n");
+            int data = next2bits(in[i]);
+            out[j] = mapQPSK(data);
+          }
+          case 2:
+          {
+            //16QAM
+            printf("Caso 16QAM \n");
+            break;
+          }
+          case 3:
+          {
+            printf("Caso 64QAM \n");
+            //64QAM
+            break;
+          }
+          default:
+          {
+            printf("Caso default \n");
+            break;
+          }
 
-        //then we take out n bits from queue, and generate symbol.
+        }
       }
 
       // Tell runtime system how many input items we consumed on

@@ -41,9 +41,8 @@ namespace gr {
     class mapper_impl : public mapper
     {
      private:
-      int d_mode, d_constType, d_carriers_per_segment, d_noutput, inputSize;
+      int d_mode, d_constType, d_carriers_per_segment, d_noutput, inputSize, d_counter, d_input_counter;
       bool d_IsFullSeg;
-
       static const int d_data_carriers_mode1 = 96;
 
      public:
@@ -51,6 +50,10 @@ namespace gr {
       ~mapper_impl();
 
       // Where all the action really happens
+      int next2bits(const unsigned char input);
+
+      gr_complex mapQPSK(int data);
+
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
       int general_work(int noutput_items,

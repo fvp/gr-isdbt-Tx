@@ -65,14 +65,14 @@
 
   <sink>
     <name>in</name>
-    <type>unsigned char</type>
-    <vlen>(12*($IsFullSeg) + 1)*96*(2**($mode-1))*($constellation)</vlen>
+    <type>byte</type>
+    <vlen>1</vlen>
   </sink>
 
   <source>
     <name>out</name>
     <type>complex</type>
-    <vlen>(12*($IsFullSeg) + 1)*96*(2**($mode-1))</vlen>
+    <vlen>1</vlen>
   </source>
 
 </block>
