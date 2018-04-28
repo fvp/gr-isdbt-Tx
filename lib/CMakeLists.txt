@@ -53,7 +53,8 @@ list(APPEND isdbt_sources
     ofdm_frame_structure_impl.cc
     time_interleaver_impl.cc
     frec_interleaver_impl.cc
-    mapper_impl.cc )
+    mapper_impl.cc
+    ts_remux_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

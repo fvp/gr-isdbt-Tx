@@ -33,6 +33,7 @@
 #include "isdbt/time_interleaver.h"
 #include "isdbt/frec_interleaver.h"
 #include "isdbt/mapper.h"
+#include "isdbt/ts_remux.h"
 %}
 
 
@@ -92,3 +93,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, time_interleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, frec_interleaver);
 %include "isdbt/mapper.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, mapper);
+%include "isdbt/ts_remux.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, ts_remux);

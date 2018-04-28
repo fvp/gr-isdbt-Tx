@@ -67,3 +67,4 @@ GR_ADD_TEST(qa_ofdm_frame_structure ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_
 GR_ADD_TEST(qa_time_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_interleaver.py)
 GR_ADD_TEST(qa_frec_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_frec_interleaver.py)
 GR_ADD_TEST(qa_mapper ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_mapper.py)
+GR_ADD_TEST(qa_ts_remux ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ts_remux.py)

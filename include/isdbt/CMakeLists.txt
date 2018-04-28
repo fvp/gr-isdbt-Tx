@@ -47,5 +47,6 @@ install(FILES
     ofdm_frame_structure.h
     time_interleaver.h
     frec_interleaver.h
-    mapper.h DESTINATION include/isdbt
+    mapper.h
+    ts_remux.h DESTINATION include/isdbt
 )
