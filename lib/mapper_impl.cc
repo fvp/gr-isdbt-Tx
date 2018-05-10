@@ -120,63 +120,36 @@ namespace gr {
       bool b0, b1;
       gr_complex symbol_out;
       
-      //1) Push bits into queue
-      switch(data)
+      bitset<8> temp = bitset<8> (data);
+     
+      //1) Push bit b1 into queue
+      if (temp.test(1))
       {
-        case 0x00:
-        {
-          b0 = false;
-          delay_vector[0]->push_back(false);
-          break;
-        }
-        case 0x01:
-        {
-          b0 = false;
-          delay_vector[0]->push_back(true);
-          break;
-        }
-        case 0x02:
-        {
-          b0 = true;
-          delay_vector[0]->push_back(false);
-          break;
-        }
-        case 0x03:
-        {
-          b0 = true;
-          delay_vector[0]->push_back(true);
-          break;
-        }
-        default:
-        {
-          printf("Error: Incorrect data.\n");
-          break;
-        }
+        delay_vector[0]->push_back(true);
+      }
+      else
+      {
+        delay_vector[0]->push_back(false);
+      }
+
+      //Assign b0' = b0
+      if (temp.test(0))
+      {
+        b0 = true;
+      }
+      else
+      {
+        b0 = false;
       }
       
-      //2) Take bit b1 from queue
+      //2) Take bit b1' from queue
       b1 = delay_vector[0]->front();
       delay_vector[0]->pop_front();
+      
+      //3) Map bits into symbol from dictionary
+      int result = (2)*(b0 ? 1 : 0) + (1)*(b1 ? 1 : 0);
 
-      //3) MAP bits into symbol 
-      if(b0)
-      {
-        symbol_out.real(-1);
-      }
-      else
-      {
-        symbol_out.real(1);
-      }
-      if(b1)
-      {
-        symbol_out.imag(-1);
-      }
-      else
-      {
-        symbol_out.imag(1);
-      }
-
-      // 4) Return symbol
+      symbol_out = symbol_dic_4[result];
       return symbol_out;
     }
 
@@ -189,18 +162,63 @@ namespace gr {
       bitset<8> temp = bitset<8> (data);
 
       //1) Push bits into queue
-      for (int k=1; k<4; k++)
+      for (int i=1; i<4; i++)
       {
-        if (temp.test(k))
+        if (temp.test(1))
         {
-          delay_vector[k-1]->push_back(true);
+          delay_vector[i-1]->push_back(true);
         }
         else
         {
-          delay_vector[k-1]->push_back(false);
+          delay_vector[i-1]->push_back(false);
         }
       }
+      //Assign b0' = b0
+      if (temp.test(0))
+      {
+        b0 = true;
+      }
+      else
+      {
+        b0 = false;
+      }
+      //Assign b1, b2, b3
+      b1 = delay_vector[0]->front();
+      delay_vector[0]->pop_front();
+
+      b2 = delay_vector[1]->front();
+      delay_vector[1]->pop_front();
+
+      b3 = delay_vector[2]->front();
+      delay_vector[2]->pop_front();
+
+      //Map bits into symbol.
+      int result = (8)*(b0 ? 1 : 0) + (4)*(b1 ? 1 : 0) + (2)*(b2 ? 1 : 0) + (1)*(b3 ? 1 : 0);
+      symbol_out = symbol_dic_16[result];
+
+      return symbol_out;
+    }
+
+    gr_complex
+    mapper_impl::map64QAM(unsigned char data)
+    {
+      bool b5, b4, b3, b2, b1, b0;
+      gr_complex symbol_out;
       
+      bitset<8> temp = bitset<8> (data);
+
+      //1) Push bits into queue
+      for (int i=1; i<6; i++)
+      {
+        if (temp.test(i))
+        {
+          delay_vector[i-1]->push_back(true);
+        }
+        else
+        {
+          delay_vector[i-1]->push_back(false);
+        }
+      }
       //Obtain bits and map
       if (temp.test(0))
       {
@@ -219,36 +237,15 @@ namespace gr {
       b3 = delay_vector[2]->front();
       delay_vector[2]->pop_front();
 
+      b4 = delay_vector[3]->front();
+      delay_vector[3]->pop_front();
+
+      b5 = delay_vector[4]->front();
+      delay_vector[4]->pop_front();
+
       //Map bits into symbol.
-      int result = (8)*(b0 ? 1 : 0) + (4)*(b1 ? 1 : 0) + (2)*(b2 ? 1 : 0) + (1)*(b3 ? 1 : 0);
-      printf("b0: %s \n", b0 ? "true" : "false");
-      printf("b1: %s \n", b1 ? "true" : "false");
-      printf("b2: %s \n", b2 ? "true" : "false");
-      printf("b3: %s \n", b3 ? "true" : "false");
-      printf("\t result: %i \n", result);
-
-      //Take bit b1 from queue
-      b1 = delay_vector[0]->front();
-      delay_vector[0]->pop_front();
-
-      //MAP bits
-      if(b0)
-      {
-        symbol_out.real(-1);
-      }
-      else
-      {
-        symbol_out.real(1);
-      }
-      //MAP bits
-      if(b1)
-      {
-        symbol_out.imag(-1);
-      }
-      else
-      {
-        symbol_out.imag(1);
-      }
+      int result = (32)*(b0 ? 1 : 0) + (16)*(b1 ? 1 : 0) + (8)*(b2 ? 1 : 0) + (4)*(b3 ? 1 : 0) + (2)*(b4 ? 1 : 0) + (1)*(b5 ? 1 : 0);
+      symbol_out = symbol_dic_64[result];
 
       return symbol_out;
     }
@@ -261,8 +258,6 @@ namespace gr {
     {
       const unsigned char *in = (const unsigned char *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
-
-      int j = 0;
 
       switch (d_constType)
         {
@@ -284,9 +279,9 @@ namespace gr {
           }
           case 3:
           {
-            for (int k=1; k<6; k++)
+            for (int i=0; i<noutput_items; i++)
             {
-              delay_vector.push_back(new std::deque<bool>(24*k)); 
+              out[i] = map64QAM(in[i]);
             }
             break;
           }
@@ -296,7 +291,8 @@ namespace gr {
             break;
           }
         }
-
+        
+      }
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);

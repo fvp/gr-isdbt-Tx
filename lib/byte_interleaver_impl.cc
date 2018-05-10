@@ -83,7 +83,7 @@ namespace gr {
       
       int queue_index = 0;
 
-      printf("noutput_items: %i\n", noutput_items);
+      //printf("noutput_items: %i\n", noutput_items);
 
       for (int i=0; i<204; i++)
       {

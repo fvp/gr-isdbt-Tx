@@ -46,15 +46,7 @@ namespace gr {
     {
      public:
       typedef boost::shared_ptr<mapper> sptr;
-
-      /*!
-       * \brief Return a shared_ptr to a new instance of isdbt::mapper.
-       *
-       * To avoid accidental use of raw pointers, isdbt::mapper's
-       * constructor is in a private implementation
-       * class. isdbt::mapper::make is the public interface for
-       * creating new instances.
-       */
+      
       static int d_total_segments; 
 
       static sptr make(int mode, int constType, bool isFullSeg);

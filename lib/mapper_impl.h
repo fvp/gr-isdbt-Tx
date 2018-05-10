@@ -46,12 +46,40 @@ namespace gr {
       static const int d_data_carriers_mode1 = 96;
       std::vector< std::deque<bool> *> delay_vector;
 
+      gr_complex symbol_dic_4[4] = {gr_complex(1,1), gr_complex(1,-1), gr_complex(-1,1), gr_complex(-1,-1)
+                                    };
+
+      gr_complex symbol_dic_16[16] = {gr_complex(3,3), gr_complex(3,1), gr_complex(1,3), gr_complex(1,1),\
+                                      gr_complex(3,-3), gr_complex(3,-1), gr_complex(1,-3), gr_complex(1,-1),\
+                                      gr_complex(-3,3), gr_complex(-3,1), gr_complex(-1,3), gr_complex(-1,1),\
+                                      gr_complex(-3,-3), gr_complex(-3,-1), gr_complex(-1,-3), gr_complex(-1,-1)
+                                    };
+
+      gr_complex symbol_dic_64[64] = {gr_complex(7,7), gr_complex(7,5), gr_complex(5,7), gr_complex(5,5),\
+                                      gr_complex(7,1), gr_complex(7,3), gr_complex(5,1), gr_complex(5,3),\
+                                      gr_complex(1,7), gr_complex(1,5), gr_complex(3,7), gr_complex(3,5),\
+                                      gr_complex(1,1), gr_complex(1,3), gr_complex(3,1), gr_complex(3,3),\
+                                      gr_complex(7,-7), gr_complex(7,-5), gr_complex(5,-7), gr_complex(5,-5),\
+                                      gr_complex(7,-1), gr_complex(7,-3), gr_complex(5,-1), gr_complex(5,-3),\
+                                      gr_complex(1,-7), gr_complex(1,-5), gr_complex(3,-7), gr_complex(3,-5),\
+                                      gr_complex(1,-1), gr_complex(1,-3), gr_complex(3,-1), gr_complex(3,-3),\
+                                      gr_complex(-7,7), gr_complex(-7,5), gr_complex(-5,7), gr_complex(-5,5),\
+                                      gr_complex(-7,1), gr_complex(-7,3), gr_complex(-5,1), gr_complex(-5,3),\
+                                      gr_complex(-1,7), gr_complex(-1,5), gr_complex(-3,7), gr_complex(-3,5),\
+                                      gr_complex(-1,1), gr_complex(-1,3), gr_complex(-3,1), gr_complex(-3,3),\
+                                      gr_complex(-7,-7), gr_complex(-7,-5), gr_complex(-5,-7), gr_complex(-5,-5),\
+                                      gr_complex(-7,-1), gr_complex(-7,-3), gr_complex(-5,-1), gr_complex(-5,-3),\
+                                      gr_complex(-1,-7), gr_complex(-1,-5), gr_complex(-3,-7), gr_complex(-3,-5),\
+                                      gr_complex(-1,-1), gr_complex(-1,-3), gr_complex(-3,-1), gr_complex(-3,-3)
+                                    };
+     
      public:
       mapper_impl(int mode, int constType, bool isFullSeg);
       ~mapper_impl();
 
       gr_complex mapQPSK(unsigned char data);
       gr_complex map16QAM(unsigned char data);
+      gr_complex map64QAM(unsigned char data);
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
