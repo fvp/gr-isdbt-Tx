@@ -326,7 +326,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>test_out_layerA.ts</value>
+      <value>/home/habbo/Documents/Facultad/TestsBerretas/Flujos/out/layer_A.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -428,11 +428,11 @@
     </param>
     <param>
       <key>file</key>
-      <value>test_suite_0101.dat</value>
+      <value>/home/habbo/Documents/Facultad/TestsBerretas/Flujos/test_suite_0101.dat</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(8, 195)</value>
+      <value>(0, 220)</value>
     </param>
     <param>
       <key>_rotation</key>

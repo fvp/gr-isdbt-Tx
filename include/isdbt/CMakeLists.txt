@@ -46,5 +46,8 @@ install(FILES
     agregar_cp.h
     ofdm_frame_structure.h
     time_interleaver.h
-    frec_interleaver.h DESTINATION include/isdbt
+    frec_interleaver.h
+    mapper.h
+    ts_remux.h
+    byte_interleaver.h DESTINATION include/isdbt
 )
