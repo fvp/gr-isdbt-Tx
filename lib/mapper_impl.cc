@@ -63,7 +63,6 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex))
                   )
     {
-      printf("Entrando al constructor\n");
       d_mode = mode; 
       d_noutput = d_total_segments*d_carriers_per_segment;
       d_IsFullSeg = isFullSeg;
@@ -71,9 +70,35 @@ namespace gr {
       d_counter = 0;
       d_input_counter = 0;
 
-
-      //create delay queue, according to modulation
-      printf("Saliendo del constructor\n");
+       switch (d_constType)
+        {
+          case 1:
+          {
+            delay_vector.push_back(new std::deque<bool>(120)); 
+            break;
+          }
+          case 2:
+          {
+            for (int k=1; k<4; k++)
+            {
+              delay_vector.push_back(new std::deque<bool>(40*k)); 
+            }
+            break;
+          }
+          case 3:
+          {
+            for (int k=1; k<6; k++)
+            {
+              delay_vector.push_back(new std::deque<bool>(24*k)); 
+            }
+            break;
+          }
+          default:
+          {
+            printf("Caso default \n");
+            break;
+          }
+        }
     }
 
     /*
@@ -86,102 +111,146 @@ namespace gr {
     void
     mapper_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      printf("Dentro de forecast \n");
       ninput_items_required[0] = noutput_items;
     }
 
-    int
-    mapper_impl::next2bits(const unsigned char inputData)
+    gr_complex
+    mapper_impl::mapQPSK(unsigned char data)
     {
-      printf("Dentro de next2bits \n");
-      //obtengo siguientes 2 de la entrada
-      int next = 0;
-
-      top:
-      switch (d_counter)
+      bool b0, b1;
+      gr_complex symbol_out;
+      
+      //1) Push bits into queue
+      switch(data)
       {
-        case 0:
+        case 0x00:
         {
-          next = (inputData & 0x03);
-          d_counter++;
-          break;
-        } 
-        case 1:
-        {
-          next = inputData & 0x0C;
-          next = (next >> 2);
-          d_counter++;
+          b0 = false;
+          delay_vector[0]->push_back(false);
           break;
         }
-        case 2:
-                {
-          next = inputData & 0x30;
-          next = (next >> 4);
-          d_counter++;
+        case 0x01:
+        {
+          b0 = false;
+          delay_vector[0]->push_back(true);
           break;
         }
-        case 3:
+        case 0x02:
         {
-          next = inputData & 0xC0;
-          next = (next >> 6);
-          d_counter++;
+          b0 = true;
+          delay_vector[0]->push_back(false);
+          break;
+        }
+        case 0x03:
+        {
+          b0 = true;
+          delay_vector[0]->push_back(true);
           break;
         }
         default:
         {
-          d_input_counter++;
-          d_counter = 0;
-          goto top;
+          printf("Error: Incorrect data.\n");
+          break;
         }
       }
-      return next;
+      
+      //2) Take bit b1 from queue
+      b1 = delay_vector[0]->front();
+      delay_vector[0]->pop_front();
+
+      //3) MAP bits into symbol 
+      if(b0)
+      {
+        symbol_out.real(-1);
+      }
+      else
+      {
+        symbol_out.real(1);
+      }
+      if(b1)
+      {
+        symbol_out.imag(-1);
+      }
+      else
+      {
+        symbol_out.imag(1);
+      }
+
+      // 4) Return symbol
+      return symbol_out;
     }
 
     gr_complex
-    mapper_impl::mapQPSK(int data)
+    mapper_impl::map16QAM(unsigned char data)
     {
-      printf("dentro de mapQPSK \n");
-      int temp = 0;
-      //QPSK
-      temp = next2bits(data);
-      bitset<1> b0 = temp & 0x01;
-      bitset<1> b1 = temp & 0x02;
-      //b1 goes to queue, b0 goes out
-      printf("ACA SE CAE MIRA\n");
-      //delay_vector[0]->push_back(b1);
+      bool b3, b2, b1, b0;
+      gr_complex symbol_out;
+      
+      bitset<8> temp = bitset<8> (data);
 
-      //obtain new b1, delayed 120 samples
-      if (true)
+      //1) Push bits into queue
+      for (int k=1; k<4; k++)
       {
-        b1.set(0);
-      }
-      else
-      {
-        b1.reset(0);
-      }
-      //convert bits into constelation
-      if (b0.test(0))
-      {
-        if (b1.test(0))
+        if (temp.test(k))
         {
-          return  ((-1 / sqrt(2)), (-1 / sqrt(2)));
+          delay_vector[k-1]->push_back(true);
         }
         else
         {
-          return  ((1 / sqrt(2)), (-1 / sqrt(2)));
-        }
-      } 
-      else
-      {
-        if (b1.test(0))
-        {
-          return  ((-1 / sqrt(2)), (1 / sqrt(2)));
-        }
-        else
-        {
-          return ((1 / sqrt(2)), (1 / sqrt(2)));
+          delay_vector[k-1]->push_back(false);
         }
       }
+      
+      //Obtain bits and map
+      if (temp.test(0))
+      {
+        b0 = false;
+      }
+      else
+      {
+        b0 = true;
+      }
+      b1 = delay_vector[0]->front();
+      delay_vector[0]->pop_front();
+
+      b2 = delay_vector[1]->front();
+      delay_vector[1]->pop_front();
+
+      b3 = delay_vector[2]->front();
+      delay_vector[2]->pop_front();
+
+      //Map bits into symbol.
+      int result = (8)*(b0 ? 1 : 0) + (4)*(b1 ? 1 : 0) + (2)*(b2 ? 1 : 0) + (1)*(b3 ? 1 : 0);
+      printf("b0: %s \n", b0 ? "true" : "false");
+      printf("b1: %s \n", b1 ? "true" : "false");
+      printf("b2: %s \n", b2 ? "true" : "false");
+      printf("b3: %s \n", b3 ? "true" : "false");
+      printf("\t result: %i \n", result);
+
+      //Take bit b1 from queue
+      b1 = delay_vector[0]->front();
+      delay_vector[0]->pop_front();
+
+      //MAP bits
+      if(b0)
+      {
+        symbol_out.real(-1);
+      }
+      else
+      {
+        symbol_out.real(1);
+      }
+      //MAP bits
+      if(b1)
+      {
+        symbol_out.imag(-1);
+      }
+      else
+      {
+        symbol_out.imag(1);
+      }
+
+      return symbol_out;
     }
 
     int
@@ -190,34 +259,35 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      printf("GENERAL WORK \n");
       const unsigned char *in = (const unsigned char *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
 
       int j = 0;
-      printf("Antes de entrar. noutput_items: %i\n", noutput_items);
 
-      for (int i=0; i<noutput_items; i++)
-      {
-        //obtengo bits
-        switch (d_constType)
+      switch (d_constType)
         {
           case 1:
           {
-            printf("Caso QPSK \n");
-            int data = next2bits(in[i]);
-            out[j] = mapQPSK(data);
+            for (int i=0; i<noutput_items; i++)
+            {
+              out[i] = mapQPSK(in[i]);
+            }
+            break;
           }
           case 2:
           {
-            //16QAM
-            printf("Caso 16QAM \n");
+            for (int i=0; i<noutput_items; i++)
+            {
+              out[i] = map16QAM(in[i]);
+            }
             break;
           }
           case 3:
           {
-            printf("Caso 64QAM \n");
-            //64QAM
+            for (int k=1; k<6; k++)
+            {
+              delay_vector.push_back(new std::deque<bool>(24*k)); 
+            }
             break;
           }
           default:
@@ -225,9 +295,7 @@ namespace gr {
             printf("Caso default \n");
             break;
           }
-
         }
-      }
 
       // Tell runtime system how many input items we consumed on
       // each input stream.

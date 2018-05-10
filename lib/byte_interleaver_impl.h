@@ -27,42 +27,31 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_MAPPER_IMPL_H
-#define INCLUDED_ISDBT_MAPPER_IMPL_H
+#ifndef INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H
+#define INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H
 
-#include <isdbt/mapper.h>
-#include <bitset>
-
-using namespace std;
+#include <isdbt/byte_interleaver.h>
 
 namespace gr {
   namespace isdbt {
 
-    class mapper_impl : public mapper
+    class byte_interleaver_impl : public byte_interleaver
     {
      private:
-      int d_mode, d_constType, d_carriers_per_segment, d_noutput, inputSize, d_counter, d_input_counter;
-      bool d_IsFullSeg;
-      static const int d_data_carriers_mode1 = 96;
-      std::vector< std::deque<bool> *> delay_vector;
+      std::vector< std::deque<unsigned char> *> delay_vector;
 
      public:
-      mapper_impl(int mode, int constType, bool isFullSeg);
-      ~mapper_impl();
+      byte_interleaver_impl();
+      ~byte_interleaver_impl();
 
-      gr_complex mapQPSK(unsigned char data);
-      gr_complex map16QAM(unsigned char data);
-
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+      // Where all the action really happens
+      int work(int noutput_items,
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_MAPPER_IMPL_H */
+#endif /* INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H */
 

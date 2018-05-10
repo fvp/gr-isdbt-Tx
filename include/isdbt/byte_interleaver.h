@@ -27,42 +27,39 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_MAPPER_IMPL_H
-#define INCLUDED_ISDBT_MAPPER_IMPL_H
 
-#include <isdbt/mapper.h>
-#include <bitset>
+#ifndef INCLUDED_ISDBT_BYTE_INTERLEAVER_H
+#define INCLUDED_ISDBT_BYTE_INTERLEAVER_H
 
-using namespace std;
+#include <isdbt/api.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class mapper_impl : public mapper
+    /*!
+     * \brief <+description of block+>
+     * \ingroup isdbt
+     *
+     */
+    class ISDBT_API byte_interleaver : virtual public gr::sync_block
     {
-     private:
-      int d_mode, d_constType, d_carriers_per_segment, d_noutput, inputSize, d_counter, d_input_counter;
-      bool d_IsFullSeg;
-      static const int d_data_carriers_mode1 = 96;
-      std::vector< std::deque<bool> *> delay_vector;
-
      public:
-      mapper_impl(int mode, int constType, bool isFullSeg);
-      ~mapper_impl();
+      typedef boost::shared_ptr<byte_interleaver> sptr;
 
-      gr_complex mapQPSK(unsigned char data);
-      gr_complex map16QAM(unsigned char data);
-
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+      /*!
+       * \brief Return a shared_ptr to a new instance of isdbt::byte_interleaver.
+       *
+       * To avoid accidental use of raw pointers, isdbt::byte_interleaver's
+       * constructor is in a private implementation
+       * class. isdbt::byte_interleaver::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make();
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_MAPPER_IMPL_H */
+#endif /* INCLUDED_ISDBT_BYTE_INTERLEAVER_H */
 

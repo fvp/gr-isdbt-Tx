@@ -54,7 +54,8 @@ list(APPEND isdbt_sources
     time_interleaver_impl.cc
     frec_interleaver_impl.cc
     mapper_impl.cc
-    ts_remux_impl.cc )
+    ts_remux_impl.cc
+    byte_interleaver_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
