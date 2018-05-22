@@ -35,6 +35,7 @@
 #include "isdbt/mapper.h"
 #include "isdbt/ts_remux.h"
 #include "isdbt/byte_interleaver.h"
+#include "isdbt/bit_interleaver.h"
 %}
 
 
@@ -98,3 +99,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, mapper);
 GR_SWIG_BLOCK_MAGIC2(isdbt, ts_remux);
 %include "isdbt/byte_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, byte_interleaver);
+%include "isdbt/bit_interleaver.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, bit_interleaver);

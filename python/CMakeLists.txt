@@ -69,3 +69,4 @@ GR_ADD_TEST(qa_frec_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}
 GR_ADD_TEST(qa_mapper ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_mapper.py)
 GR_ADD_TEST(qa_ts_remux ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ts_remux.py)
 GR_ADD_TEST(qa_byte_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_byte_interleaver.py)
+GR_ADD_TEST(qa_bit_interleaver ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bit_interleaver.py)

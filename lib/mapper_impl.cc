@@ -292,7 +292,7 @@ namespace gr {
           }
         }
         
-      }
+      
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);

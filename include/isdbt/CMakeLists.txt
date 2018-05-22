@@ -49,5 +49,6 @@ install(FILES
     frec_interleaver.h
     mapper.h
     ts_remux.h
-    byte_interleaver.h DESTINATION include/isdbt
+    byte_interleaver.h
+    bit_interleaver.h DESTINATION include/isdbt
 )
