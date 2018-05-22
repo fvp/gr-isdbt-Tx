@@ -52,8 +52,7 @@ namespace gr {
               gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
               gr::io_signature::make(1, 1, 204*sizeof(unsigned char)))
     {
-      printf("Entro a crear colas: \n");
-
+      //Create queues
       for (int index=0; index<12; index++)
       {
           //Create queue

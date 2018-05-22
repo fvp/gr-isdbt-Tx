@@ -94,9 +94,6 @@ namespace gr {
       d_LayerA_seg = LayerA_seg;
       d_LayerB_seg = LayerB_seg;
       d_LayerC_seg = LayerC_seg;
-      printf("LayerA_seg: %d\n", d_LayerA_seg);
-      printf("LayerB_seg: %d\n", d_LayerB_seg);
-      printf("LayerC_seg: %d\n", d_LayerC_seg);
     }
 
     /*

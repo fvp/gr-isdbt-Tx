@@ -71,7 +71,7 @@ namespace gr {
       
       int sync_delay = 204 - ((95*d_I)%204);
 
-      printf("Delay calculado: %d \n", sync_delay);
+      //printf("Delay calculado: %d \n", sync_delay);
 
       int mi = 0;
 
@@ -110,11 +110,8 @@ namespace gr {
 
       // TODO CHECK the tag propagatio policy for the frame 
       // beginnning. 
-      printf("noutput_items=%i \n", noutput_items);
-      printf("d_noutput=%i \n", d_noutput);
       for (int i=0; i<noutput_items; i++)
       {
-        printf("i=%i \n",i);
         for (int carrier=0; carrier<d_noutput; carrier++)
         {
           // a simple FIFO queue performs the interleaving. 

@@ -42,7 +42,6 @@ namespace gr {
     mapper::sptr
     mapper::make(int mode, int constType, bool isFullSeg)
     {
-      printf("Entrando al make\n");
 
       if (isFullSeg){
         d_total_segments = 13;

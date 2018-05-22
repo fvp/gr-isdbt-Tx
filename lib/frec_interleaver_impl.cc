@@ -93,12 +93,11 @@ namespace gr {
       if (!d_IsFullSeg)
       {
         memcpy(&out_before_rand, in, d_noutput*sizeof(gr_complex));
-        printf("Voy directo a randomizer\n");
+        //No intra segment, go to randomizer
         goto Randomizer;
       }
 
       //1. Intra-Segment interleaving
-      printf("1. Intra-Segment interleaving\n"); 
       k=0; 
       for(int i=0; i<d_total_segments; i++){
         for (int j=0; j<d_carriers_per_segment; j++){
@@ -111,7 +110,6 @@ namespace gr {
         for(int i=0; i<d_carriers_per_segment; i++){
           // First we write the matrix rows-first
           data_interleaved[d_total_segments -j -1][d_carriers_per_segment - i -1] = data[j][i];
-          printf("data_interleaved[%i][%i] = %f \n", i, j, data_interleaved[i][j].real());
         }
       } 
       
@@ -121,8 +119,6 @@ namespace gr {
         for (int j=0; j<d_carriers_per_segment; j++){
           // First we re-write the data matrix, rows-first
           data_interleaved[i][j] = data[i][(i + j) % d_carriers_per_segment];
-          printf("Numero magico %i \n", (i + j) % d_carriers_per_segment);
-          printf("data_interleaved[%i][%i] = %f \n", i, j, data_interleaved[i][j].real());
         }
       }
       for(int i=0; i<d_total_segments; i++){
@@ -133,12 +129,10 @@ namespace gr {
           //printf("out_before_rand[%i] = %f \n", k, out_before_rand[k].real());
         }
       } 
-      printf("2. Inter-segment rotation\n");
 
       //3. Inter-segment randomizer
 Randomizer:
       int index = 0;
-      printf("3. Inter-segment randomizer\n");
       switch(d_mode)
       {
         case 1:
