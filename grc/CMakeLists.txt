@@ -46,5 +46,6 @@ install(FILES
     isdbt_mapper.xml
     isdbt_ts_remux.xml
     isdbt_byte_interleaver.xml
-    isdbt_bit_interleaver.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_bit_interleaver.xml
+    isdbt_energy_dispersal.xml DESTINATION share/gnuradio/grc/blocks
 )

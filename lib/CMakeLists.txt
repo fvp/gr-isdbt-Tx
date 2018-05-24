@@ -56,7 +56,8 @@ list(APPEND isdbt_sources
     mapper_impl.cc
     ts_remux_impl.cc
     byte_interleaver_impl.cc
-    bit_interleaver_impl.cc )
+    bit_interleaver_impl.cc
+    energy_dispersal_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

@@ -36,6 +36,7 @@
 #include "isdbt/ts_remux.h"
 #include "isdbt/byte_interleaver.h"
 #include "isdbt/bit_interleaver.h"
+#include "isdbt/energy_dispersal.h"
 %}
 
 
@@ -101,3 +102,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, ts_remux);
 GR_SWIG_BLOCK_MAGIC2(isdbt, byte_interleaver);
 %include "isdbt/bit_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, bit_interleaver);
+%include "isdbt/energy_dispersal.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, energy_dispersal);
