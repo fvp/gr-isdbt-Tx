@@ -50,6 +50,5 @@ install(FILES
     mapper.h
     ts_remux.h
     byte_interleaver.h
-    bit_interleaver.h
-    energy_dispersal.h DESTINATION include/isdbt
+    bit_interleaver.h DESTINATION include/isdbt
 )
