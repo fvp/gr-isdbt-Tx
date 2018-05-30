@@ -52,6 +52,8 @@ namespace gr {
         // Register for PRBS
         int d_reg;
 
+        int m;
+
       void init_prbs();
       int clock_prbs(int clocks);
 

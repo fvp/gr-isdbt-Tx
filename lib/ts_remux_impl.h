@@ -41,7 +41,6 @@ namespace gr {
       // Nothing to declare in this block.
 
      public:
-      int impresiones = 0;
       ts_remux_impl();
       ~ts_remux_impl();
 

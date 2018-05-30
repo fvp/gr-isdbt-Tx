@@ -62,6 +62,7 @@ namespace gr {
       return res;
     }
 
+
     energy_dispersal::sptr
     energy_dispersal::make()
     {
@@ -78,7 +79,8 @@ namespace gr {
           gr::io_signature::make(1, 1, 204*sizeof(unsigned char))
       )
     {
-      set_relative_rate(1.0);
+      m = 0;
+      init_prbs();
     }
 
     /*
@@ -96,61 +98,39 @@ namespace gr {
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
 
-      int index = 0;
-      int count = 0;
-      int ret = 0;
-      int is_sync = 0;
-
-      // Search for SYNC byte
-      while (is_sync == 0 && index < 204/*d_psize*/)
-      {
-        if (in[index] == d_SYNC) {
-          is_sync = 1;
-        }
-        else {
-          index++;
-        }
-      }
+      // Aca empieza el codigo
       
-      // If we found a SYNC byte
-      if (is_sync) 
-      {
-        //printf("Encontre SYNC \n");
-        for (int i = 0; i < noutput_items; i++) 
-        {
-          init_prbs();
-          
-          int sync = d_NSYNC;
 
-          //Check integrity of TS
-          if (in[index + count] != d_SYNC) 
-          {
-            printf("Malformed MPEG-TS! index: %i, count:%i \n",index, count);
-          }
-          //Insert sync byte unchanged
-          out[count++] = sync;
-          //Instert processed bytes
-          for (int k = 1; k < 204/*d_psize*/; k++) 
-          {
-            out[count] = in[index + count] ^ clock_prbs(d_npacks);
-            count++;
-          }
-            
-          sync = d_SYNC;
-          clock_prbs(d_npacks);
-        }
-        consume_each(noutput_items);
-        ret = noutput_items;
-      }
-      else 
+      for (int i = 0; i < noutput_items; i++)
       {
-        printf("No encontre SYNC \n");
-        consume_each(index);
-        ret = 0;
+
+        
+        //out[i*204] = in[i*204]; // Deshabilita XOR durante byte de sincronismo (asumimos que copia el 0x47, es así?)
+        //a = clock_prbs(8); // Consume 1 clock_prbs, el a es un bolaso. 
+        
+        clock_prbs(8);
+        for (int j = 0; j < 204; j++)
+          // OJO: el primer byte (que corresponde al 0x47) debe ser copiado tal cual sin pasarlo por el XOR
+        {
+         
+          out[i*204 + j] = in[i*204 + j] ^ clock_prbs(8); 
+          m = (m+1)% 1280;
+
+          // Chequeamos si se ha producido un cuadro multiplex para reiniciar la palabra
+          // (Para Modo 1, con CP = 1/4 entran M=1280 TSP por cuadro)
+          if (m == 0)
+          {
+            init_prbs();
+          }
+        }
+
       }
+
+      // Aca terminael codigo
+      
 
       // Tell runtime system how many output items we produced.
-      return ret;
+      return noutput_items;
     }
 
   } /* namespace isdbt */

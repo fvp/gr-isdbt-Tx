@@ -82,19 +82,17 @@ namespace gr {
         {
           out[204*input + i + j] = 0x00;
         }
-        consume_each(188);
       }
       
       //Imprimo las primeras 3 solo para verificar
-      if (impresiones < 3)
+      /*if (impresiones < 3)
       {
         for (int k=0; k<204; k++)
         {
           printf("out[%d]=%d \n", k, out[k]);
         }
         impresiones++;
-      }
-
+      }*/
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
