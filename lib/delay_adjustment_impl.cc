@@ -32,38 +32,76 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "byte_interleaver_impl.h"
+#include "delay_adjustment_impl.h"
 
 namespace gr {
   namespace isdbt {
 
-    byte_interleaver::sptr
-    byte_interleaver::make()
+    delay_adjustment::sptr
+    delay_adjustment::make(int mode, int conv_code, int mod_scheme, int segments)
     {
       return gnuradio::get_initial_sptr
-        (new byte_interleaver_impl());
+        (new delay_adjustment_impl(mode, conv_code, mod_scheme, segments));
     }
 
     /*
      * The private constructor
      */
-    byte_interleaver_impl::byte_interleaver_impl()
-      : gr::sync_block("byte_interleaver",
+    delay_adjustment_impl::delay_adjustment_impl(int mode, int conv_code, int mod_scheme, int segments)
+      : gr::sync_block("delay_adjustment",
               gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
               gr::io_signature::make(1, 1, 204*sizeof(unsigned char)))
     {
-      //Create queues
-      for (int i=0; i<12; i++)
+      switch (conv_code)
       {
-          //Create queue
-          delay_vector.push_back(new std::deque<unsigned char>(i*17,0)); 
+        case 0:
+        {
+          d_conv_code = (float) 1/2;
+          break;
+        }
+        case 1:
+        {
+          d_conv_code = (float) 2/3;
+          break;
+        }
+        case 2:
+        {
+          d_conv_code = (float) 3/4;
+          break;
+        }
+        case 3:
+        {
+          d_conv_code = (float) 5/6;
+          break;
+        }
+        case 4:
+        {
+          d_conv_code = (float) 7/8;
+          break;
+        }
+        default:
+        {
+          d_conv_code = 0;
+          printf("Error: Incorrect Convolution Code Rate\n");
+          break;
+        }
+      }
+      //Find totay delay given the modulation parameters
+      int factor = (int) (pow(2.0,mode-1));
+      int d_tsp = (int)(204*mod_scheme*d_conv_code*96*factor)/(8*204);
+      d_delay_tsp = d_tsp*segments - 11;
+      printf("Delay (TSPs): %i \n", d_delay_tsp);
+      //Construct a delay queue
+      for (int i=0; i<204; i++)
+      {
+          delay_vector.push_back(new std::deque<unsigned char>(d_delay_tsp,0)); 
       }
     }
 
     /*
      * Our virtual destructor.
      */
-    byte_interleaver_impl::~byte_interleaver_impl()
+    delay_adjustment_impl::~delay_adjustment_impl()
     {
       for (unsigned int i=0; i<delay_vector.size();i++)
       {
@@ -73,32 +111,27 @@ namespace gr {
     }
 
     int
-    byte_interleaver_impl::work(int noutput_items,
+    delay_adjustment_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
 
-      int index_out = 0;
-      
+
       for (int input = 0; input<noutput_items; input++)
       {
         for (int i=0; i<204; i++)
         {
-          //Select queue
-          index_out = i + input*204;
           //Push byte from input to queue, pop output byte from queue
-          delay_vector[index_out % 12]->push_back(in[index_out]);
-          out[index_out] = delay_vector[index_out % 12]->front();
+          delay_vector[i]->push_back(in[input*204 + i]);
+          out[input*204 + i] = delay_vector[i]->front();
           //Delete used symbol
-          delay_vector[index_out % 12]->pop_front(); 
+          delay_vector[i]->pop_front(); 
         }
       }
 
       // Tell runtime system how many output items we produced.
-      consume_each(noutput_items);
-
       return noutput_items;
     }
 

@@ -27,31 +27,39 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_TS_REMUX_IMPL_H
-#define INCLUDED_ISDBT_TS_REMUX_IMPL_H
 
-#include <isdbt/ts_remux.h>
+#ifndef INCLUDED_ISDBT_ENERGY_DISPERSAL_H
+#define INCLUDED_ISDBT_ENERGY_DISPERSAL_H
+
+#include <isdbt/api.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ts_remux_impl : public ts_remux
+    /*!
+     * \brief <+description of block+>
+     * \ingroup isdbt
+     *
+     */
+    class ISDBT_API energy_dispersal : virtual public gr::sync_block
     {
-     private:
-      // Nothing to declare in this block.
-
      public:
-      ts_remux_impl();
-      ~ts_remux_impl();
+      typedef boost::shared_ptr<energy_dispersal> sptr;
 
-      // Where all the action really happens
-      int work(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items);
+      /*!
+       * \brief Return a shared_ptr to a new instance of isdbt::energy_dispersal.
+       *
+       * To avoid accidental use of raw pointers, isdbt::energy_dispersal's
+       * constructor is in a private implementation
+       * class. isdbt::energy_dispersal::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make();
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_TS_REMUX_IMPL_H */
+#endif /* INCLUDED_ISDBT_ENERGY_DISPERSAL_H */
 

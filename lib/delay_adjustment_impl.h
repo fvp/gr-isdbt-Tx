@@ -27,22 +27,26 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_TS_REMUX_IMPL_H
-#define INCLUDED_ISDBT_TS_REMUX_IMPL_H
+#ifndef INCLUDED_ISDBT_DELAY_ADJUSTMENT_IMPL_H
+#define INCLUDED_ISDBT_DELAY_ADJUSTMENT_IMPL_H
 
-#include <isdbt/ts_remux.h>
+#include <isdbt/delay_adjustment.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ts_remux_impl : public ts_remux
+    class delay_adjustment_impl : public delay_adjustment
     {
      private:
-      // Nothing to declare in this block.
+      int d_mode, d_mod_scheme, d_delay_tsp;
+      int TSP_size = 204;
+      std::vector< std::deque<unsigned char> * > delay_vector;
 
      public:
-      ts_remux_impl();
-      ~ts_remux_impl();
+      delay_adjustment_impl(int mode, int conv_code, int mod_scheme, int segments);
+      ~delay_adjustment_impl();
+
+      float d_conv_code;
 
       // Where all the action really happens
       int work(int noutput_items,
@@ -53,5 +57,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_TS_REMUX_IMPL_H */
+#endif /* INCLUDED_ISDBT_DELAY_ADJUSTMENT_IMPL_H */
 

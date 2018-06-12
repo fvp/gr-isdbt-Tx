@@ -27,31 +27,47 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_TS_REMUX_IMPL_H
-#define INCLUDED_ISDBT_TS_REMUX_IMPL_H
+#ifndef INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
+#define INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
 
-#include <isdbt/ts_remux.h>
+#include <isdbt/energy_dispersal.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ts_remux_impl : public ts_remux
+    class energy_dispersal_impl : public energy_dispersal
     {
-     private:
-      // Nothing to declare in this block.
+      private:
+        // Packet size
+        static const int d_psize;
+        // Number of packets after which PRBS is reset
+        static const int d_npacks;
+        // Number of blocks
+        int d_nblocks = 1;
+        // SYNC value
+        static const int d_SYNC;
+        // Negative SYNC value
+        static const int d_NSYNC;
+
+        // Register for PRBS
+        int d_reg;
+
+        int m;
+
+      void init_prbs();
+      int clock_prbs(int clocks);
 
      public:
-      ts_remux_impl();
-      ~ts_remux_impl();
+      energy_dispersal_impl();
+      ~energy_dispersal_impl();
 
-      // Where all the action really happens
       int work(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items);
+                    gr_vector_const_void_star &input_items,
+                    gr_vector_void_star &output_items);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_TS_REMUX_IMPL_H */
+#endif /* INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H */
 

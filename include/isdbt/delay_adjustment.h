@@ -27,31 +27,39 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_TS_REMUX_IMPL_H
-#define INCLUDED_ISDBT_TS_REMUX_IMPL_H
 
-#include <isdbt/ts_remux.h>
+#ifndef INCLUDED_ISDBT_DELAY_ADJUSTMENT_H
+#define INCLUDED_ISDBT_DELAY_ADJUSTMENT_H
+
+#include <isdbt/api.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class ts_remux_impl : public ts_remux
+    /*!
+     * \brief <+description of block+>
+     * \ingroup isdbt
+     *
+     */
+    class ISDBT_API delay_adjustment : virtual public gr::sync_block
     {
-     private:
-      // Nothing to declare in this block.
-
      public:
-      ts_remux_impl();
-      ~ts_remux_impl();
+      typedef boost::shared_ptr<delay_adjustment> sptr;
 
-      // Where all the action really happens
-      int work(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items);
+      /*!
+       * \brief Return a shared_ptr to a new instance of isdbt::delay_adjustment.
+       *
+       * To avoid accidental use of raw pointers, isdbt::delay_adjustment's
+       * constructor is in a private implementation
+       * class. isdbt::delay_adjustment::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make(int mode, int conv_code, int mod_scheme, int segments);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_TS_REMUX_IMPL_H */
+#endif /* INCLUDED_ISDBT_DELAY_ADJUSTMENT_H */
 
