@@ -52,5 +52,6 @@ install(FILES
     byte_interleaver.h
     bit_interleaver.h
     energy_dispersal.h
-    delay_adjustment.h DESTINATION include/isdbt
+    delay_adjustment.h
+    hierarchical_divisor.h DESTINATION include/isdbt
 )

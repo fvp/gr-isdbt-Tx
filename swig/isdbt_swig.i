@@ -38,6 +38,7 @@
 #include "isdbt/bit_interleaver.h"
 #include "isdbt/energy_dispersal.h"
 #include "isdbt/delay_adjustment.h"
+#include "isdbt/hierarchical_divisor.h"
 %}
 
 
@@ -107,3 +108,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, bit_interleaver);
 GR_SWIG_BLOCK_MAGIC2(isdbt, energy_dispersal);
 %include "isdbt/delay_adjustment.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, delay_adjustment);
+%include "isdbt/hierarchical_divisor.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_divisor);

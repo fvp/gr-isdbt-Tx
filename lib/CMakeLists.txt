@@ -58,7 +58,8 @@ list(APPEND isdbt_sources
     byte_interleaver_impl.cc
     bit_interleaver_impl.cc
     energy_dispersal_impl.cc
-    delay_adjustment_impl.cc )
+    delay_adjustment_impl.cc
+    hierarchical_divisor_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)
