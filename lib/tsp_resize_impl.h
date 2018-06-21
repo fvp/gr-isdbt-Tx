@@ -27,35 +27,31 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H
-#define INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H
+#ifndef INCLUDED_ISDBT_TSP_RESIZE_IMPL_H
+#define INCLUDED_ISDBT_TSP_RESIZE_IMPL_H
 
-#include <isdbt/hierarchical_divisor.h>
+#include <isdbt/tsp_resize.h>
 
 namespace gr {
   namespace isdbt {
 
-    class hierarchical_divisor_impl : public hierarchical_divisor
+    class tsp_resize_impl : public tsp_resize
     {
      private:
       // Nothing to declare in this block.
 
      public:
-      hierarchical_divisor_impl();
-      ~hierarchical_divisor_impl();
+      tsp_resize_impl();
+      ~tsp_resize_impl();
 
-      int tsp_len = 204;
       // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+      int work(int noutput_items,
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H */
+#endif /* INCLUDED_ISDBT_TSP_RESIZE_IMPL_H */
 

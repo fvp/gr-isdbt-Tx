@@ -27,35 +27,39 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H
-#define INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H
 
-#include <isdbt/hierarchical_divisor.h>
+#ifndef INCLUDED_ISDBT_TSP_RESIZE_H
+#define INCLUDED_ISDBT_TSP_RESIZE_H
+
+#include <isdbt/api.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class hierarchical_divisor_impl : public hierarchical_divisor
+    /*!
+     * \brief <+description of block+>
+     * \ingroup isdbt
+     *
+     */
+    class ISDBT_API tsp_resize : virtual public gr::sync_block
     {
-     private:
-      // Nothing to declare in this block.
-
      public:
-      hierarchical_divisor_impl();
-      ~hierarchical_divisor_impl();
+      typedef boost::shared_ptr<tsp_resize> sptr;
 
-      int tsp_len = 204;
-      // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+      /*!
+       * \brief Return a shared_ptr to a new instance of isdbt::tsp_resize.
+       *
+       * To avoid accidental use of raw pointers, isdbt::tsp_resize's
+       * constructor is in a private implementation
+       * class. isdbt::tsp_resize::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make();
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_HIERARCHICAL_DIVISOR_IMPL_H */
+#endif /* INCLUDED_ISDBT_TSP_RESIZE_H */
 

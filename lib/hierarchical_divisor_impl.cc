@@ -107,57 +107,25 @@ namespace gr {
         
         while (!found_A)
         {
-          //Leer el primer TSP de la entrada
-          tsp_info_byte = in[(tsp_consumed + i)*204 + 188 + 1];
+          //Read first TSP from input
+          tsp_info_byte = in[(tsp_consumed + i)*tsp_len + 188 + 1];
 
-          //Obtengo la info de capa 
+          //Obtain layer information in an int
           tsp_info_byte >>= 4;
-          switch (tsp_info_byte)
+          
+          //Check if its layer A
+          if (tsp_info_byte == 1)
           {
-            case 0:
-            {
-              //printf("TSP NULL i: %i\n", i);
-              break;
-            }
-            case 1:
-            {
-              //printf("TSP LAYER A i: %i\n", i);
-              found_A = true;
-              i = i-1;
-              break;
-            }
-            case 2:
-            {
-              //printf("TSP LAYER B i: %i\n", i);
-              break;
-            }
-            case 3:
-            {
-              //printf("TSP LAYER C i: %i\n", i);
-              break;
-            }
-            case 8:
-            {
-              //printf("IIP PACKET i: %i\n", i);
-              break;
-            }
-            default:
-            {
-              //printf("SERVICE TSP i: %i\n", i);
-              break;
-            }
+            found_A = true;
           }
-          //Si llega aca, no era capa A, aumento i
-          i++;
+          else
+          {
+            i++;
+          }
         }
         //Salgo con i la posicion del TSP de interes
         //Copio todo el TSP para Layer A a la salida
-        //printf("ENCONTRE PAQUETE A, en i=%i\n", (tsp_consumed + i));
-        for (int k=0; k<204; k++)
-        {
-          out[input*204 + k] = in[(tsp_consumed + i)*204 + k];
-          //TODO: Cambiar por memcopy
-        }
+        memcpy(out + tsp_len*input, in + (tsp_consumed + i)*tsp_len, tsp_len);
         tsp_consumed += i;
         i = 1;
       }

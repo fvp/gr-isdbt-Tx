@@ -39,6 +39,7 @@
 #include "isdbt/energy_dispersal.h"
 #include "isdbt/delay_adjustment.h"
 #include "isdbt/hierarchical_divisor.h"
+#include "isdbt/tsp_resize.h"
 %}
 
 
@@ -110,3 +111,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, energy_dispersal);
 GR_SWIG_BLOCK_MAGIC2(isdbt, delay_adjustment);
 %include "isdbt/hierarchical_divisor.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_divisor);
+%include "isdbt/tsp_resize.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, tsp_resize);
