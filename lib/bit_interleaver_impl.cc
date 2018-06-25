@@ -57,8 +57,8 @@ namespace gr {
      */
     bit_interleaver_impl::bit_interleaver_impl(int mode, int segments, int constellation_size)
       : gr::block("bit_interleaver",
-              gr::io_signature::make(1, 1, sizeof(unsigned char)*segments*1*((int)pow(2.0, mode-1))),
-              gr::io_signature::make(1, 1, sizeof(unsigned char)*segments*1*((int)pow(2.0, mode-1))))
+              gr::io_signature::make(1, 1, sizeof(unsigned char)*segments*1),
+              gr::io_signature::make(1, 1, sizeof(unsigned char)*segments*1))
     {
       d_mode = mode;
       d_const_size = constellation_size;

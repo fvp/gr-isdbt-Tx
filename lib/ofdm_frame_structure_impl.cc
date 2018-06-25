@@ -1940,6 +1940,15 @@ namespace gr {
 
 
 
+	for (int c  = 0; c< noutput_items*pow(2, 10+d_mode); c++)
+	// TODO: think a better way to solve this
+	{
+		out[c].real(0);
+		out[c].imag(0);
+	}
+
+
+
     for (int i = 0; i < noutput_items ; i++) 
     {
       if (frame_counter == 0)
@@ -2033,6 +2042,15 @@ namespace gr {
       //  {
       //    printf("frame: %i out[%d]=%2.6f \n", frame_counter, i, out[i].real());
       //  }
+
+      	/*for (int c  = 0; c< noutput_items*pow(2, 10+d_mode); c++)
+	{
+		if (out[c].real() != 0) | (out[c].imag() != 0)
+		{
+			printf("out[%d].real = %f \n", c, out[c].real());
+			printf("out[%d].imag = %f \n", c, out[c].imag());
+		}
+	}*/
       
       this->consume(0, noutput_items);
       // Tell runtime system how many output items we produced.
