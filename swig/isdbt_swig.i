@@ -40,6 +40,7 @@
 #include "isdbt/delay_adjustment.h"
 #include "isdbt/hierarchical_divisor.h"
 #include "isdbt/tsp_resize.h"
+#include "isdbt/test_h_divisor.h"
 %}
 
 
@@ -113,3 +114,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, delay_adjustment);
 GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_divisor);
 %include "isdbt/tsp_resize.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, tsp_resize);
+%include "isdbt/test_h_divisor.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, test_h_divisor);

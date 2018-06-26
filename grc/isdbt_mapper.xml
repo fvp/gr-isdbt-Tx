@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>Mapper</name>
+  <name>Mapper and Bit Interleaver</name>
   <key>isdbt_mapper</key>
   <category>ISDBT</category>
   <import>import isdbt</import>

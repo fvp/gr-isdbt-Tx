@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<block>
+  <name>*test* H Divisor</name>
+  <key>isdbt_test_h_divisor</key>
+  <category>ISDBT</category>
+  <import>import isdbt</import>
+  <make>isdbt.test_h_divisor()</make>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+    <vlen>204</vlen>
+  </sink>
+  <source>
+    <name>out0</name>
+    <type>byte</type>
+    <vlen>204</vlen>
+  </source>
+    <source>
+    <name>out1</name>
+    <type>byte</type>
+    <vlen>204</vlen>
+  </source>
+</block>

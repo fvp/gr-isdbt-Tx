@@ -54,5 +54,6 @@ install(FILES
     energy_dispersal.h
     delay_adjustment.h
     hierarchical_divisor.h
-    tsp_resize.h DESTINATION include/isdbt
+    tsp_resize.h
+    test_h_divisor.h DESTINATION include/isdbt
 )

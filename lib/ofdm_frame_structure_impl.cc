@@ -344,7 +344,6 @@ namespace gr {
             }
             case 2: 
             {
-              printf("Entra al case 2 \n");
               switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
               {                     // ahora el user los tiene que poner bien desde grc
                 case 0:
@@ -385,7 +384,7 @@ namespace gr {
             }
             case 3: 
             {
-              printf("Entra al case 3 \n");
+              //printf("Entra al case 3 \n");
               switch (d_IntLengthA) //TODO: Revisar los IntLength que varian segun el modo
               {                     // ahora el user los tiene que poner bien desde grc
                 case 0:

@@ -73,11 +73,13 @@ namespace gr {
         {
           case 1:
           {
+            printf("Constelacion: QPSK\n");
             delay_vector.push_back(new std::deque<bool>(120)); 
             break;
           }
           case 2:
           {
+            printf("Constelacion: 16-QAM\n");
             for (int k=1; k<4; k++)
             {
               delay_vector.push_back(new std::deque<bool>(40*k)); 
@@ -86,6 +88,7 @@ namespace gr {
           }
           case 3:
           {
+            printf("Constelacion: 64-QAM\n");
             for (int k=1; k<6; k++)
             {
               delay_vector.push_back(new std::deque<bool>(24*k)); 
@@ -117,28 +120,44 @@ namespace gr {
     mapper_impl::mapQPSK(unsigned char data)
     {
       bool b0, b1;
+      int temp_int = data;
       gr_complex symbol_out;
       
-      bitset<8> temp = bitset<8> (data);
-     
-      //1) Push bit b1 into queue
-      if (temp.test(1))
+      //Packed to Unpacked block gives us
+      //  000000b0b1 so we cast it to int
+      
+      //1) Push b1 into queue, assign b0
+      switch (temp_int)
       {
-        delay_vector[0]->push_back(true);
-      }
-      else
-      {
-        delay_vector[0]->push_back(false);
-      }
-
-      //Assign b0' = b0
-      if (temp.test(0))
-      {
-        b0 = true;
-      }
-      else
-      {
-        b0 = false;
+        case 0:
+        {
+          delay_vector[0]->push_back(false);
+          b0 = false;
+          break;
+        }
+        case 1:
+        {
+          delay_vector[0]->push_back(true);
+          b0 = false;
+          break;
+        }
+        case 2:
+        {
+          delay_vector[0]->push_back(false);
+          b0 = true;
+          break;
+        }
+        case 3:
+        {
+          delay_vector[0]->push_back(true);
+          b0 = true;
+          break;
+        }
+        default:
+        {
+          printf("Error in byte\n");
+          break;
+        }
       }
       
       //2) Take bit b1' from queue
@@ -146,9 +165,39 @@ namespace gr {
       delay_vector[0]->pop_front();
       
       //3) Map bits into symbol from dictionary
-      int result = (2)*(b0 ? 1 : 0) + (1)*(b1 ? 1 : 0);
+      //int result = (2)*(b0 ? 1 : 0) + (1)*(b1 ? 1 : 0);
+      int result = 0;
+      if (b0)
+      {
+        if (b1)
+        {
+          //(1,1)
+          result = 0;
+        }
+        else
+        {
+          //(1,0)
+          result = 1;
+        }
+      }
+      else
+      {
+        if (b1)
+        {
+          //(0,1)
+          result = 2;
+        }
+        else
+        {
+          //(0,0)
+          result = 3;
+        }
+      }
+
+      //printf("Result: %i \n", result);
 
       symbol_out = symbol_dic_4[result];
+
       return symbol_out;
     }
 
