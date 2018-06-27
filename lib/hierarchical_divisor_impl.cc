@@ -91,6 +91,7 @@ namespace gr {
         int tsp_a = 0;
         int tsp_b = 0;
         int tsp_c = 0;
+        int def = 0;
 
         for (int k=0; k<total_tsp_in_multiplex ; k++)
         {
@@ -103,6 +104,7 @@ namespace gr {
             case 1:
             {
               //Copy TSP to output A
+              printf("Layer A, total: %i \n", tsp_a);
               memcpy(out0 + tsp_len*tsp_a, in + k*tsp_len, tsp_len);
               tsp_a++;
               break;
@@ -110,6 +112,7 @@ namespace gr {
             case 2:
             {
               //Copy TSP to output B
+              printf("Layer B, total: %i \n", tsp_b);
               memcpy(out1 + tsp_len*tsp_b, in + k*tsp_len, tsp_len);
               tsp_b++;
               break;
@@ -117,12 +120,15 @@ namespace gr {
             case 3:
             {
               //Copy TSP to output C
+              printf("Layer C, total: %i \n", tsp_c);
               memcpy(out2 + tsp_len*tsp_c, in + k*tsp_len, tsp_len);
               tsp_c++;
               break;
             }
             default:
             {
+              printf("Layer X, total: %i \n", def);
+              def++;
               break;
             }
           }
@@ -132,6 +138,7 @@ namespace gr {
         printf("Layer A TSPs: %i \n", tsp_a);
         printf("Layer B TSPs: %i \n", tsp_b);
         printf("Layer C TSPs: %i \n", tsp_c);
+        printf("Layer X TSPs: %i \n", def);
         this->consume(0, 1);
       }
 
