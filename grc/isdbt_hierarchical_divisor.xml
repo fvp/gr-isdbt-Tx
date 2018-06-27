@@ -8,11 +8,21 @@
   <sink>
     <name>in</name>
     <type>byte</type>
-    <vlen>204</vlen>
+    <vlen>204*2176</vlen>
   </sink>
   <source>
-    <name>out</name>
+    <name>out0</name>
     <type>byte</type>
-    <vlen>204</vlen>
+    <vlen>204*32</vlen>
+  </source>
+    <source>
+    <name>out1</name>
+    <type>byte</type>
+    <vlen>204*288</vlen>
+  </source>
+    <source>
+    <name>out2</name>
+    <type>byte</type>
+    <vlen>204*864</vlen>
   </source>
 </block>

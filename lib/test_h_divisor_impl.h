@@ -44,6 +44,7 @@ namespace gr {
       test_h_divisor_impl();
       ~test_h_divisor_impl();
 
+      int total_tsp_in_multiplex = 2176;
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,

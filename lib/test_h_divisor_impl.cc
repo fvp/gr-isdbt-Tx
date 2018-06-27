@@ -50,7 +50,10 @@ namespace gr {
     test_h_divisor_impl::test_h_divisor_impl()
       : gr::sync_block("test_h_divisor",
               gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
-              gr::io_signature::make2(2, 2, 204*sizeof(unsigned char),204*sizeof(unsigned char)))
+              gr::io_signature::make3(3, 3, 204*sizeof(unsigned char),
+                                            204*sizeof(unsigned char),
+                                            204*sizeof(unsigned char))
+                                      )
     {}
 
     /*

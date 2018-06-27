@@ -45,6 +45,7 @@ namespace gr {
       ~hierarchical_divisor_impl();
 
       int tsp_len = 204;
+      int total_tsp_in_multiplex = 2176;
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 

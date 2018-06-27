@@ -40,26 +40,8 @@ namespace gr {
     hierarchical_divisor::sptr
     hierarchical_divisor::make()
     {
-      //Define frames out
-      //switch(tx_mode)
-      //{
-        //case 1:
-        //{
-        //  frames_out = 1024*(1+cp_length);
-        ///}
-        //case 2:
-        //{
-        ///  frames_out = 2048*(1+cp_length);
-        // }
-        //case 3:
-        // /{
-        //  frames_out = 4096*(1+cp_length);
-        //}
-        //default:
-        //{
-        //  printf("Error: Incorrect transmission mode\n");
-        //}
-      //}
+      // TRABAJAR EN GENERALIZAR ESTE BLOQUE
+      //ESTA SOLO PARA MONTECARLO . TS
       return gnuradio::get_initial_sptr
         (new hierarchical_divisor_impl());
     }
@@ -69,8 +51,11 @@ namespace gr {
      */
     hierarchical_divisor_impl::hierarchical_divisor_impl()
       : gr::block("hierarchical_divisor",
-              gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
-              gr::io_signature::make(1, 1, 204*sizeof(unsigned char)))
+              gr::io_signature::make(1, 1, 2176*204*sizeof(unsigned char)),
+              gr::io_signature::make3(3, 3, 32*204*sizeof(unsigned char),
+                                            288*204*sizeof(unsigned char),
+                                            864*204*sizeof(unsigned char))
+                                      )
     {}
 
     /*
@@ -83,7 +68,7 @@ namespace gr {
     void
     hierarchical_divisor_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      //ninput_items_required[0] = 80*noutput_items;
+      ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -93,46 +78,66 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
       const unsigned char *in = (const unsigned char *) input_items[0];
-      unsigned char *out = (unsigned char *) output_items[0];
+      unsigned char *out0 = (unsigned char *) output_items[0];
+      unsigned char *out1 = (unsigned char *) output_items[1];
+      unsigned char *out2 = (unsigned char *) output_items[2];
 
       unsigned char tsp_info_byte;
-      int tsp_consumed = 0;
-      int i = 0;
-     // printf("**********NUEVO WORK*****************\n");
-     // printf("tsp_consumed: %i\n", tsp_consumed);
+      int layer_flag = 0;
       
-      for (int input = 0; input<noutput_items; input++)
+      for (int output = 0; output < noutput_items; output++)
       {
-        bool found_A = false;
-        
-        while (!found_A)
+        printf("NUEVO OUTPUT ITEM\n");
+        int tsp_a = 0;
+        int tsp_b = 0;
+        int tsp_c = 0;
+
+        for (int k=0; k<total_tsp_in_multiplex ; k++)
         {
           //Read first TSP from input
-          tsp_info_byte = in[(tsp_consumed + i)*tsp_len + 188 + 1];
-
-          //Obtain layer information in an int
-          tsp_info_byte >>= 4;
+          tsp_info_byte = in[k*tsp_len + 188 + 1];
+          layer_flag = tsp_info_byte >>= 4;
           
-          //Check if its layer A
-          if (tsp_info_byte == 1)
+          switch (layer_flag)
           {
-            found_A = true;
+            case 1:
+            {
+              //Copy TSP to output A
+              memcpy(out0 + tsp_len*tsp_a, in + k*tsp_len, tsp_len);
+              tsp_a++;
+              break;
+            }
+            case 2:
+            {
+              //Copy TSP to output B
+              memcpy(out1 + tsp_len*tsp_b, in + k*tsp_len, tsp_len);
+              tsp_b++;
+              break;
+            }
+            case 3:
+            {
+              //Copy TSP to output C
+              memcpy(out2 + tsp_len*tsp_c, in + k*tsp_len, tsp_len);
+              tsp_c++;
+              break;
+            }
+            default:
+            {
+              break;
+            }
           }
-          else
-          {
-            i++;
-          }
+          //Goto test new TSP
         }
-        //Salgo con i la posicion del TSP de interes
-        //Copio todo el TSP para Layer A a la salida
-        memcpy(out + tsp_len*input, in + (tsp_consumed + i)*tsp_len, tsp_len);
-        tsp_consumed += i;
-        i = 1;
+        printf("*********CONTEO *********\n");
+        printf("Layer A TSPs: %i \n", tsp_a);
+        printf("Layer B TSPs: %i \n", tsp_b);
+        printf("Layer C TSPs: %i \n", tsp_c);
+        this->consume(0, 1);
       }
+
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      tsp_consumed++;
-      consume_each(tsp_consumed);
+      //consume_each(noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
