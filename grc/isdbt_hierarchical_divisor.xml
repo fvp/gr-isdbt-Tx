@@ -13,16 +13,16 @@
   <source>
     <name>out0</name>
     <type>byte</type>
-    <vlen>204*32</vlen>
+    <vlen>204*119</vlen>
   </source>
     <source>
     <name>out1</name>
     <type>byte</type>
-    <vlen>204*288</vlen>
+    <vlen>204*712</vlen>
   </source>
     <source>
     <name>out2</name>
     <type>byte</type>
-    <vlen>204*864</vlen>
+    <vlen>204*712</vlen>
   </source>
 </block>
