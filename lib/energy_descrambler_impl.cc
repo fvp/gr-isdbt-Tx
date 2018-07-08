@@ -116,7 +116,7 @@ namespace gr {
                 std::vector<tag_t> tags;
                 const uint64_t nread = this->nitems_read(0); //number of items read on port 0
                 this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("frame_begin"));
-                //printf("tags.size(): %i \n", tags.size()) ; 
+                printf("tags.size(): %i \n", tags.size()) ; 
 
                 if (tags.size())
                 {

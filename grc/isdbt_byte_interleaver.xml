@@ -4,7 +4,78 @@
   <key>isdbt_byte_interleaver</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.byte_interleaver()</make>
+  <make>isdbt.byte_interleaver($mode, $conv_code, $mod_scheme, $segments)</make>
+
+<param>
+     <name>Transmission Mode</name>
+   <key>mode</key>
+   <value>3</value>
+   <type>enum</type>
+     <option>
+     <name>MODE1(2K)</name>
+     <key>1</key>
+     </option>
+   <option>
+     <name>MODE2(4K)</name>
+     <key>2</key>
+   </option>
+   <option>
+     <name>MODE3(8K)</name>
+     <key>3</key>
+   </option>
+ </param>
+
+ <param>
+     <name>Modulation Scheme</name>
+   <key>mod_scheme</key>
+   <value>2</value>
+   <type>enum</type>
+   <option>
+     <name>QPSK</name>
+     <key>2</key>
+   </option>
+   <option>
+     <name>16QAM</name>
+     <key>4</key>
+   </option>
+   <option>
+     <name>64QAM</name>
+     <key>6</key>
+   </option>
+ </param>
+
+  <param>
+  <name>Convolutional Code</name>
+    <key>conv_code</key>
+    <value>0</value>
+    <type>enum</type>
+      <option>
+        <name>1/2</name>
+        <key>0</key>
+      </option>
+      <option>
+        <name>2/3</name>
+        <key>1</key>
+      </option>
+      <option>
+        <name>3/4</name>
+        <key>2</key>
+      </option>
+      <option>
+        <name>5/6</name>
+        <key>3</key>
+      </option>
+      <option>
+        <name>7/8</name>
+        <key>4</key>
+      </option>
+  </param>
+
+  <param>
+    <name>Layer Segments</name>
+    <key>segments</key>
+    <type>int</type>
+  </param>
 
   <sink>
     <name>in</name>

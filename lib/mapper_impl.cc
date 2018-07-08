@@ -295,6 +295,8 @@ namespace gr {
       int result = (32)*(b0 ? 1 : 0) + (16)*(b1 ? 1 : 0) + (8)*(b2 ? 1 : 0) + (4)*(b3 ? 1 : 0) + (2)*(b4 ? 1 : 0) + (1)*(b5 ? 1 : 0);
       symbol_out = symbol_dic_64[result];
 
+      symbol_out.real((1/sqrt(42))*symbol_out.real());
+      symbol_out.imag((1/sqrt(42))*symbol_out.imag());
       return symbol_out;
     }
 

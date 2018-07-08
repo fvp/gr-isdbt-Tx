@@ -38,11 +38,15 @@ namespace gr {
     class byte_interleaver_impl : public byte_interleaver
     {
      private:
+      int d_mode, d_mod_scheme, d_delay_tsp;
+      int TSP_size = 204;
       std::vector< std::deque<unsigned char> *> delay_vector;
 
      public:
-      byte_interleaver_impl();
+      byte_interleaver_impl(int mode, int conv_code, int mod_scheme, int segments);
       ~byte_interleaver_impl();
+
+      float d_conv_code;
 
       // Where all the action really happens
       int work(int noutput_items,

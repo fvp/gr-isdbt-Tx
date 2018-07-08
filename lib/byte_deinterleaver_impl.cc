@@ -65,9 +65,11 @@ namespace gr {
             // The "difficult" part in any deinterleaver is setting the buffer's
             // size right. Here, we put them in the reverse order of the transmitter. 
             for (int i=d_I-1; i>=0; i--)
+            {
                 d_shift.push_back(new std::deque<unsigned char>(d_M*i,0)); 
 
             //set_tag_propagation_policy(gr::block::TPP_DONT); 
+            }
         }
 
         /*
@@ -143,7 +145,6 @@ namespace gr {
                 //}
 
                 //PRINTF("DEINTERLEAVER: noutput_items: %i\n", noutput_items);
-
                 int index_out = 0; 
                 for (int i = 0; i < d_to_out; i++)
                 {

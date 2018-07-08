@@ -55,7 +55,7 @@ namespace gr {
        * class. isdbt::byte_interleaver::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int mode, int conv_code, int mod_scheme, int segments);
     };
 
   } // namespace isdbt

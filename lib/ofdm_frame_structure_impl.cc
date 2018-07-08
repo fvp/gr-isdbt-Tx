@@ -2016,7 +2016,9 @@ namespace gr {
             }
 
             // Right zero padding
-            for (int j = (i+1)*size - n_zp/2; j<(i+1)*size; j++)
+            out[(i+1)*size - n_zp/2].real(4/3);
+            out[(i+1)*size - n_zp/2].imag(0);
+            for (int j = (i+1)*size - n_zp/2 +1; j<(i+1)*size; j++)
             {
               out[j] = 0;
             }

@@ -90,7 +90,7 @@ namespace gr {
       int def = 0;
       for (int output = 0; output < noutput_items; output++)
       {
-        printf("NUEVO OUTPUT ITEM\n");
+        //printf("NUEVO OUTPUT ITEM\n");
 
         for (int k=0; k<total_tsp_in_multiplex ; k++)
         {

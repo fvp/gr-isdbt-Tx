@@ -118,7 +118,7 @@ namespace gr {
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
 
-
+      printf("Delay (TSPs): %i \n", d_delay_tsp);
       for (int input = 0; input<noutput_items; input++)
       {
         for (int i=0; i<204; i++)
