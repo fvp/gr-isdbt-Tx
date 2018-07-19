@@ -1429,30 +1429,34 @@ namespace gr {
         }
       }
       SPindex = 0;
-      InputIndex = SegmentPos*96;
+      InputIndex = SegmentPos*active_carriers_mod_1;
 
-      for (int j = 0; j < 108; j++) 
+      for (int j = 0; j < total_carriers_mod_1; j++) 
       {
-        index = (int)pow(2, 10 + d_mode)*output_item + 108*SegmentPos + j;
-        /*Scattered Pilot*/   
+        index = (int)pow(2, 10 + d_mode)*output_item + total_carriers_mod_1*SegmentPos + j;
+           
         if ((j % 12) == (3*d_carrier_pos))
         {
-        //printf("Frame counter %d \n", frame_counter);
-        out[index] = this->write_SP(108*SegmentPos+j, d_mode, SegmentNumber);
-        // TODO PRBS: UNUSED d_mode, segmentNumber
-        // 108*SegmentPos+j instead SPIndex
+          /*Scattered Pilot*/
+          out[index] = this->write_SP(total_carriers_mod_1*SegmentPos+j, d_mode, SegmentNumber);
+        } 
+        else if (j == TMCCPos) 
+        {
+          /* TMCC */
+          out[index] = this->write_TMCC(frame_counter, SegmentNumber);
+          TMCCindex++;
+        } 
+        else if ((j == ACpos1) || (j == ACpos2)) 
+        {
+          /* AC1 or AC2 */
 
-        /* TMCC */
-        } else if (j == TMCCPos) {
-        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
-        TMCCindex++;
-        /* AC1 or AC2 */
-        } else if ((j == ACpos1) || (j == ACpos2)) {
-        out[index] = std::complex<double>(0, 0);
-        /* Fill with data*/
-        } else {
-        out[index] = in[InputIndex];
-        InputIndex++;
+          out[index] = std::complex<double>(0, 0);
+        } 
+        else 
+        {
+          /* Fill with data*/
+          out[index] = in[InputIndex];
+          InputIndex++;
         }
       }
       return;  
@@ -1461,14 +1465,16 @@ namespace gr {
         void
     ofdm_frame_structure_impl::fill_segment_mode2(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item)
     {
-      int SegmentPos = 0;   //Segment position on transmision
-      int TMCCPos1 = 0;      //TMCC position on transmision
-      int TMCCPos2 = 0;      //TMCC position on transmision
-      int ACpos1 = 0;       //AC1 position on Transmission
-      int ACpos2 = 0;       //AC2 position on Transmission
-      int ACpos3 = 0;       //AC1 position on Transmission
-      int ACpos4 = 0;       //AC2 position on Transmission
-      int index = 0;        //Index to write the outputs
+      int SegmentPos = 0;     //Segment position on transmision
+      int TMCCPos1 = 0;       //TMCC position on transmision
+      int TMCCPos2 = 0;       //TMCC position on transmision
+      int ACpos1 = 0;         //AC1 position on Transmission
+      int ACpos2 = 0;         //AC2 position on Transmission
+      int ACpos3 = 0;         //AC1 position on Transmission
+      int ACpos4 = 0;         //AC2 position on Transmission
+      int index = 0;          //Index to write the outputs
+
+      //Find Relevant positions for this mode and segment
       switch(SegmentNumber)
       {
         case 0:
@@ -1621,26 +1627,35 @@ namespace gr {
         }
       }
       SPindex = 0;
-      InputIndex = SegmentPos*96;
-      for (int j = 0; j < 108; j++) 
+      InputIndex = (output_item*d_total_segments+SegmentNumber)*active_carriers_mod_2;
+      index = pow(2, 10+d_mode)*output_item+total_carriers_mod_2*SegmentPos + zero_pad_left;
+      
+      //Fill segments with data and relevant bits in relevant positions found
+      for (int j = 0; j < total_carriers_mod_2; j++) 
       {
-        index = (int) pow(2, 10+d_mode)*output_item+216*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[index] = this->write_SP(216*SegmentPos+j, d_mode, SegmentNumber);
-        //SPindex++;
+          out[index + j] = this->write_SP(total_carriers_mod_2*SegmentPos+j, d_mode, SegmentNumber);
+        } 
         /* TMCC 1 and 2*/
-        } else if ((j == TMCCPos1) || (j == TMCCPos2)) {
-        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
-        TMCCindex++;
+        else if ((j == TMCCPos1) || (j == TMCCPos2)) 
+        {
+          out[index + j] = this->write_TMCC(frame_counter, SegmentNumber);
+          TMCCindex++;
+        } 
         /* AC1, AC2, AC3 or AC4 */
-        } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) {
-        out[index] = std::complex<double>(0, 0);
-        /* Fill with data*/
-        } else {
-        out[index] = in[InputIndex];
-        InputIndex++;
+        else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) 
+        {
+          //out[index] = std::complex<double>(0, 0);
+          out[index + j] = std::complex<double>(0, 0);
+        } 
+        /* Fill with raw data*/
+        else 
+        {
+          //printf("Segmento 0, out: %i in: %i\n", index, InputIndex);
+          out[index + j] = in[InputIndex];
+          InputIndex++;
         }
       }
       return;  
@@ -1894,14 +1909,14 @@ namespace gr {
         }
       }
       SPindex = 0;
-      InputIndex = SegmentPos*96;
-      for (int j = 0; j < 108; j++) 
+      InputIndex = SegmentPos*active_carriers_mod_3;
+      for (int j = 0; j < total_carriers_mod_3; j++) 
       {
-        index = (int) pow(2, 10+d_mode)*output_item+432*SegmentPos+j;
+        index = (int) pow(2, 10+d_mode)*output_item+total_carriers_mod_3*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[index] = this->write_SP(432*SegmentPos+j, d_mode, SegmentNumber);
+        out[index] = this->write_SP(total_carriers_mod_3*SegmentPos+j, d_mode, SegmentNumber);
         //SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
@@ -1938,28 +1953,28 @@ namespace gr {
     int n_zp = size - sym_size; // Number of zero padding carriers
 
 
+    //1) Initialize output vectors in 0
+	  for (int c  = 0; c< noutput_items*size; c++)
+	   // TODO: think a better way to solve this
+	   {
+		    out[c] = std::complex<double>(0, 0);
+	   }
 
-	for (int c  = 0; c< noutput_items*pow(2, 10+d_mode); c++)
-	// TODO: think a better way to solve this
-	{
-		out[c].real(0);
-		out[c].imag(0);
-	}
-
-
-
+     //2) Fill output vectors with data and other system info
     for (int i = 0; i < noutput_items ; i++) 
     {
+      //Check if its fist frame
       if (frame_counter == 0)
       {
         //First symbol of OFDM structure
         TMCCindex = 0;      //TMCC word position across symbol
       }
+      //fill segments with data+
       switch (d_mode)
-        {
+      {
         case 1:
           /* Segment 0*/
-          this->fill_segment_mode1(in, out, 0, i);
+          this->fill_segment_mode1(in, out, 0, i); //in, out, segment, global_index
           /*Segments 1 to 12*/
           if (d_IsFullSeg)
           {
@@ -1996,66 +2011,65 @@ namespace gr {
         default:
           printf("Error: incorrect mode \n");
           break; 
+      }
+      // Zero padding carriers
+      if(primera)
+      {
+        for (int i=0; i<4096; i++)
+        {
+        printf("out[%i]=%f\n",i,out[i].real());
         }
-        // Zero padding carrier
-        
-            int c = 0;
-            gr_complex out_temp[sym_size] = {};
+        for (int i=0; i<active_carriers_mod_2; i++)
+        {
+        printf("in[%i]=%f\n",i,in[i].real());
+        }
+        primera = false;
+      }    
+      //int c = 0;
+      //gr_complex out_temp[sym_size] = {};
 
             
-            for (int j = i*size; j<(i*size + sym_size); j++)
-            {
-              out_temp[c] = out[j];
-              c++;
-            }
+      //for (int j = i*size; j<(i*size + sym_size); j++)
+      //{
+      //  //Test, cambiar 0 a 0 modulado, caso test 64QAM
+      //out[c] = std::complex<double>(0, 0);
+      // c++;
+      //}
 
-            // Left zero padding
-            for (int j = i*size; j<(i*size + n_zp/2); j++)
-            {
-              out[j] = 0;
-            }
+      // Left zero padding
+      //for (int j = i*size; j<(i*size + n_zp/2); j++)
+      //{
+      //  //Test 64QAM
+      //  out[j] = std::complex<double>(0, 0);
+      //}
 
-            // Right zero padding
-            out[(i+1)*size - n_zp/2].real(4/3);
-            out[(i+1)*size - n_zp/2].imag(0);
-            for (int j = (i+1)*size - n_zp/2 +1; j<(i+1)*size; j++)
-            {
-              out[j] = 0;
-            }
+      // Add zero padding to Data vector
+      //c = 0;
+      //for (int j = i*size + n_zp/2; j<(i+1)*size - n_zp/2; j++)
+      //{
+      //  out[j] = out_temp[c];
+      //  c++;
+      //  //TODO: out_temp should be destructed
+      //}
 
-            // Data
-            c = 0;
-            for (int j = i*size + n_zp/2; j<(i+1)*size - n_zp/2; j++)
-            {
-              out[j] = out_temp[c];
-              c++;
-              //TODO: out_temp should be destructed
-            }
+      // Right zero padding
+      //out[(i+1)*size - n_zp/2].real(4/3);
+      //out[(i+1)*size - n_zp/2].imag(0);
+      //for (int j = (i+1)*size - n_zp/2 +1; j<(i+1)*size; j++)
+      //{
+      //  //Test, cambiar 0 a 0 modulado, caso test 64QAM
+      //  out[j] = std::complex<double>(0, 0);
+      //}
 
 
-
-        frame_counter++;  
-        d_carrier_pos = (frame_counter % 4);
-        frame_counter = (frame_counter % 204);
-      }
-        /* only for tests*/
-      //  for (int i=0; i<noutput_items ; i++)
-      //  {
-      //    printf("frame: %i out[%d]=%2.6f \n", frame_counter, i, out[i].real());
-      //  }
-
-      	/*for (int c  = 0; c< noutput_items*pow(2, 10+d_mode); c++)
-	{
-		if (out[c].real() != 0) | (out[c].imag() != 0)
-		{
-			printf("out[%d].real = %f \n", c, out[c].real());
-			printf("out[%d].imag = %f \n", c, out[c].imag());
-		}
-	}*/
+      frame_counter++;  
+      d_carrier_pos = (frame_counter % 4);
+      frame_counter = (frame_counter % 204);
+    }
       
-      this->consume(0, noutput_items);
-      // Tell runtime system how many output items we produced.
-      return noutput_items;
+     this->consume(0, noutput_items);
+     // Tell runtime system how many output items we produced.
+     return noutput_items;
     }
 
   } /* namespace isdbt */

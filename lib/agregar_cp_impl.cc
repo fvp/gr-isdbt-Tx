@@ -93,19 +93,15 @@ namespace gr {
       int d_cp_items =  static_cast<int> ((d_cp_length)*pow(2.0,10+d_mode));            /* d_cp_items is the number of samples in cp*/
       int d_total_input_size = static_cast<int> (pow(2.0, 10+d_mode));
       int output_size = static_cast<int> ((1 + d_cp_length)*pow(2.0,10+d_mode));
+      
+      printf("output_size: %i\n", output_size);
+      printf("d_cp_items: %i\n", d_cp_items);
+      printf("d_total_input_size: %i\n", d_total_input_size);
+
       for (int i=0; i<noutput_items; i++)   
       {
-        for (int j=0; j<output_size; j++)
-        {
-          if (j < d_cp_items)
-          {
-            //Copying Prefix values
-            out[j] = in[(d_total_input_size - d_cp_items + j)];
-          } else {
-            //Copiying raw input data 
-            out[j] =in[j - d_cp_items];
-          }
-        }    
+        memcpy(out + i*output_size, in + i*d_total_input_size, d_cp_items);
+        memcpy(out + d_cp_items + i*output_size, in + i*d_total_input_size, d_total_input_size); 
       }
 
       // 3-> Consume the inputs

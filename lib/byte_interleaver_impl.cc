@@ -119,8 +119,8 @@ namespace gr {
       unsigned char *out = (unsigned char *) output_items[0];
 
       int index = 0;
-      printf("noutput_items : %i \n", noutput_items);
-      printf("Delay (TSPs): %i \n", d_delay_tsp);
+      //printf("noutput_items : %i \n", noutput_items);
+      //printf("Delay (TSPs): %i \n", d_delay_tsp);
 
       for (int output = 0; output<noutput_items; output++)
       {

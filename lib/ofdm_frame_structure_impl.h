@@ -103,7 +103,18 @@ namespace gr {
                                 int LayerA_seg, int LayerB_seg, int LayerC_seg);
 
       ~ofdm_frame_structure_impl();
+      
+      int active_carriers_mod_1 = 96;
+      int active_carriers_mod_2 = 192;
+      int active_carriers_mod_3 = 384;
 
+      int total_carriers_mod_1 = 108;
+      int total_carriers_mod_2 = 216;
+      int total_carriers_mod_3 = 432;
+
+      int zero_pad_left = 643;
+
+      bool primera = true;
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
