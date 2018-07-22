@@ -142,15 +142,21 @@ namespace gr {
     {
       //Test TMCC word for writing bit, returns symbol mapped into DBPSK
       bool current_bit, previous_bit;
+      
       //First bit, define TMCC word
       if (frame_counter == 0)
+      //
+      //First Case, decision based only on first bit
+      //
       {
         //Assign b0, check for SP0 value
         gr_complex sp0 = this->write_SP(SPindex, d_mode, SegmentNumber);
         if(sp0.real() < 0)
         {
           TMCCword.set(0);
-        } else {
+        } 
+        else 
+        {
           TMCCword.reset(0);
         }
         //Assign b1-b16
@@ -162,7 +168,9 @@ namespace gr {
             if (TMCC_sync_word.test(i))
             {
               TMCCword.set(i+1);
-            } else {
+            } 
+            else 
+            {
               TMCCword.reset(i+1);
             }
           }
@@ -171,7 +179,9 @@ namespace gr {
             if (TMCC_sync_word.test(i))
             {
               TMCCword.reset(i+1);
-            } else {
+            } 
+            else 
+            {
               TMCCword.set(i+1);
             }
           }
@@ -191,14 +201,18 @@ namespace gr {
         TMCCword.set(24); //Test case: No changes in system
         TMCCword.set(25); 
         TMCCword.reset(26); //Alarm bit, defaulted in 0 //TODO: fijar parametrico, desde fuera del bloque
-        if (!d_IsFullSeg){
+        if (!d_IsFullSeg)
+        {
           TMCCword.set(27);
-        } else {
+        } 
+        else 
+        {
           TMCCword.reset(27);
         }
         // Current info
         // Layer A
-        switch(d_ModSchemeA) {
+        switch(d_ModSchemeA) 
+        {
          case DQPSK:
           {
             TMCCword.reset(28);
@@ -240,7 +254,8 @@ namespace gr {
             break;
           }
         }
-        switch(d_ConvCodeA) {
+        switch(d_ConvCodeA) 
+        {
          case c_1_2:
           {
             TMCCword.reset(31);
@@ -430,13 +445,16 @@ namespace gr {
               break;
             }
           }
-        } else {
+        }
+        else 
+        {
           TMCCword.set(34);
           TMCCword.set(35);
           TMCCword.set(36);
         }
         //b37 - b40 Layer A number of segments
-        switch (d_LayerA_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+        switch (d_LayerA_seg)
+        { //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
           case 0:
           {
             //Unused layer
@@ -557,7 +575,8 @@ namespace gr {
           }
         }
         // LAYER B
-        switch(d_ModSchemeB) {
+        switch(d_ModSchemeB) 
+        {
          case DQPSK:
           {
             TMCCword.reset(41);
@@ -599,7 +618,8 @@ namespace gr {
             break;
           }
         }
-        switch(d_ConvCodeB) {
+        switch(d_ConvCodeB) 
+        {
          case c_1_2:
           {
             TMCCword.reset(44);
@@ -786,12 +806,15 @@ namespace gr {
             }
 
           }
-        } else {
+        } 
+        else //UNUSED B LAYER FLAG
+        {
           TMCCword.set(47);
           TMCCword.set(48);
           TMCCword.set(49);
         }
-        switch (d_LayerB_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+        switch (d_LayerB_seg)
+        { //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
           case 0:
           {
             //Unused layer
@@ -912,7 +935,8 @@ namespace gr {
           }
         }
         // LAYER C
-        switch(d_ModSchemeC) {
+        switch(d_ModSchemeC) 
+        {
          case DQPSK:
           {
             TMCCword.reset(56);
@@ -954,7 +978,8 @@ namespace gr {
             break;
           }
         }
-        switch(d_ConvCodeC) {
+        switch(d_ConvCodeC) 
+        {
          case c_1_2:
           {
             TMCCword.reset(57);
@@ -1141,12 +1166,15 @@ namespace gr {
             }
 
           }
-        } else {
+        } 
+        else 
+        {
           TMCCword.set(60);
           TMCCword.set(61);
           TMCCword.set(62);
         }
-        switch (d_LayerC_seg){ //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
+        switch (d_LayerC_seg)
+        { //TODO: revisar (if d_LayerA_seg.test(0) == TRUE)
           case 0:
           {
             //Unused layer
@@ -1270,9 +1298,12 @@ namespace gr {
         //Unused in this example
         for (int i = 67; i < 107; i++)
         {
-          if (TMCCword.test(i)){
+          if (TMCCword.test(i))
+          {
             TMCCword.set(i);
-          } else {
+          } 
+          else
+          {
           TMCCword.reset(i);
           }
         }
@@ -1284,7 +1315,8 @@ namespace gr {
         //Parity bits b122-b203
         for (int i = 122; i < 203; i++)
         {
-          if (TMCCword.test(i)){
+          if (TMCCword.test(i))
+          {
             TMCCword.set(i);
           } else {
           TMCCword.reset(i);
@@ -1296,13 +1328,17 @@ namespace gr {
       //
       //General case, decision based on current bit and previous bit
       //
+      contador++;
       current_bit = TMCCword.test(frame_counter);
       previous_bit = TMCCword.test(frame_counter - 1);
+      //printf("Contador TMCC posicion: %i \n", contador);
       if (!((current_bit & previous_bit) || (!current_bit & !previous_bit)))
       {
         // Send 1
         return std::complex<float>(-4.0/3.0, 0);   
-      } else {
+      } 
+      else 
+      {
         // Send 0
         return std::complex<float>(4.0/3.0, 0);
       }
@@ -1630,19 +1666,27 @@ namespace gr {
       InputIndex = (output_item*d_total_segments+SegmentNumber)*active_carriers_mod_2;
       index = pow(2, 10+d_mode)*output_item+total_carriers_mod_2*SegmentPos + zero_pad_left;
       
+      gr_complex TMCC_Temp;
+
       //Fill segments with data and relevant bits in relevant positions found
       for (int j = 0; j < total_carriers_mod_2; j++) 
       {
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
+          //printf("Frame Number: %i, SP_pos: %i\n", frame_counter, j);
           out[index + j] = this->write_SP(total_carriers_mod_2*SegmentPos+j, d_mode, SegmentNumber);
         } 
         /* TMCC 1 and 2*/
-        else if ((j == TMCCPos1) || (j == TMCCPos2)) 
+        else if (j == TMCCPos1)
         {
           out[index + j] = this->write_TMCC(frame_counter, SegmentNumber);
-          TMCCindex++;
+          TMCC_Temp = out[index + j];
+
+        }
+        else if (j == TMCCPos2)
+        {
+          out[index + j] = TMCC_Temp;
         } 
         /* AC1, AC2, AC3 or AC4 */
         else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) 
@@ -1952,14 +1996,12 @@ namespace gr {
     int sym_size = 13*(48*pow(2, d_mode)+12*pow(2, d_mode-1)); //13*108 Mode 1, 13*216 Mode 2, 13*432 Mode 3
     int n_zp = size - sym_size; // Number of zero padding carriers
 
-
     //1) Initialize output vectors in 0
 	  for (int c  = 0; c< noutput_items*size; c++)
 	   // TODO: think a better way to solve this
 	   {
 		    out[c] = std::complex<double>(0, 0);
 	   }
-
      //2) Fill output vectors with data and other system info
     for (int i = 0; i < noutput_items ; i++) 
     {
@@ -1968,6 +2010,7 @@ namespace gr {
       {
         //First symbol of OFDM structure
         TMCCindex = 0;      //TMCC word position across symbol
+        contador=0;
       }
       //fill segments with data+
       switch (d_mode)
@@ -2012,55 +2055,6 @@ namespace gr {
           printf("Error: incorrect mode \n");
           break; 
       }
-      // Zero padding carriers
-      if(primera)
-      {
-        for (int i=0; i<4096; i++)
-        {
-        printf("out[%i]=%f\n",i,out[i].real());
-        }
-        for (int i=0; i<active_carriers_mod_2; i++)
-        {
-        printf("in[%i]=%f\n",i,in[i].real());
-        }
-        primera = false;
-      }    
-      //int c = 0;
-      //gr_complex out_temp[sym_size] = {};
-
-            
-      //for (int j = i*size; j<(i*size + sym_size); j++)
-      //{
-      //  //Test, cambiar 0 a 0 modulado, caso test 64QAM
-      //out[c] = std::complex<double>(0, 0);
-      // c++;
-      //}
-
-      // Left zero padding
-      //for (int j = i*size; j<(i*size + n_zp/2); j++)
-      //{
-      //  //Test 64QAM
-      //  out[j] = std::complex<double>(0, 0);
-      //}
-
-      // Add zero padding to Data vector
-      //c = 0;
-      //for (int j = i*size + n_zp/2; j<(i+1)*size - n_zp/2; j++)
-      //{
-      //  out[j] = out_temp[c];
-      //  c++;
-      //  //TODO: out_temp should be destructed
-      //}
-
-      // Right zero padding
-      //out[(i+1)*size - n_zp/2].real(4/3);
-      //out[(i+1)*size - n_zp/2].imag(0);
-      //for (int j = (i+1)*size - n_zp/2 +1; j<(i+1)*size; j++)
-      //{
-      //  //Test, cambiar 0 a 0 modulado, caso test 64QAM
-      //  out[j] = std::complex<double>(0, 0);
-      //}
-
 
       frame_counter++;  
       d_carrier_pos = (frame_counter % 4);

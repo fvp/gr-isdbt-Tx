@@ -90,7 +90,7 @@ namespace gr {
       int factor = (int) (pow(2.0,mode-1));
       int d_tsp = (int)(204*mod_scheme*d_conv_code*96*factor)/(8*204);
       d_delay_tsp = d_tsp*segments - 11;
-      printf("Delay (TSPs): %i \n", d_delay_tsp);
+      //printf("Delay (TSPs): %i \n", d_delay_tsp);
       //Construct a delay queue
       for (int i=0; i<204; i++)
       {
@@ -118,7 +118,7 @@ namespace gr {
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
 
-      printf("Delay (TSPs): %i \n", d_delay_tsp);
+      //printf("Delay (TSPs): %i \n", d_delay_tsp);
       for (int input = 0; input<noutput_items; input++)
       {
         for (int i=0; i<204; i++)

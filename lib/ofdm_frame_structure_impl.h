@@ -114,6 +114,8 @@ namespace gr {
 
       int zero_pad_left = 643;
 
+      int contador = 0;
+
       bool primera = true;
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
