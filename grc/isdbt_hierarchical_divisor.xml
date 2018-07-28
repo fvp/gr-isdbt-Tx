@@ -13,7 +13,7 @@
   <source>
     <name>out0</name>
     <type>byte</type>
-    <vlen>204*119</vlen>
+    <vlen>204*118</vlen>
   </source>
     <source>
     <name>out1</name>

@@ -80,7 +80,7 @@ namespace gr {
       d_mode = mode;        /* Transmission Mode */
       sp_keyword = 0b00000000000; /* SP keyword default*/
       TMCCword.set();
-      TMCC_sync_word = 0b0011010111101110;
+      TMCC_sync_word = 0b0111011110101100;
       InputIndex = 0;
       d_ModSchemeA = (carrier_mod_scheme) ModSchemeA;
       d_ModSchemeB = (carrier_mod_scheme) ModSchemeB;
@@ -150,7 +150,7 @@ namespace gr {
       //
       {
         //Assign b0, check for SP0 value
-        gr_complex sp0 = this->write_SP(SPindex, d_mode, SegmentNumber);
+        gr_complex sp0 = this->write_SP(total_carriers_mod_2*6, d_mode, SegmentNumber);
         if(sp0.real() < 0)
         {
           TMCCword.set(0);
@@ -160,7 +160,6 @@ namespace gr {
           TMCCword.reset(0);
         }
         //Assign b1-b16
-        bool EsPar = ((frame_counter % 2) == 0);
         for (int i = 0; i < 16; i++)
         {
           if (EsPar)
@@ -1322,25 +1321,32 @@ namespace gr {
           TMCCword.reset(i);
           }
         }
+        // Codes the TMCCword
+        for (int b = 1; b < 204; b++)
+        {
+          (TMCCword.test(b-1)^TMCCword.test(b))?TMCCword.set(b):TMCCword.reset(b);
+        }
         // Return bit0
         return sp0;
       }
       //
       //General case, decision based on current bit and previous bit
       //
-      contador++;
+      if (frame_counter == 203)
+      {
+        EsPar = !EsPar;
+      }
       current_bit = TMCCword.test(frame_counter);
-      previous_bit = TMCCword.test(frame_counter - 1);
-      //printf("Contador TMCC posicion: %i \n", contador);
-      if (!((current_bit & previous_bit) || (!current_bit & !previous_bit)))
+      
+      if (current_bit)
       {
         // Send 1
-        return std::complex<float>(-4.0/3.0, 0);   
+        return tmcc_out_1;  
       } 
       else 
       {
         // Send 0
-        return std::complex<float>(4.0/3.0, 0);
+        return tmcc_out_0;
       }
     }
 
@@ -1674,7 +1680,6 @@ namespace gr {
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-          //printf("Frame Number: %i, SP_pos: %i\n", frame_counter, j);
           out[index + j] = this->write_SP(total_carriers_mod_2*SegmentPos+j, d_mode, SegmentNumber);
         } 
         /* TMCC 1 and 2*/
@@ -1682,7 +1687,6 @@ namespace gr {
         {
           out[index + j] = this->write_TMCC(frame_counter, SegmentNumber);
           TMCC_Temp = out[index + j];
-
         }
         else if (j == TMCCPos2)
         {
@@ -1691,14 +1695,14 @@ namespace gr {
         /* AC1, AC2, AC3 or AC4 */
         else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) 
         {
-          //out[index] = std::complex<double>(0, 0);
-          out[index + j] = std::complex<double>(0, 0);
+          out[index + j] = std::complex<float>(-4.0/3.0, 0); 
         } 
         /* Fill with raw data*/
         else 
         {
-          //printf("Segmento 0, out: %i in: %i\n", index, InputIndex);
           out[index + j] = in[InputIndex];
+          //out[index + j].real(0);
+          //out[index + j].imag(0);
           InputIndex++;
         }
       }
@@ -2038,6 +2042,7 @@ namespace gr {
               this->fill_segment_mode2(in, out, k, i);
             }
           }
+          out[3452] = gr_complex(4.0/3.0,0);
           break;
         case 3:
           /* Segment 0*/

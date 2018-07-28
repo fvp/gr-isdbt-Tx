@@ -79,8 +79,7 @@ namespace gr {
           gr::io_signature::make(1, 1, 204*sizeof(unsigned char))
       )
     {
-      m = 0;
-      init_prbs();
+      //init_prbs();
     }
 
     /*
@@ -98,36 +97,42 @@ namespace gr {
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
 
-      // Aca empieza el codigo
+      int to_consume = noutput_items; 
+      int to_out = noutput_items;
       
-
+      if (symbols_coded % 204 == 0)
+      {
+        //Reset PRBS for each OFDM Frame
+        //printf("symbols_coded: %i\n", symbols_coded);
+        //printf("symbols_coded mod 204: %i\n", symbols_coded % 204);
+        init_prbs();
+        symbols_coded = 0;
+      }
+      // Aca empieza el codigo
       for (int i = 0; i < noutput_items; i++)
       {
+        symbols_coded++;
 
-        
-        //out[i*204] = in[i*204]; // Deshabilita XOR durante byte de sincronismo (asumimos que copia el 0x47, es así?)
-        //a = clock_prbs(8); // Consume 1 clock_prbs, el a es un bolaso. 
-        
-        clock_prbs(8);
-        for (int j = 0; j < 204; j++)
-          // OJO: el primer byte (que corresponde al 0x47) debe ser copiado tal cual sin pasarlo por el XOR
+        //XOR every bit from 0 to 202
+        for (int j = 0; j < tsp_size - 1; j++)
         {
-         
-          out[i*204 + j] = in[i*204 + j] ^ clock_prbs(8); 
-          m = (m+1)% 1280;
-
-          // Chequeamos si se ha producido un cuadro multiplex para reiniciar la palabra
-          // (Para Modo 1, con CP = 1/4 entran M=1280 TSP por cuadro)
-          if (m == 0)
-          {
-            init_prbs();
-          }
+          out[i*tsp_size + j] = in[i*tsp_size + j] ^ clock_prbs(8); 
         }
 
+        //Test if byte 203 is sync, dont do XOR
+        if (in[i*tsp_size + 203] == 0x47)
+        {
+          //Copy it exactly
+          out[i*tsp_size + 203] = in[i*tsp_size + 203];
+        }
+        else
+        {
+          printf("Enery Dispersal) Input Error: No Sync byte in in[203]\n");
+        }    
+        clock_prbs(8); // Consume 1 clock_prbs
       }
 
       // Aca terminael codigo
-      
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

@@ -32,36 +32,36 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "tsp_resize_impl.h"
+#include "sync_adjust_impl.h"
 
 namespace gr {
   namespace isdbt {
 
-    tsp_resize::sptr
-    tsp_resize::make()
+    sync_adjust::sptr
+    sync_adjust::make()
     {
       return gnuradio::get_initial_sptr
-        (new tsp_resize_impl());
+        (new sync_adjust_impl());
     }
 
     /*
      * The private constructor
      */
-    tsp_resize_impl::tsp_resize_impl()
-      : gr::sync_block("tsp_resize",
-              gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
-              gr::io_signature::make(1, 1, 188*sizeof(unsigned char)))
+    sync_adjust_impl::sync_adjust_impl()
+      : gr::sync_block("sync_adjust",
+            gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
+            gr::io_signature::make(1, 1, 204*sizeof(unsigned char)))
     {}
 
     /*
      * Our virtual destructor.
      */
-    tsp_resize_impl::~tsp_resize_impl()
+    sync_adjust_impl::~sync_adjust_impl()
     {
     }
 
     int
-    tsp_resize_impl::work(int noutput_items,
+    sync_adjust_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
@@ -72,7 +72,17 @@ namespace gr {
       for (int output = 0; output < noutput_items; output++)
       {
         //Takes last 16 bytes out of TSP
-        memcpy(out + output*188, in + output*204, 188);
+        memcpy(out + output*tsp_size, in + output*tsp_size + 1, tsp_size - 1);
+        //Move Sync byte to end
+        if (in[output*tsp_size] == 0x47)
+        {
+          out[203 + output*tsp_size] = 0x47;
+        }
+        else
+        {
+          printf("Sync Adjust) Input Error: No Sync byte in in[0]\n");
+        }
+        
       }
 
       // Tell runtime system how many output items we produced.

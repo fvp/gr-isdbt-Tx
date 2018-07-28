@@ -27,50 +27,33 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
-#define INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
+#ifndef INCLUDED_ISDBT_SYNC_ADJUST_IMPL_H
+#define INCLUDED_ISDBT_SYNC_ADJUST_IMPL_H
 
-#include <isdbt/energy_dispersal.h>
+#include <isdbt/sync_adjust.h>
 
 namespace gr {
   namespace isdbt {
 
-    class energy_dispersal_impl : public energy_dispersal
+    class sync_adjust_impl : public sync_adjust
     {
-      private:
-        // Packet size
-        static const int d_psize;
-        // Number of packets after which PRBS is reset
-        static const int d_npacks;
-        // Number of blocks
-        int d_nblocks = 1;
-        // SYNC value
-        static const int d_SYNC;
-        // Negative SYNC value
-        static const int d_NSYNC;
-
-        // Register for PRBS
-        int d_reg;
-
-        int symbols_coded;
-
-      void init_prbs();
-      int clock_prbs(int clocks);
+     private:
+      // Nothing to declare in this block.
 
      public:
-      energy_dispersal_impl();
-      ~energy_dispersal_impl();
+      sync_adjust_impl();
+      ~sync_adjust_impl();
 
       int tsp_size = 204;
-      int tsp_per_frame = 2304; //Modo 2, TC 1/8 = 2304
 
+      // Where all the action really happens
       int work(int noutput_items,
-                    gr_vector_const_void_star &input_items,
-                    gr_vector_void_star &output_items);
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items);
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H */
+#endif /* INCLUDED_ISDBT_SYNC_ADJUST_IMPL_H */
 

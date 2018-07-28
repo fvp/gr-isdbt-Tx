@@ -115,8 +115,7 @@ namespace gr {
                 // Search for frame_begin, when the PRBS should be restarted. 
                 std::vector<tag_t> tags;
                 const uint64_t nread = this->nitems_read(0); //number of items read on port 0
-                this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("frame_begin"));
-                printf("tags.size(): %i \n", tags.size()) ; 
+                this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("frame_begin")); 
 
                 if (tags.size())
                 {
@@ -127,10 +126,16 @@ namespace gr {
                         //return (0);
                         to_consume = tags[0].offset - nread; 
                         to_out = to_consume; 
+                        //printf("NO Reset PRBS\n");
+                        //printf("tags.offset: %i \n", tags[0].offset);
+                        //printf("nread : %i \n", nread);
                     }
                     else 
                     {
                         init_prbs();
+                        //printf("Reset PRBS\n");
+                        //printf("tags.offset: %i \n", tags[0].offset);
+                        //printf("nread : %i \n", nread);
                     }
                 }
 

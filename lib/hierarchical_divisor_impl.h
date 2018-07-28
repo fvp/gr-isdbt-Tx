@@ -46,6 +46,9 @@ namespace gr {
 
       int tsp_len = 204;
       int total_tsp_in_multiplex = 2176;
+      int layer_a_tsp = 118;
+      int layer_b_tsp = 712;
+      int layer_c_tsp = 712;
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 

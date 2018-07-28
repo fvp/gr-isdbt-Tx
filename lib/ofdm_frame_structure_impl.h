@@ -116,7 +116,11 @@ namespace gr {
 
       int contador = 0;
 
+      gr_complex tmcc_out_1 = gr_complex(-4.0/3.0, 0);
+      gr_complex tmcc_out_0 = gr_complex(4.0/3.0, 0);
+
       bool primera = true;
+      bool EsPar = true;
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 

@@ -27,50 +27,39 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
-#define INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H
 
-#include <isdbt/energy_dispersal.h>
+#ifndef INCLUDED_ISDBT_SYNC_ADJUST_H
+#define INCLUDED_ISDBT_SYNC_ADJUST_H
+
+#include <isdbt/api.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace isdbt {
 
-    class energy_dispersal_impl : public energy_dispersal
+    /*!
+     * \brief <+description of block+>
+     * \ingroup isdbt
+     *
+     */
+    class ISDBT_API sync_adjust : virtual public gr::sync_block
     {
-      private:
-        // Packet size
-        static const int d_psize;
-        // Number of packets after which PRBS is reset
-        static const int d_npacks;
-        // Number of blocks
-        int d_nblocks = 1;
-        // SYNC value
-        static const int d_SYNC;
-        // Negative SYNC value
-        static const int d_NSYNC;
-
-        // Register for PRBS
-        int d_reg;
-
-        int symbols_coded;
-
-      void init_prbs();
-      int clock_prbs(int clocks);
-
      public:
-      energy_dispersal_impl();
-      ~energy_dispersal_impl();
+      typedef boost::shared_ptr<sync_adjust> sptr;
 
-      int tsp_size = 204;
-      int tsp_per_frame = 2304; //Modo 2, TC 1/8 = 2304
-
-      int work(int noutput_items,
-                    gr_vector_const_void_star &input_items,
-                    gr_vector_void_star &output_items);
+      /*!
+       * \brief Return a shared_ptr to a new instance of isdbt::sync_adjust.
+       *
+       * To avoid accidental use of raw pointers, isdbt::sync_adjust's
+       * constructor is in a private implementation
+       * class. isdbt::sync_adjust::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make();
     };
 
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_ENERGY_DISPERSAL_IMPL_H */
+#endif /* INCLUDED_ISDBT_SYNC_ADJUST_H */
 

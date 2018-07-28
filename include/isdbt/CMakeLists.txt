@@ -55,5 +55,5 @@ install(FILES
     delay_adjustment.h
     hierarchical_divisor.h
     tsp_resize.h
-    DESTINATION include/isdbt
+    sync_adjust.h DESTINATION include/isdbt
 )
