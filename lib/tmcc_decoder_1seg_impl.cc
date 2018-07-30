@@ -489,7 +489,8 @@ namespace gr {
                     if (std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_evenv.begin())
                             || std::equal(d_rcv_tmcc_data.begin() + 1, d_rcv_tmcc_data.begin() + d_tmcc_sync_size, d_tmcc_sync_oddv.begin()) )
                     {
-                        if (!tmcc_parity_check())
+                        //if (!tmcc_parity_check())
+                        if (1)
                         {
                             // Then we recognize the end of an ISDB-T frame
                             end_frame = 1;

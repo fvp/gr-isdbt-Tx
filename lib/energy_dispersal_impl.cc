@@ -100,19 +100,18 @@ namespace gr {
       int to_consume = noutput_items; 
       int to_out = noutput_items;
       
-      if (symbols_coded % 204 == 0)
-      {
-        //Reset PRBS for each OFDM Frame
-        //printf("symbols_coded: %i\n", symbols_coded);
-        //printf("symbols_coded mod 204: %i\n", symbols_coded % 204);
-        init_prbs();
-        symbols_coded = 0;
-      }
       // Aca empieza el codigo
       for (int i = 0; i < noutput_items; i++)
       {
-        symbols_coded++;
-
+        //Symbols in TSP must come from user
+        if (symbols_coded % tsp_per_frame == 0)
+        {
+          //Reset PRBS for each OFDM Frame
+          //printf("symbols_coded: %i\n", symbols_coded);
+          //printf("symbols_coded mod 204: %i\n", symbols_coded % 204);
+          init_prbs();
+          symbols_coded = 0;
+        }
         //XOR every bit from 0 to 202
         for (int j = 0; j < tsp_size - 1; j++)
         {
@@ -130,6 +129,7 @@ namespace gr {
           printf("Enery Dispersal) Input Error: No Sync byte in in[203]\n");
         }    
         clock_prbs(8); // Consume 1 clock_prbs
+        symbols_coded++;
       }
 
       // Aca terminael codigo

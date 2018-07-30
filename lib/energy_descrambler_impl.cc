@@ -128,14 +128,14 @@ namespace gr {
                         to_out = to_consume; 
                         //printf("NO Reset PRBS\n");
                         //printf("tags.offset: %i \n", tags[0].offset);
-                        //printf("nread : %i \n", nread);
+                        printf("to_out : %i \n", to_out);
                     }
                     else 
                     {
                         init_prbs();
-                        //printf("Reset PRBS\n");
+                        printf("Reset PRBS\n");
                         //printf("tags.offset: %i \n", tags[0].offset);
-                        //printf("nread : %i \n", nread);
+                        printf("to_out : %i \n", to_out);
                     }
                 }
 

@@ -51,10 +51,10 @@ namespace gr {
      */
     hierarchical_divisor_impl::hierarchical_divisor_impl()
       : gr::block("hierarchical_divisor",
-              gr::io_signature::make(1, 1, 2176*204*sizeof(unsigned char)),
-              gr::io_signature::make3(3, 3, 118*204*sizeof(unsigned char),
-                                            712*204*sizeof(unsigned char),
-                                            712*204*sizeof(unsigned char))
+              gr::io_signature::make(1, 1, 2304*204*sizeof(unsigned char)),
+              gr::io_signature::make3(3, 3, 126*204*sizeof(unsigned char),
+                                            756*204*sizeof(unsigned char),
+                                            756*204*sizeof(unsigned char))
                                       )
     {}
 
@@ -104,7 +104,7 @@ namespace gr {
             case 1:
             {
               //Copy TSP to output A
-              memcpy(out0+ output*layer_a_tsp*204 + tsp_len*tsp_a, in + k*tsp_len + output*2176*204, tsp_len);
+              memcpy(out0+ output*layer_a_tsp*tsp_len + tsp_len*tsp_a, in + k*tsp_len + output*total_tsp_in_multiplex*tsp_len, tsp_len);
               tsp_a++;
               break;
             }
