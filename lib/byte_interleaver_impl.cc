@@ -88,13 +88,18 @@ namespace gr {
       }
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      int d_tsp = (int)(204*mod_scheme*d_conv_code*96*factor)/(8*204);
+      int d_tsp = (int)(TSP_size*mod_scheme*d_conv_code*96*factor)/(8*TSP_size);
       d_delay_tsp = d_tsp*segments - 11;
+      d_delay_bytes = 204*d_delay_tsp;
+      d_delay_queue = d_delay_bytes / 12;
+      printf("Delay (TSPs): %i \n", d_delay_tsp);
+      printf("Delay (Bytes): %i \n", d_delay_bytes);
+      printf("Delay (por fila): %i \n", d_delay_queue);
       //Create queues
       for (int i=0; i<12; i++)
       {
         //Create queue
-        delay_vector.push_back(new std::deque<unsigned char>(i*17 + d_delay_tsp,0)); 
+        delay_vector.push_back(new std::deque<unsigned char>(i*17 + d_delay_queue,0)); 
       }
     }
 

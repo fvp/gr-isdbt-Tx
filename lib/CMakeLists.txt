@@ -56,9 +56,7 @@ list(APPEND isdbt_sources
     mapper_impl.cc
     ts_remux_impl.cc
     byte_interleaver_impl.cc
-    bit_interleaver_impl.cc
     energy_dispersal_impl.cc
-    delay_adjustment_impl.cc
     hierarchical_divisor_impl.cc
     tsp_resize_impl.cc
     sync_adjust_impl.cc )

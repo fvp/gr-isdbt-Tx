@@ -50,9 +50,7 @@ install(FILES
     mapper.h
     ts_remux.h
     byte_interleaver.h
-    bit_interleaver.h
     energy_dispersal.h
-    delay_adjustment.h
     hierarchical_divisor.h
     tsp_resize.h
     sync_adjust.h DESTINATION include/isdbt

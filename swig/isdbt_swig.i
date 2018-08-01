@@ -35,9 +35,7 @@
 #include "isdbt/mapper.h"
 #include "isdbt/ts_remux.h"
 #include "isdbt/byte_interleaver.h"
-#include "isdbt/bit_interleaver.h"
 #include "isdbt/energy_dispersal.h"
-#include "isdbt/delay_adjustment.h"
 #include "isdbt/hierarchical_divisor.h"
 #include "isdbt/tsp_resize.h"
 #include "isdbt/sync_adjust.h"
@@ -104,12 +102,10 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, mapper);
 GR_SWIG_BLOCK_MAGIC2(isdbt, ts_remux);
 %include "isdbt/byte_interleaver.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, byte_interleaver);
-%include "isdbt/bit_interleaver.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, bit_interleaver);
+
 %include "isdbt/energy_dispersal.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, energy_dispersal);
-%include "isdbt/delay_adjustment.h"
-GR_SWIG_BLOCK_MAGIC2(isdbt, delay_adjustment);
+
 %include "isdbt/hierarchical_divisor.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, hierarchical_divisor);
 %include "isdbt/tsp_resize.h"

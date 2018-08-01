@@ -38,7 +38,7 @@ namespace gr {
     class byte_interleaver_impl : public byte_interleaver
     {
      private:
-      int d_mode, d_mod_scheme, d_delay_tsp;
+      int d_mode, d_mod_scheme, d_delay_tsp, d_delay_bytes, d_delay_queue;
       int TSP_size = 204;
       std::vector< std::deque<unsigned char> *> delay_vector;
 
