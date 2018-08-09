@@ -55,7 +55,7 @@ namespace gr {
        * class. isdbt::hierarchical_combination::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int mode, int segments_a, int segments_b, int segments_c);
     };
 
   } // namespace isdbt

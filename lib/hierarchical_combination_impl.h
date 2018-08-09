@@ -44,16 +44,6 @@ namespace gr {
       hierarchical_combination_impl();
       ~hierarchical_combination_impl();
 
-      int d_data_carriers_mode1 = 96;
-      int d_data_carriers_mode2 = 192;
-      int d_data_carriers_mode3 = 384;
-
-      int d_segments_a = 1;
-      int d_segments_b = 6;
-      int d_segments_c = 6;
-
-      int d_segments_total = 13;
-
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,
