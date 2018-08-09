@@ -126,7 +126,7 @@ namespace gr {
         }
         else
         {
-          printf("Enery Dispersal) Input Error: No Sync byte in in[203]\n");
+          //printf("Enery Dispersal) Input Error: No Sync byte in in[203]\n");
         }    
         clock_prbs(8); // Consume 1 clock_prbs
         symbols_coded++;

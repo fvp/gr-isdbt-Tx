@@ -50,5 +50,6 @@ install(FILES
     isdbt_hierarchical_divisor.xml
     isdbt_tsp_resize.xml
     isdbt_sync_adjust.xml
-    isdbt_null_remove.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_null_remove.xml
+    isdbt_hierarchical_combination.xml DESTINATION share/gnuradio/grc/blocks
 )

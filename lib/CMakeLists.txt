@@ -60,7 +60,8 @@ list(APPEND isdbt_sources
     hierarchical_divisor_impl.cc
     tsp_resize_impl.cc
     sync_adjust_impl.cc
-    null_remove_impl.cc )
+    null_remove_impl.cc
+    hierarchical_combination_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

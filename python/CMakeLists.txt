@@ -74,3 +74,4 @@ GR_ADD_TEST(qa_hierarchical_divisor ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_
 GR_ADD_TEST(qa_tsp_resize ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_tsp_resize.py)
 GR_ADD_TEST(qa_sync_adjust ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_sync_adjust.py)
 GR_ADD_TEST(qa_null_remove ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_null_remove.py)
+GR_ADD_TEST(qa_hierarchical_combination ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_hierarchical_combination.py)

@@ -54,5 +54,6 @@ install(FILES
     hierarchical_divisor.h
     tsp_resize.h
     sync_adjust.h
-    null_remove.h DESTINATION include/isdbt
+    null_remove.h
+    hierarchical_combination.h DESTINATION include/isdbt
 )
