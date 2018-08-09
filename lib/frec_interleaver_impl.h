@@ -38,7 +38,7 @@ namespace gr {
     class frec_interleaver_impl : public frec_interleaver
     {
      private:
-      int d_mode, d_carriers_per_segment, d_noutput;
+      int d_mode, d_carriers_per_segment;
       bool d_IsFullSeg;
       
       static const int d_data_carriers_mode1;
@@ -47,6 +47,12 @@ namespace gr {
 
       frec_interleaver_impl(int mode, bool IsFullSeg);
       ~frec_interleaver_impl();
+
+      int randomizer(gr_complex* in, gr_complex* out, int output);
+
+      int intra_segment_interleaver(gr_complex* in, gr_complex* out, int output);
+
+      int inter_segment_rotation(gr_complex* in, gr_complex* out, int output);
 
       int rand_mode_1[96] = {80, 93, 63, 92, 94, 55, 17, 81, 6, 51, 9, 85, 89, 65, 52, 15, 73, 66, 46, 71, 12, 70, 18, 13, \
           95, 34, 1, 38, 78, 59, 91, 64, 0, 28, 11, 4, 45, 35, 16, 7, 48, 22, 23, 77, 56, 19, 8, 36, \

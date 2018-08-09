@@ -43,7 +43,7 @@ namespace gr {
 
     const int d_segments_total = 13;
 
-    int d_active_carriers;
+    static int d_active_carriers;
     int d_segments_a;
     int d_segments_b;
     int d_segments_c;

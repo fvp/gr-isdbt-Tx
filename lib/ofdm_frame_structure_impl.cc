@@ -2020,42 +2020,87 @@ namespace gr {
       switch (d_mode)
       {
         case 1:
-          /* Segment 0*/
-          this->fill_segment_mode1(in, out, 0, i); //in, out, segment, global_index
-          /*Segments 1 to 12*/
+{
           if (d_IsFullSeg)
           {
-            for (int k=1; k<13;k++)
+            /*Segments 0 to 12*/
+            for (int seg = 0; seg < d_LayerA_seg ; seg++)
             {
-              this->fill_segment_mode1(in, out, k, i);
+              this->fill_segment_mode1(in, out, seg, i);
             }
+            for (int seg = 0; seg < d_LayerB_seg ; seg++)
+            {
+              this->fill_segment_mode1(in, out, seg + d_LayerA_seg, i);
+            }
+            for (int seg = 0; seg < d_LayerC_seg ; seg++)
+            {
+              this->fill_segment_mode1(in, out, seg + d_LayerA_seg + d_LayerB_seg, i);
+            }
+
+          }
+          else
+          {
+            //Only Fill segment 0 for One-Seg Transmission
+            /* Segment 0*/
+            this->fill_segment_mode1(in, out, 0, i);
           }
           break;
+        }
         case 2:
-          /* Segment 0*/
-          this->fill_segment_mode2(in, out, 0, i);
-          /*Segments 1 to 12*/
+        {
           if (d_IsFullSeg)
           {
-            for (int k=1; k<13;k++)
+            /*Segments 0 to 12*/
+            for (int seg = 0; seg < d_LayerA_seg ; seg++)
             {
-              this->fill_segment_mode2(in, out, k, i);
+              this->fill_segment_mode2(in, out, seg, i);
             }
+            for (int seg = 0; seg < d_LayerB_seg ; seg++)
+            {
+              this->fill_segment_mode2(in, out, seg + d_LayerA_seg, i);
+            }
+            for (int seg = 0; seg < d_LayerC_seg ; seg++)
+            {
+              this->fill_segment_mode2(in, out, seg + d_LayerA_seg + d_LayerB_seg, i);
+            }
+
           }
-          out[3452] = gr_complex(4.0/3.0,0);
+          else
+          {
+            //Only Fill segment 0 for One-Seg Transmission
+            /* Segment 0*/
+            this->fill_segment_mode2(in, out, 0, i);
+          }
+          //out[3452] = gr_complex(4.0/3.0,0);
           break;
+        }
         case 3:
-          /* Segment 0*/
-          this->fill_segment_mode3(in, out, 0, i);
-          /*Segments 1 to 12*/
+        {
           if (d_IsFullSeg)
           {
-            for (int k=1; k<13;k++)
+            /*Segments 0 to 12*/
+            for (int seg = 0; seg < d_LayerA_seg ; seg++)
             {
-              this->fill_segment_mode3(in, out, k, i);
+              this->fill_segment_mode3(in, out, seg, i);
             }
+            for (int seg = 0; seg < d_LayerB_seg ; seg++)
+            {
+              this->fill_segment_mode3(in, out, seg + d_LayerA_seg, i);
+            }
+            for (int seg = 0; seg < d_LayerC_seg ; seg++)
+            {
+              this->fill_segment_mode3(in, out, seg + d_LayerA_seg + d_LayerB_seg, i);
+            }
+
+          }
+          else
+          {
+            //Only Fill segment 0 for One-Seg Transmission
+            /* Segment 0*/
+            this->fill_segment_mode3(in, out, 0, i);
           }
           break;
+        }
         default:
           printf("Error: incorrect mode \n");
           break; 

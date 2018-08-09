@@ -5,11 +5,7 @@
   <category>ISDBT</category>
   <import>import isdbt</import>
   <make>isdbt.frec_interleaver($mode, $IsFullSeg)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
+
   <param>
      <name>Transmission Mode</name>
    <key>mode</key>
