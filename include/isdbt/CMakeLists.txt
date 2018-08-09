@@ -53,5 +53,6 @@ install(FILES
     energy_dispersal.h
     hierarchical_divisor.h
     tsp_resize.h
-    sync_adjust.h DESTINATION include/isdbt
+    sync_adjust.h
+    null_remove.h DESTINATION include/isdbt
 )

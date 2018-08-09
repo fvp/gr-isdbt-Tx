@@ -135,8 +135,7 @@ namespace gr {
 
 				//printf("--- ENERGY DESCRAMBLER-> noutput_items = %d\n",noutput_items);
                 for (int i = 0; i < to_out; i++)
-                {
-                    
+                {   
                     // The sync byte should be taken from the end and put in the beginning. 
                     //out[i*d_TSP_SIZE] = d_SYNC; 
                     out[i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];

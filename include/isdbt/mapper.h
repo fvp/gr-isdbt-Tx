@@ -46,10 +46,8 @@ namespace gr {
     {
      public:
       typedef boost::shared_ptr<mapper> sptr;
-      
-      static int d_total_segments; 
 
-      static sptr make(int mode, int constType, bool isFullSeg);
+      static sptr make(int mode, int mod_scheme, int segments);
     };
 
   } // namespace isdbt

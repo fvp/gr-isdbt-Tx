@@ -27,26 +27,24 @@
  * 
  */
 
-#ifndef INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H
-#define INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H
+#ifndef INCLUDED_ISDBT_NULL_REMOVE_IMPL_H
+#define INCLUDED_ISDBT_NULL_REMOVE_IMPL_H
 
-#include <isdbt/byte_interleaver.h>
+#include <isdbt/null_remove.h>
 
 namespace gr {
   namespace isdbt {
 
-    class byte_interleaver_impl : public byte_interleaver
+    class null_remove_impl : public null_remove
     {
      private:
-      int d_mode, d_mod_scheme, d_delay_tsp, d_delay_bytes, d_delay_queue;
-      int TSP_size = 204;
-      std::vector< std::deque<unsigned char> *> delay_vector;
-      
-     public:
-      byte_interleaver_impl(int mode, int conv_code, int mod_scheme, int segments);
-      ~byte_interleaver_impl();
+      // Nothing to declare in this block.
 
-      float d_conv_code;
+     public:
+      null_remove_impl();
+      ~null_remove_impl();
+
+      int tsp_size = 204;
 
       // Where all the action really happens
       int work(int noutput_items,
@@ -57,5 +55,5 @@ namespace gr {
   } // namespace isdbt
 } // namespace gr
 
-#endif /* INCLUDED_ISDBT_BYTE_INTERLEAVER_IMPL_H */
+#endif /* INCLUDED_ISDBT_NULL_REMOVE_IMPL_H */
 

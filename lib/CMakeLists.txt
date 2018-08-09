@@ -59,7 +59,8 @@ list(APPEND isdbt_sources
     energy_dispersal_impl.cc
     hierarchical_divisor_impl.cc
     tsp_resize_impl.cc
-    sync_adjust_impl.cc )
+    sync_adjust_impl.cc
+    null_remove_impl.cc )
 
 set(isdbt_sources "${isdbt_sources}" PARENT_SCOPE)
 if(NOT isdbt_sources)

@@ -49,5 +49,6 @@ install(FILES
     isdbt_energy_dispersal.xml
     isdbt_hierarchical_divisor.xml
     isdbt_tsp_resize.xml
-    isdbt_sync_adjust.xml DESTINATION share/gnuradio/grc/blocks
+    isdbt_sync_adjust.xml
+    isdbt_null_remove.xml DESTINATION share/gnuradio/grc/blocks
 )

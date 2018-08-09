@@ -39,6 +39,7 @@
 #include "isdbt/hierarchical_divisor.h"
 #include "isdbt/tsp_resize.h"
 #include "isdbt/sync_adjust.h"
+#include "isdbt/null_remove.h"
 %}
 
 
@@ -113,3 +114,5 @@ GR_SWIG_BLOCK_MAGIC2(isdbt, tsp_resize);
 
 %include "isdbt/sync_adjust.h"
 GR_SWIG_BLOCK_MAGIC2(isdbt, sync_adjust);
+%include "isdbt/null_remove.h"
+GR_SWIG_BLOCK_MAGIC2(isdbt, null_remove);

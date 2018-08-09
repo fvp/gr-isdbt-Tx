@@ -37,70 +37,75 @@
 namespace gr {
   namespace isdbt { 
 
-    int mapper::d_total_segments = 1; 
-
     mapper::sptr
-    mapper::make(int mode, int constType, bool isFullSeg)
+    mapper::make(int mode, int mod_scheme, int segments)
     {
-
-      if (isFullSeg){
-        d_total_segments = 13;
-      }else {
-        d_total_segments = 1;
-      }
-
       return gnuradio::get_initial_sptr
-        (new mapper_impl(mode, constType, isFullSeg));
+        (new mapper_impl(mode, mod_scheme, segments));
     }
 
     /*
      * The private constructor
      */
-    mapper_impl::mapper_impl(int mode, int constType, bool isFullSeg)
+    mapper_impl::mapper_impl(int mode, int mod_scheme, int segments)
       : gr::block("mapper",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(gr_complex))
                   )
     {
       d_mode = mode; 
-      d_noutput = d_total_segments*d_carriers_per_segment;
-      d_IsFullSeg = isFullSeg;
-      d_constType = constType;
+      //d_noutput = d_total_segments*d_carriers_per_segment;
+      //d_IsFullSeg = isFullSeg;
+      d_segments = segments;
+      d_mod_scheme = mod_scheme;
       d_counter = 0;
       d_input_counter = 0;
 
-       switch (d_constType)
+      //Find totay delay given the modulation parameters
+      int factor = (int) (pow(2.0,mode-1));
+      int N_l = (int)(2*d_segments*mod_scheme*96*factor);
+      d_delay_bits = N_l - d_mod_scheme*120;
+      //d_delay_queue = d_delay_bits / d_mod_scheme;
+      printf("d_delay_bits : %i \n", d_delay_bits);
+
+      switch (d_mod_scheme)
+      {
+        case 2:
         {
-          case 1:
+          printf("Constelacion: QPSK\n");
+          for (int k=0; k<2; k++)
           {
-            printf("Constelacion: QPSK\n");
             delay_vector.push_back(new std::deque<bool>(120)); 
-            break;
           }
-          case 2:
-          {
-            printf("Constelacion: 16-QAM\n");
-            for (int k=1; k<4; k++)
-            {
-              delay_vector.push_back(new std::deque<bool>(40*k)); 
-            }
-            break;
-          }
-          case 3:
-          {
-            printf("Constelacion: 64-QAM\n");
-            for (int k=1; k<6; k++)
-            {
-              delay_vector.push_back(new std::deque<bool>(24*k)); 
-            }
-            break;
-          }
-          default:
-          {
-            printf("Caso default \n");
-            break;
-          }
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
+          break;
         }
+        case 4:
+        {
+          printf("Constelacion: 16-QAM\n");
+          for (int k=0; k<4; k++)
+          {
+            delay_vector.push_back(new std::deque<bool>(40*k)); 
+          }
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
+          break;
+        }
+        case 6:
+        {
+          printf("Constelacion: 64-QAM\n");
+          for (int k=0; k<6; k++)
+          {
+            delay_vector.push_back(new std::deque<bool>(24*k)); 
+          }
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
+          break;
+        }
+        default:
+        {
+          printf("Caso default \n");
+          break;
+        }
+      }
     }
 
     /*
@@ -119,85 +124,40 @@ namespace gr {
     gr_complex
     mapper_impl::mapQPSK(unsigned char data)
     {
-      bool b0, b1;
-      int temp_int = data;
+      bool b3, b2, b1, b0;
       gr_complex symbol_out;
+      
+      bitset<8> temp = bitset<8> (data);
       
       //Packed to Unpacked block gives us
       //  000000b0b1 so we cast it to int
       
-      //1) Push b1 into queue, assign b0
-      switch (temp_int)
+      //1) Push bits into queue
+      for (int i=0; i<2; i++)
       {
-        case 0:
+        if (temp.test(i))
         {
-          delay_vector[0]->push_back(false);
-          b0 = false;
-          break;
-        }
-        case 1:
-        {
-          delay_vector[0]->push_back(true);
-          b0 = false;
-          break;
-        }
-        case 2:
-        {
-          delay_vector[0]->push_back(false);
-          b0 = true;
-          break;
-        }
-        case 3:
-        {
-          delay_vector[0]->push_back(true);
-          b0 = true;
-          break;
-        }
-        default:
-        {
-          printf("Error in byte\n");
-          break;
-        }
-      }
-      
-      //2) Take bit b1' from queue
-      b1 = delay_vector[0]->front();
-      delay_vector[0]->pop_front();
-      
-      //3) Map bits into symbol from dictionary
-      //int result = (2)*(b0 ? 1 : 0) + (1)*(b1 ? 1 : 0);
-      int result = 0;
-      if (b0)
-      {
-        if (b1)
-        {
-          //(1,1)
-          result = 0;
+          delay_vector[i]->push_back(true);
         }
         else
         {
-          //(1,0)
-          result = 1;
-        }
-      }
-      else
-      {
-        if (b1)
-        {
-          //(0,1)
-          result = 2;
-        }
-        else
-        {
-          //(0,0)
-          result = 3;
+          delay_vector[i]->push_back(false);
         }
       }
 
-      //printf("Result: %i \n", result);
+      //Assign b1, b2
+      b0 = delay_vector[0]->front();
+      delay_vector[0]->pop_front();
+
+      b1 = delay_vector[1]->front();
+      delay_vector[1]->pop_front();
+
+      //Map bits into symbol.
+      int result = (2)*(b0 ? 1 : 0) + (1)*(b1 ? 1 : 0);
 
       symbol_out = symbol_dic_4[result];
-
+      symbol_out.real((1/sqrt(2))*symbol_out.real());
+      symbol_out.imag((1/sqrt(2))*symbol_out.imag());
       return symbol_out;
     }
 
@@ -210,86 +170,89 @@ namespace gr {
       bitset<8> temp = bitset<8> (data);
 
       //1) Push bits into queue
-      for (int i=1; i<4; i++)
+      for (int i=0; i<4; i++)
       {
-        if (temp.test(1))
+        if (temp.test(i))
         {
-          delay_vector[i-1]->push_back(true);
+          delay_vector[i]->push_back(true);
         }
         else
         {
-          delay_vector[i-1]->push_back(false);
+          delay_vector[i]->push_back(false);
         }
       }
-      //Assign b0' = b0
-      if (temp.test(0))
-      {
-        b0 = true;
-      }
-      else
-      {
-        b0 = false;
-      }
+
       //Assign b1, b2, b3
-      b1 = delay_vector[0]->front();
+      b0 = delay_vector[0]->front();
       delay_vector[0]->pop_front();
 
-      b2 = delay_vector[1]->front();
+      b1 = delay_vector[1]->front();
       delay_vector[1]->pop_front();
 
-      b3 = delay_vector[2]->front();
+      b2 = delay_vector[2]->front();
       delay_vector[2]->pop_front();
+
+      b3 = delay_vector[3]->front();
+      delay_vector[3]->pop_front();
 
       //Map bits into symbol.
       int result = (8)*(b0 ? 1 : 0) + (4)*(b1 ? 1 : 0) + (2)*(b2 ? 1 : 0) + (1)*(b3 ? 1 : 0);
       symbol_out = symbol_dic_16[result];
 
+      symbol_out.real((1/sqrt(10))*symbol_out.real());
+      symbol_out.imag((1/sqrt(10))*symbol_out.imag());
       return symbol_out;
     }
 
     gr_complex
     mapper_impl::map64QAM(unsigned char data)
     {
-      bool b5, b4, b3, b2, b1, b0;
+      bool b5, b4, b3, b2, b1, b0, carry;
       gr_complex symbol_out;
       
       bitset<8> temp = bitset<8> (data);
 
-      //1) Push bits into queue
-      for (int i=1; i<6; i++)
+      //1) Push bits into delay queue
+      for (int i=0; i<6; i++)
       {
         if (temp.test(i))
         {
-          delay_vector[i-1]->push_back(true);
+          delay_vector[6]->push_back(true);
+
+          carry = delay_vector[6]->front();
+          delay_vector[i]->push_back(carry);
+
+          delay_vector[6]->pop_front();
         }
         else
         {
-          delay_vector[i-1]->push_back(false);
+          delay_vector[6]->push_back(false);
+
+          carry = delay_vector[6]->front();
+          delay_vector[i]->push_back(carry);
+
+          delay_vector[6]->pop_front();
         }
       }
+
       //Obtain bits and map
-      if (temp.test(0))
-      {
-        b0 = false;
-      }
-      else
-      {
-        b0 = true;
-      }
-      b1 = delay_vector[0]->front();
+      b0 = delay_vector[0]->front();
       delay_vector[0]->pop_front();
 
-      b2 = delay_vector[1]->front();
+      b1 = delay_vector[1]->front();
       delay_vector[1]->pop_front();
 
-      b3 = delay_vector[2]->front();
+      b2 = delay_vector[2]->front();
       delay_vector[2]->pop_front();
 
-      b4 = delay_vector[3]->front();
+      b3 = delay_vector[3]->front();
       delay_vector[3]->pop_front();
 
-      b5 = delay_vector[4]->front();
+      b4 = delay_vector[4]->front();
       delay_vector[4]->pop_front();
+
+      b5 = delay_vector[5]->front();
+      delay_vector[5]->pop_front();
 
       //Map bits into symbol.
       int result = (32)*(b0 ? 1 : 0) + (16)*(b1 ? 1 : 0) + (8)*(b2 ? 1 : 0) + (4)*(b3 ? 1 : 0) + (2)*(b4 ? 1 : 0) + (1)*(b5 ? 1 : 0);
@@ -309,9 +272,9 @@ namespace gr {
       const unsigned char *in = (const unsigned char *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
 
-      switch (d_constType)
+      switch (d_mod_scheme)
         {
-          case 1:
+          case 2:
           {
             for (int i=0; i<noutput_items; i++)
             {
@@ -319,7 +282,7 @@ namespace gr {
             }
             break;
           }
-          case 2:
+          case 4:
           {
             for (int i=0; i<noutput_items; i++)
             {
@@ -327,7 +290,7 @@ namespace gr {
             }
             break;
           }
-          case 3:
+          case 6:
           {
             for (int i=0; i<noutput_items; i++)
             {

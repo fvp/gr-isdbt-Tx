@@ -41,10 +41,14 @@ namespace gr {
     class mapper_impl : public mapper
     {
      private:
-      int d_mode, d_constType, d_carriers_per_segment, d_noutput, inputSize, d_counter, d_input_counter;
+      int d_mode, d_mod_scheme, d_carriers_per_segment, d_noutput, inputSize, d_counter, d_input_counter;
       bool d_IsFullSeg;
       static const int d_data_carriers_mode1 = 96;
       std::vector< std::deque<bool> *> delay_vector;
+
+      int d_delay_bits;
+      int d_delay_queue;
+      int d_segments;
 
       gr_complex symbol_dic_4[4] = {gr_complex(1,1), gr_complex(1,-1), gr_complex(-1,1), gr_complex(-1,-1)
                                     };
@@ -74,7 +78,7 @@ namespace gr {
                                     };
      
      public:
-      mapper_impl(int mode, int constType, bool isFullSeg);
+      mapper_impl(int mode, int mod_scheme, int segments);
       ~mapper_impl();
 
       gr_complex mapQPSK(unsigned char data);

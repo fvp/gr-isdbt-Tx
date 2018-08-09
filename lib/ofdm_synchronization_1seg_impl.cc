@@ -115,7 +115,8 @@ namespace gr {
                   //TODO set this value automatically. 
                   float d_snr = 10.0; 
                   d_snr = pow(10, d_snr / 10.0);
-                  d_rho = d_snr / (d_snr + 1.0);
+                  //d_rho = d_snr / (d_snr + 1.0);
+                  d_rho = 0.86;
 
                   d_initial_acquired = false; 
 
@@ -136,7 +137,8 @@ namespace gr {
                   d_conj = new gr_complex[2 * d_fft_length + d_cp_length];
                   d_norm = new float[2 * d_fft_length + d_cp_length];
                   d_corr = new gr_complex[2 * d_fft_length + d_cp_length];
-                  peak_detect_init(0.3, 0.9);
+                  //peak_detect_init(0.3, 0.9);
+                  peak_detect_init(1.5, 0.0001);
 
                   d_prefft_synched = new gr_complex[d_fft_length]; 
                   d_postfft = new gr_complex[d_fft_length];
@@ -859,7 +861,7 @@ namespace gr {
                     {
                         // safe-margin. Using a too adjusted CP position may result in taking samples from the NEXT ofdm 
                         // symbol. It is better to stay on the safe-side (plus, 3 samples is nothing in this context). 
-                        d_cp_start_offset = -3;  
+                        d_cp_start_offset = -1;  
 
                         /*
                            int low = d_consumed + d_cp_start + d_cp_start_offset - d_fft_length + 1 ;

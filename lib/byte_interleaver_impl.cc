@@ -91,16 +91,17 @@ namespace gr {
       int d_tsp = (int)(TSP_size*mod_scheme*d_conv_code*96*factor)/(8*TSP_size);
       d_delay_tsp = d_tsp*segments - 11;
       d_delay_bytes = 204*d_delay_tsp;
-      d_delay_queue = d_delay_bytes / 12;
+      //d_delay_queue = d_delay_bytes / 12;
       printf("Delay (TSPs): %i \n", d_delay_tsp);
       printf("Delay (Bytes): %i \n", d_delay_bytes);
-      printf("Delay (por fila): %i \n", d_delay_queue);
+      //printf("Delay (por fila): %i \n", d_delay_queue);
       //Create queues
       for (int i=0; i<12; i++)
       {
         //Create queue
-        delay_vector.push_back(new std::deque<unsigned char>(i*17 + d_delay_queue,0)); 
+        delay_vector.push_back(new std::deque<unsigned char>(i*17,0)); 
       }
+      delay_vector.push_back(new std::deque<unsigned char>(d_delay_bytes,0));
     }
 
     /*
@@ -124,6 +125,7 @@ namespace gr {
       unsigned char *out = (unsigned char *) output_items[0];
 
       int index = 0;
+      unsigned char temp;
       //printf("noutput_items : %i \n", noutput_items);
       //printf("Delay (TSPs): %i \n", d_delay_tsp);
 
@@ -131,12 +133,16 @@ namespace gr {
       {
         for (int i=0; i<204; i++)
         {
-          //Select queue
           index = i + output*204;
+          //push back input
+          delay_vector[12]->push_back(in[index]);
+          temp = delay_vector[12]->front();
+          //Select queue
           //Push byte from input to queue, pop output byte from queue
-          delay_vector[index % 12]->push_back(in[index]);
+          delay_vector[index % 12]->push_back(temp);
           out[index] = delay_vector[index % 12]->front();
           //Delete used symbol
+          delay_vector[12]->pop_front();
           delay_vector[index % 12]->pop_front(); 
         }
       }

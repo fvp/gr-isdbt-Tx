@@ -4,12 +4,8 @@
   <key>isdbt_mapper</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.mapper($mode, $constellation, $IsFullSeg)</make>
-  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
-       Sub-nodes:
-       * name
-       * key (makes the value accessible as $keyname, e.g. in the make node)
-       * type -->
+  <make>isdbt.mapper($mode, $mod_scheme, $segments)</make>
+
   <param>
      <name>Transmission Mode</name>
    <key>mode</key>
@@ -29,38 +25,29 @@
    </option>
  </param>
 
-  <param>
-     <name>Constellation Type</name>
-   <key>constellation</key>
-   <value>1</value>
+ <param>
+     <name>Modulation Scheme</name>
+   <key>mod_scheme</key>
+   <value>2</value>
    <type>enum</type>
-     <option>
-     <name>QPSK</name>
-     <key>1</key>
-     </option>
    <option>
-     <name>16QAM</name>
+     <name>QPSK</name>
      <key>2</key>
    </option>
    <option>
+     <name>16QAM</name>
+     <key>4</key>
+   </option>
+   <option>
      <name>64QAM</name>
-     <key>3</key>
+     <key>6</key>
    </option>
  </param>
 
-   <param>
-      <name>FullSeg Tx</name>
-      <key>IsFullSeg</key>
-      <value>True</value>
-      <type>enum</type>
-      <option>
-          <name>Yes</name>
-          <key>True</key>
-      </option>
-      <option>
-          <name>No</name>
-          <key>False</key>
-      </option>
+  <param>
+    <name>Layer Segments</name>
+    <key>segments</key>
+    <type>int</type>
   </param>
 
   <sink>
