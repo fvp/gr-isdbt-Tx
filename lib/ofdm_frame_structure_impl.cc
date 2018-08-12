@@ -133,7 +133,85 @@ namespace gr {
         return std::complex<float>(4.0/3.0, 0);
       }
     }
+    int ofdm_frame_structure_impl::get_degree(bitset<204> r, int max)
+    {
+      // Given a binary expression of a GF(2) polynomial, returns the degree < max
+      int degree = 0;
 
+      while ((r.any()) && (degree < max))
+      {
+        degree++;
+        r >>= 1;
+      }
+
+      // If not found, show an appropiated message
+      if (degree == max)
+      {
+        printf("(OFDM Frame Structure) Parity error: degree max = %d\n", degree);
+      }
+      return (degree - 1);
+    }
+
+    void ofdm_frame_structure_impl::parity_TMCC(bitset<204> *TMCCword, int n, int k)
+    {
+      /* Fills the bits 123 to 203 with parity for a given TMCC word */
+      bitset<204> temp_word, g, m, r, one, aux;
+      temp_word = *TMCCword;
+      g.reset();
+      aux.reset();
+      m.reset();
+      r.reset();
+      one.reset();
+      one.set(0);
+
+      int degree_m = 0;
+      int degree_g = 0;
+
+      int degree_r = 0;
+
+      /* Bits B20 to B121 of TMCC information are error-correction coded by means of the shortened code (184,102)
+         of the difference cyclic code (273, 191).
+         Generating polynomial of the (273, 191) code: g(x) = x^82 + x^77 + x^76 + x^71 + x^67 + x^66 + x^56 + x^52 + x^48 + x^40 + x^36 + x^34 + x^24 + x^22 + x^18 + x^10 + x^4 + 1
+      */
+
+      // First, we initialize a variable with the polynomial g(x)
+      g = (one << 82) | (one << 77) | (one << 76) | (one << 71) | (one << 67) | (one << 66) | (one << 56) | (one << 52) | (one << 48) | (one << 40) | (one << 36) | (one << 34) | (one << 24) | (one << 22) | (one << 18) | (one << 10) | (one << 4) | (one);
+      degree_g = this->get_degree(g, 84);
+
+      // Load the TMCCword bits to code to the m variable
+      for (int i = 20; i<122; i++)
+      {
+        temp_word.test(i)?m.set(121 - i):m.reset(121 - i);
+      }
+
+      // Now we should compute the x^(n-k).m(x) polynomial
+      m = m << (n - k);
+
+
+      // Once we have the p(x) and x^(n-k)m(x) the next step is know the difference of degrees
+      degree_m = this->get_degree(m, n - k + 102 +1);
+
+      r = (g << (degree_m - degree_g)) ^ m;
+
+      degree_r = this->get_degree(r, n-k+102);
+      
+      while (degree_r >= degree_g)
+      {
+        r = (g << (degree_r - degree_g)) ^ r;
+        degree_r = this->get_degree(r, n-k+102 +1);
+
+      }
+
+      // Here we have r(x), the parity of the message
+      // Write the parity on the TMCCword
+      for (int j=122; j<204; j++)
+      {
+        aux = r >> (j-122) & one;
+        aux.test(0)?temp_word.set(203+122-j):temp_word.reset(203+122-j);  //TODO: write the indexes in a simpler way
+      }
+
+      *TMCCword = temp_word;
+    }
     /*
     Writes bits of the TMCC into symbol
     */
@@ -1312,15 +1390,8 @@ namespace gr {
           TMCCword.set(i);
         }
         //Parity bits b122-b203
-        for (int i = 122; i < 203; i++)
-        {
-          if (TMCCword.test(i))
-          {
-            TMCCword.set(i);
-          } else {
-          TMCCword.reset(i);
-          }
-        }
+        this->parity_TMCC(&TMCCword, 184, 102); // This function calculates the parity and writes on the b112 to b203 of the TMCCword
+
         // Codes the TMCCword
         for (int b = 1; b < 204; b++)
         {

@@ -86,6 +86,9 @@ namespace gr {
       int d_mode, d_carrier_pos, TMCCindex, SPindex, frame_counter;
 
       int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
+      
+      void parity_TMCC(bitset<204> *TMCCword, int n, int k);
+      int get_degree(bitset<204> r, int max);
 
       gr_complex write_TMCC(int frame_counter, int SegmentNumber);
 
