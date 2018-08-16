@@ -44,6 +44,8 @@ namespace gr {
       hierarchical_combination_impl();
       ~hierarchical_combination_impl();
 
+      int size_complex = sizeof(gr_complex);
+
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,

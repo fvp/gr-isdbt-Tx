@@ -120,9 +120,12 @@ namespace gr {
         bit11 = keyword.test(0);
         temp = bit9 ^ bit11;
         keyword = (keyword >> 1);
-        if (temp.test(0)){
+        if (temp.test(0))
+        {
           keyword.set(10);
-        } else {
+        } 
+        else 
+        {
           keyword.reset(10);
         }
       }
@@ -1745,6 +1748,7 @@ namespace gr {
       
       gr_complex TMCC_Temp;
 
+      //printf("Segment: %i, Index: %i\n", SegmentNumber, index);
       //Fill segments with data and relevant bits in relevant positions found
       for (int j = 0; j < total_carriers_mod_2; j++) 
       {
@@ -2072,7 +2076,7 @@ namespace gr {
     int n_zp = size - sym_size; // Number of zero padding carriers
 
     //1) Initialize output vectors in 0
-	  for (int c  = 0; c< noutput_items*size; c++)
+	  for (int c  = 0; c < noutput_items*size; c++)
 	   // TODO: think a better way to solve this
 	   {
 		    out[c] = std::complex<double>(0, 0);
@@ -2091,7 +2095,7 @@ namespace gr {
       switch (d_mode)
       {
         case 1:
-{
+        {
           if (d_IsFullSeg)
           {
             /*Segments 0 to 12*/
@@ -2173,8 +2177,10 @@ namespace gr {
           break;
         }
         default:
+        {
           printf("Error: incorrect mode \n");
           break; 
+        }
       }
 
       frame_counter++;  
