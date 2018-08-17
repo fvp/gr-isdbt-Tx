@@ -85,7 +85,7 @@ namespace gr {
       int InputIndex;     //Variable to cover input array
       int d_mode, d_carrier_pos, TMCCindex, SPindex, frame_counter;
 
-      int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg;
+      int d_IntLengthA, d_IntLengthB, d_IntLengthC, d_LayerA_seg, d_LayerB_seg, d_LayerC_seg, d_zero_pad_left;
       
       void parity_TMCC(bitset<204> *TMCCword, int n, int k);
       int get_degree(bitset<204> r, int max);
@@ -115,7 +115,7 @@ namespace gr {
       int total_carriers_mod_2 = 216;
       int total_carriers_mod_3 = 432;
 
-      int zero_pad_left = 643;
+      int zero_pad_left[3] = {322, 644, 1288};
 
       int contador = 0;
 

@@ -82,6 +82,7 @@ namespace gr {
       TMCCword.set();
       TMCC_sync_word = 0b0111011110101100;
       InputIndex = 0;
+      d_zero_pad_left = zero_pad_left[d_mode - 1];
       d_ModSchemeA = (carrier_mod_scheme) ModSchemeA;
       d_ModSchemeB = (carrier_mod_scheme) ModSchemeB;
       d_ModSchemeC = (carrier_mod_scheme) ModSchemeC;
@@ -231,7 +232,7 @@ namespace gr {
       //
       {
         //Assign b0, check for SP0 value
-        gr_complex sp0 = this->write_SP(total_carriers_mod_2*6, d_mode, SegmentNumber);
+        gr_complex sp0 = this->write_SP(total_carriers_mod_2*SegmentNumber, d_mode, SegmentNumber);
         if(sp0.real() < 0)
         {
           TMCCword.set(0);
@@ -1744,7 +1745,7 @@ namespace gr {
       }
       SPindex = 0;
       InputIndex = (output_item*d_total_segments+SegmentNumber)*active_carriers_mod_2;
-      index = pow(2, 10+d_mode)*output_item+total_carriers_mod_2*SegmentPos + zero_pad_left;
+      index = pow(2, 10+d_mode)*output_item+total_carriers_mod_2*SegmentPos + d_zero_pad_left;
       
       gr_complex TMCC_Temp;
 
@@ -1766,12 +1767,13 @@ namespace gr {
         else if (j == TMCCPos2)
         {
           out[index + j] = TMCC_Temp;
+          TMCC_Temp = 0;
         } 
         /* AC1, AC2, AC3 or AC4 */
         else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) 
         {
           out[index + j] = std::complex<float>(-4.0/3.0, 0); 
-        } 
+        }
         /* Fill with raw data*/
         else 
         {
