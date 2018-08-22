@@ -114,13 +114,13 @@ namespace gr {
       for (int output = 0; output<noutput_items; output++)
       {
         //Layer A segments to output
-        printf("Layer A, in index: %i\n", output*d_segments_a*d_active_carriers);
+        //printf("Layer A, in index: %i\n", output*d_segments_a*d_active_carriers);
         memcpy(out + output*d_active_carriers*d_segments_total, in_a + output*d_segments_a*d_active_carriers, d_active_carriers*d_segments_a*size_complex);
         //Layer B segments to output
-        printf("Layer B, in index: %i\n", output*d_segments_b*d_active_carriers);
+        //printf("Layer B, in index: %i\n", output*d_segments_b*d_active_carriers);
         memcpy(out + d_active_carriers*d_segments_a + output*d_active_carriers*d_segments_total, in_b + output*d_segments_b*d_active_carriers, d_active_carriers*d_segments_b*size_complex);
         //Layer C segments to output
-        printf("Layer C, in index: %i\n", output*d_segments_c*d_active_carriers);
+        //printf("Layer C, in index: %i\n", output*d_segments_c*d_active_carriers);
         memcpy(out + d_active_carriers*d_segments_a + d_active_carriers*d_segments_b + output*d_active_carriers*d_segments_total, in_c + output*d_segments_c*d_active_carriers, d_active_carriers*d_segments_c*size_complex);
       }
 

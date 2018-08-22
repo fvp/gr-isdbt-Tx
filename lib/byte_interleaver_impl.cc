@@ -89,7 +89,8 @@ namespace gr {
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
       int d_tsp = (int)(TSP_size*mod_scheme*d_conv_code*96*factor)/(8*TSP_size);
-      d_delay_tsp = d_tsp*segments - 11;
+      //d_delay_tsp = d_tsp*segments - 11;
+      d_delay_tsp = 2304-11;
       d_delay_bytes = 204*d_delay_tsp;
       //d_delay_queue = d_delay_bytes / 12;
       printf("Delay (TSPs): %i \n", d_delay_tsp);
@@ -129,7 +130,7 @@ namespace gr {
       //printf("noutput_items : %i \n", noutput_items);
       //printf("Delay (TSPs): %i \n", d_delay_tsp);
 
-      for (int output = 0; output<noutput_items; output++)
+      for (int output = 0; output < noutput_items; output++)
       {
         for (int i=0; i<204; i++)
         {
