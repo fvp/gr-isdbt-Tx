@@ -187,7 +187,7 @@ namespace gr {
                   //d_interpolated = new gr_complex[2*d_fft_length+d_cp_length]; 
                   d_interpolated = new gr_complex[d_fft_length+d_cp_length]; 
                   d_interpolate = interpolate; 
-                  d_cp_start_offset = -10; 
+                  d_cp_start_offset = 0; //To test gr-isdbt-Tx this should be zero 
 
                   float loop_bw_freq = 3.14159/100; 
                   float loop_bw_timing = 3.14159/10000; 
@@ -836,7 +836,7 @@ namespace gr {
                     {
                         // safe-margin. Using a too adjusted CP position may result in taking samples from the NEXT ofdm 
                         // symbol. It is better to stay on the safe-side (plus, 10 samples is nothing in this context). 
-                        d_cp_start_offset = -10;  
+                        d_cp_start_offset = 0; // This should be zero for gr-isdbt-Tx  
 
                         /*
                            int low = d_consumed + d_cp_start + d_cp_start_offset - d_fft_length + 1 ;

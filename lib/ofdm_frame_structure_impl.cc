@@ -2121,6 +2121,8 @@ namespace gr {
             /* Segment 0*/
             this->fill_segment_mode1(in, out, 0, i);
           }
+          // Modulating Signal for the Rightmost Continuous Carrier
+          out[(int)pow(2.0, 10 + d_mode)*i + d_zero_pad_left + 13*total_carriers_mod_1] = gr_complex(-4.0/3.0,0);
           break;
         }
         case 2:
@@ -2148,7 +2150,8 @@ namespace gr {
             /* Segment 0*/
             this->fill_segment_mode2(in, out, 0, i);
           }
-          //out[3452] = gr_complex(4.0/3.0,0);
+          // Modulating Signal for the Rightmost Continuous Carrier
+          out[(int)pow(2.0, 10 + d_mode)*i + d_zero_pad_left + 13*total_carriers_mod_2] = gr_complex(4.0/3.0,0);
           break;
         }
         case 3:
@@ -2176,6 +2179,8 @@ namespace gr {
             /* Segment 0*/
             this->fill_segment_mode3(in, out, 0, i);
           }
+          // Modulating Signal for the Rightmost Continuous Carrier
+          out[(int)pow(2.0, 10 + d_mode)*i + d_zero_pad_left + 13*total_carriers_mod_3] = gr_complex(4.0/3.0,0);
           break;
         }
         default:
