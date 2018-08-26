@@ -63,41 +63,40 @@ namespace gr {
 
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      int N_l = (int)(2*d_segments*mod_scheme*96*factor);
-      d_delay_bits = N_l - d_mod_scheme*120;
-      //d_delay_queue = d_delay_bits / d_mod_scheme;
-      printf("d_delay_bits : %i \n", d_delay_bits);
+      d_delay_bits = 2*96*factor*d_segments - 120;
+      
 
       switch (d_mod_scheme)
       {
         case 2:
         {
           printf("Constelacion: QPSK\n");
-          for (int k=0; k<2; k++)
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits,false));
+          for (int k=1; k<2; k++)
           {
-            delay_vector.push_back(new std::deque<bool>(120)); 
+            delay_vector.push_back(new std::deque<bool>(120+d_delay_bits)); 
           }
-          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
           break;
         }
         case 4:
         {
           printf("Constelacion: 16-QAM\n");
-          for (int k=0; k<4; k++)
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits,false));
+          for (int k=1; k<4; k++)
           {
-            delay_vector.push_back(new std::deque<bool>(40*k)); 
+            delay_vector.push_back(new std::deque<bool>(40*k+d_delay_bits)); 
           }
-          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
           break;
         }
         case 6:
         {
           printf("Constelacion: 64-QAM\n");
-          for (int k=0; k<6; k++)
+          delay_vector.push_back(new std::deque<bool>(d_delay_bits,false));
+          for (int k=1; k<6; k++)
           {
-            delay_vector.push_back(new std::deque<bool>(24*k)); 
+            delay_vector.push_back(new std::deque<bool>(24*k+d_delay_bits, false)); 
           }
-          delay_vector.push_back(new std::deque<bool>(d_delay_bits));
+          
           break;
         }
         default:
@@ -124,6 +123,7 @@ namespace gr {
     gr_complex
     mapper_impl::mapQPSK(unsigned char data)
     {
+      // TODO: make the corrections according to the map64QAM
       bool b3, b2, b1, b0;
       gr_complex symbol_out;
       
@@ -164,6 +164,7 @@ namespace gr {
     gr_complex
     mapper_impl::map16QAM(unsigned char data)
     {
+      // TODO: make the corrections according to the map64QAM
       bool b3, b2, b1, b0;
       gr_complex symbol_out;
       
@@ -212,30 +213,10 @@ namespace gr {
       
       bitset<8> temp = bitset<8> (data);
 
-      //1) Push bits into delay queue
-      for (int i=0; i<6; i++)
-      {
-        if (temp.test(i))
-        {
-          delay_vector[6]->push_back(true);
 
-          carry = delay_vector[6]->front();
-          delay_vector[i]->push_back(carry);
-
-          delay_vector[6]->pop_front();
-        }
-        else
-        {
-          delay_vector[6]->push_back(false);
-
-          carry = delay_vector[6]->front();
-          delay_vector[i]->push_back(carry);
-
-          delay_vector[6]->pop_front();
-        }
-      }
 
       //Obtain bits and map
+
       b0 = delay_vector[0]->front();
       delay_vector[0]->pop_front();
 
@@ -260,6 +241,21 @@ namespace gr {
 
       symbol_out.real((1/sqrt(42))*symbol_out.real());
       symbol_out.imag((1/sqrt(42))*symbol_out.imag());
+
+
+      // Push bits into delay queue
+      for (int i=0; i<6; i++)
+      {
+        if (temp.test(i))
+        {
+          delay_vector[5-i]->push_back(true);
+        }
+        else
+        {
+          delay_vector[5-i]->push_back(false);
+        }
+      }
+
       return symbol_out;
     }
 
@@ -271,7 +267,7 @@ namespace gr {
     {
       const unsigned char *in = (const unsigned char *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
-
+      //
       switch (d_mod_scheme)
         {
           case 2:
