@@ -63,8 +63,9 @@ namespace gr {
 
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      d_delay_bits = 2*96*factor*d_segments - 120;
-      
+      d_delay_bits = 2952;
+
+      printf("d_delay_bits: %i\n", d_delay_bits);
 
       switch (d_mod_scheme)
       {
@@ -96,7 +97,6 @@ namespace gr {
           {
             delay_vector.push_back(new std::deque<bool>(24*k+d_delay_bits, false)); 
           }
-          
           break;
         }
         default:
@@ -212,9 +212,9 @@ namespace gr {
       gr_complex symbol_out;
       
       bitset<8> temp = bitset<8> (data);
+      
 
-
-
+      
       //Obtain bits and map
 
       b0 = delay_vector[0]->front();

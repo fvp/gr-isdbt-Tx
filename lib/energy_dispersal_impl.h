@@ -62,7 +62,7 @@ namespace gr {
       ~energy_dispersal_impl();
 
       int tsp_size = 204;
-      int tsp_per_frame = 2304; //Modo 2, TC 1/8 = 2304
+      int tsp_per_frame = 72; //Modo 2, TC 1/8 = 2304
       int symbols_in_tsp = 126;
 
       int work(int noutput_items,

@@ -101,7 +101,6 @@ namespace gr {
             {
                 unsigned char tmp[d_N];
                 int ncorrections;
-
                 // add missing prefix zero padding to message
                 memset(tmp, 0, d_s);
                 memcpy(&tmp[d_s], &in, (d_n - d_s));
@@ -135,6 +134,7 @@ namespace gr {
 
                 for (int i = 0; i < (d_blocks * noutput_items); i++)
                 {
+                    //printf("RS) In[0]=%x\n", in[j]);
                     nerrors_corrected = decode(out[k], in[j]);
 
                     // if nerrors_corrected=-1 it means that the decoder gave up on the word
