@@ -63,7 +63,7 @@ namespace gr {
 
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      d_delay_bits = 2952;
+      d_delay_bits = 626688 - 120;;
 
       printf("d_delay_bits: %i\n", d_delay_bits);
 
