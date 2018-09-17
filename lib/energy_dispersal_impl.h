@@ -58,11 +58,11 @@ namespace gr {
       int clock_prbs(int clocks);
 
      public:
-      energy_dispersal_impl();
+      energy_dispersal_impl(int tsp_per_frame);
       ~energy_dispersal_impl();
 
       int tsp_size = 204;
-      int tsp_per_frame = 72; //Modo 2, TC 1/8 = 2304
+      int d_tsp_per_frame; //Modo 2, TC 1/8 = 2304
       int symbols_in_tsp = 126;
 
       int work(int noutput_items,

@@ -80,10 +80,10 @@ namespace gr {
         for (int carrier = 0; carrier<d_carriers_per_segment; carrier++)
         {
           //Add delay in order to make total time multiplex of OFDM period
-          delay_vector.push_back(new std::deque<gr_complex>(sync_delay,0)); 
+          //delay_vector.push_back(new std::deque<gr_complex>(sync_delay,0)); 
           //Add delay given by interleaver
           mi = (5*carrier) % d_data_carriers_mode1; 
-          delay_vector.push_back(new std::deque<gr_complex>(d_I*mi,0)); 
+          delay_vector.push_back(new std::deque<gr_complex>(d_I*mi+sync_delay,0)); 
         }
       }
 

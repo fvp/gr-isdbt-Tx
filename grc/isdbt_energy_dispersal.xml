@@ -4,7 +4,13 @@
   <key>isdbt_energy_dispersal</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.energy_dispersal()</make>
+  <make>isdbt.energy_dispersal($tsp_per_frame)</make>
+
+  <param>
+    <name>TSP per OFDM Frame</name>
+    <key>tsp_per_frame</key>
+    <type>int</type>
+  </param>
 
   <sink>
     <name>in</name>

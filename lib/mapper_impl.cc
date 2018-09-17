@@ -63,8 +63,9 @@ namespace gr {
 
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      d_delay_bits = 626688 - 120;;
-
+      d_delay_bits = (2304*204*8*d_segments - 720)/6;
+      //d_delay_bits = (72*d_segments*204*8-720)/6;
+      //d_delay_bits = 100;
       printf("d_delay_bits: %i\n", d_delay_bits);
 
       switch (d_mod_scheme)
@@ -304,7 +305,7 @@ namespace gr {
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      this->consume(0, noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

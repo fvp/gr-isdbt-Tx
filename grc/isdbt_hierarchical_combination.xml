@@ -49,17 +49,17 @@
   <sink>
     <name>in0</name>
     <type>complex</type>
-    <vlen>1*192</vlen>
+    <vlen>$segments_a*192</vlen>
   </sink>
   <sink>
     <name>in1</name>
     <type>complex</type>
-    <vlen>6*192</vlen>
+    <vlen>$segments_b*192</vlen>
   </sink>
   <sink>
     <name>in2</name>
     <type>complex</type>
-    <vlen>6*192</vlen>
+    <vlen>$segments_c*192</vlen>
   </sink>
   <source>
     <name>out</name>

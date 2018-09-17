@@ -64,22 +64,23 @@ namespace gr {
 
 
     energy_dispersal::sptr
-    energy_dispersal::make()
+    energy_dispersal::make(int tsp_per_frame)
     {
       return gnuradio::get_initial_sptr
-        (new energy_dispersal_impl());
+        (new energy_dispersal_impl(tsp_per_frame));
     }
 
     /*
      * The private constructor
      */
-    energy_dispersal_impl::energy_dispersal_impl()
+    energy_dispersal_impl::energy_dispersal_impl(int tsp_per_frame)
       : gr::sync_block("energy_dispersal",
           gr::io_signature::make(1, 1, 204*sizeof(unsigned char)),
           gr::io_signature::make(1, 1, 204*sizeof(unsigned char))
       )
     {
       //init_prbs();
+      d_tsp_per_frame = tsp_per_frame;
     }
 
     /*
@@ -100,11 +101,12 @@ namespace gr {
       int to_consume = noutput_items; 
       int to_out = noutput_items;
       
+
       // Aca empieza el codigo
       for (int i = 0; i < noutput_items; i++)
       {
         //Symbols in TSP must come from user
-        if (symbols_coded % tsp_per_frame == 0)
+        if (symbols_coded % d_tsp_per_frame == 0)
         {
           //Reset PRBS for each OFDM Frame
           //printf("symbols_coded: %i\n", symbols_coded);

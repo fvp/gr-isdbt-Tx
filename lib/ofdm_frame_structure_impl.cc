@@ -1394,6 +1394,11 @@ namespace gr {
           TMCCword.set(i);
         }
         //Parity bits b122-b203
+        /*for (int o=0; o<122; o++)
+        {
+          TMCCword.test(o)?printf("1"):printf("0");
+        }
+        printf("\n");*/
         this->parity_TMCC(&TMCCword, 184, 102); // This function calculates the parity and writes on the b112 to b203 of the TMCCword
 
         // Codes the TMCCword

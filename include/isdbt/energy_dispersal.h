@@ -55,7 +55,7 @@ namespace gr {
        * class. isdbt::energy_dispersal::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int tsp_per_frame);
     };
 
   } // namespace isdbt
