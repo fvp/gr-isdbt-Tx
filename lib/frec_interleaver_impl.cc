@@ -47,9 +47,11 @@ namespace gr {
     static int d_noutput;
 
     gr_complex out_before_rand[192*13];
-    gr_complex data[13][192] = {}; 
+    gr_complex data[192][13] = {}; 
     gr_complex data_interleaved[13][192] = {};
 
+    /* TODO: The case when we do not send 1-seg */
+    /* in the full-seg mode we assume 1-seg available */
     frec_interleaver::sptr
     frec_interleaver::make(int mode, bool IsFullSeg)
     {
@@ -101,8 +103,54 @@ namespace gr {
       d_IsFullSeg = IsFullSeg;
     }
 
+
+
     int
-    frec_interleaver_impl::randomizer(gr_complex* in, gr_complex* out, int output)
+    frec_interleaver_impl::intra_segment_interleaver(gr_complex* in)
+    {
+      //printf("1. Intra-Segment interleaving\n");
+      //1. Intra-Segment interleaving
+      int k=0; 
+      for(int i=0; i < d_active_carriers; i++)
+      {
+        for (int j=0; j<d_segments_total-1; j++)
+        {
+          // First we write the matrix rows-first
+          data[i][j] = in[k];
+          k++;
+         }
+      }   
+      for (int j=0; j<d_segments_total-1; j++)
+      {
+        for(int i=0; i<d_active_carriers; i++)
+        {
+          // First we write the matrix rows-first
+          data_interleaved[j][i] = data[i][j];
+        }
+      }
+      return 0; 
+    }
+
+    int
+    frec_interleaver_impl::inter_segment_rotation()
+    {
+      //printf("2. Inter-segment rotation start\n");
+      //2. Inter-segment rotation
+      int k = 0;
+      for(int i=0; i<d_segments_total-1; i++)
+      {
+        for (int j=0; j<d_active_carriers; j++)
+        {
+          // First we re-write the data matrix, rows-first
+          out_before_rand[k] = data_interleaved[i][(i + j+1) % d_active_carriers];
+          k++;
+        }
+      }
+      return 0; 
+    }
+
+    int
+    frec_interleaver_impl::randomizer(gr_complex* out, int segment)
     {
       //printf("3. Randomizer start\n");
       int index = 0;
@@ -113,7 +161,7 @@ namespace gr {
           for(int i=0; i < d_active_carriers; i++)
           {
             index = rand_mode_1[i];
-            out[index] = out_before_rand[i];
+            out[index] = out_before_rand[i + d_active_carriers*(segment-1)];
             //printf("out[%i] = %f \n", index, out[index].real());
           }
           break;
@@ -123,7 +171,7 @@ namespace gr {
           for(int i=0; i < d_active_carriers; i++)
           {
             index = rand_mode_2[i];
-            out[index] = out_before_rand[i];
+            out[index] = out_before_rand[i + d_active_carriers*(segment-1)];
           }
           break;
         }
@@ -132,7 +180,7 @@ namespace gr {
           for(int i=0; i<d_active_carriers; i++)
           {
             index = rand_mode_3[i];
-            out[index] = out_before_rand[i];
+            out[index] = out_before_rand[i + d_active_carriers*(segment-1)];
           }
           break;
         }
@@ -144,60 +192,6 @@ namespace gr {
       }
       return 0;  
     }
-
-    int
-    frec_interleaver_impl::intra_segment_interleaver(gr_complex* in, gr_complex* out, int output)
-    {
-      //printf("1. Intra-Segment interleaving\n");
-      //1. Intra-Segment interleaving
-      int k=0; 
-      for(int i=0; i < d_segments_total; i++)
-      {
-        for (int j=0; j<d_active_carriers; j++)
-        {
-          // First we write the matrix rows-first
-          data[i][j] = in[k + output*d_noutput];
-          k++;
-         }
-      }   
-      for (int j=0; j<d_segments_total; j++)
-      {
-        for(int i=0; i<d_active_carriers; i++)
-        {
-          // First we write the matrix rows-first
-          data_interleaved[d_segments_total -j -1][d_active_carriers - i -1] = data[j][i];
-        }
-      }
-      return 0; 
-    }
-
-    int
-    frec_interleaver_impl::inter_segment_rotation(gr_complex* in, gr_complex* out, int output)
-    {
-      //printf("2. Inter-segment rotation start\n");
-      //2. Inter-segment rotation
-      int k = 0;
-      for(int i=0; i<d_segments_total; i++)
-      {
-        for (int j=0; j<d_active_carriers; j++)
-        {
-          // First we re-write the data matrix, rows-first
-          data_interleaved[i][j] = data[i][(i + j) % d_active_carriers];
-        }
-      }
-      for(int i=0; i<d_segments_total; i++)
-      {
-        for (int j=0; j<d_active_carriers; j++)
-        {
-          // First we write the matrix rows-first
-          out_before_rand[k] = data_interleaved[i][j];
-          k++;
-          //printf("out_before_rand[%i] = %f \n", k, out_before_rand[k].real());
-        }
-      }
-      return 0; 
-    }
-
     /*
      * Our virtual destructor.
      */
@@ -219,20 +213,24 @@ namespace gr {
         {
           //Segment 0; from in[0]->in[d_active_carriers - 1]
           memcpy(&out_before_rand, in + output*d_noutput, d_active_carriers*sizeof(gr_complex));
-          this->randomizer(in + output*d_noutput, out + output*d_noutput, output);
+
+          this->randomizer(out + output*d_noutput, 1);
           //Segments 1 to 12; from in[192]->in[12*d_active_carriers-1]
-          for (int seg = 0; seg < d_segments_total; seg++)
+          this->intra_segment_interleaver(in + d_active_carriers + output*d_noutput);
+          this->inter_segment_rotation();
+
+          
+          for (int seg = 1; seg < d_segments_total; seg++)
           {
-            this->intra_segment_interleaver(in + seg*d_active_carriers + output*d_noutput, out + seg*d_active_carriers + output*d_noutput, output);
-            this->inter_segment_rotation(in + seg*d_active_carriers + output*d_noutput, out + seg*d_active_carriers + output*d_noutput, output);
-            this->randomizer(in + seg*d_active_carriers + output*d_noutput, out + seg*d_active_carriers + output*d_noutput, output);
+            this->randomizer(out + seg*d_active_carriers + output*d_noutput, seg);
           }
         }
         else
         {
+          /*TODO: we should review this case*/
           //Segment 0; from in[0]->in[d_active_carriers - 1]
-          memcpy(&out_before_rand, in + output*d_noutput, d_noutput*sizeof(gr_complex));
-          this->randomizer(in + output*d_noutput, out + output*d_noutput, output);
+          //memcpy(&out_before_rand, in + output*d_noutput, d_noutput*sizeof(gr_complex));
+          printf("Error in freq interleaver\n");
         }
       }
       return noutput_items;
