@@ -139,7 +139,7 @@ namespace gr {
                 {   
                     // The sync byte should be taken from the end and put in the beginning. 
                     //out[i*d_TSP_SIZE] = d_SYNC; 
-                    printf("ED) in[%i] = %x\n",d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
+                    //printf("ED) in[%i] = %x\n",d_TSP_SIZE-1 + i*d_TSP_SIZE, in[d_TSP_SIZE-1 + i*d_TSP_SIZE]);
                     out[i*d_TSP_SIZE] = in[d_TSP_SIZE-1 + i*d_TSP_SIZE];
                     for (int byte = 0; byte < d_TSP_SIZE-1; byte++)
                     {
