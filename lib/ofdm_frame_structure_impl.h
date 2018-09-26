@@ -80,6 +80,10 @@ namespace gr {
       bitset<11> sp_keyword;
       bitset<16> TMCC_sync_word;
       bitset<204> TMCCword;
+      bitset<204> TMCCword_SP0_w0;
+      bitset<204> TMCCword_SP0_w1;
+      bitset<204> TMCCword_SP1_w0;
+      bitset<204> TMCCword_SP1_w1;
 
       bool d_IsFullSeg;
       int InputIndex;     //Variable to cover input array
@@ -121,6 +125,13 @@ namespace gr {
 
       gr_complex tmcc_out_1 = gr_complex(-4.0/3.0, 0);
       gr_complex tmcc_out_0 = gr_complex(4.0/3.0, 0);
+      gr_complex TMCC_complex_SP0_w0[204] = {};
+      gr_complex TMCC_complex_SP0_w1[204] = {};
+      gr_complex TMCC_complex_SP1_w0[204] = {};
+      gr_complex TMCC_complex_SP1_w1[204] = {};
+      gr_complex TMCC_sym;
+
+      gr_complex SP_values[216*13] = {};
 
       bool primera = true;
       bool EsPar = true;

@@ -33,6 +33,8 @@
 
 #include <gnuradio/io_signature.h>
 #include "ofdm_frame_structure_impl.h"
+#include <chrono>
+using namespace std::chrono;
 
 namespace gr {
   namespace isdbt {
@@ -95,32 +97,26 @@ namespace gr {
       d_LayerA_seg = LayerA_seg;
       d_LayerB_seg = LayerB_seg;
       d_LayerC_seg = LayerC_seg;
-    }
+      EsPar = true;
 
-    /*
-     * Our virtual destructor.
-     */
-    ofdm_frame_structure_impl::~ofdm_frame_structure_impl()
-    {
-    }
+      /**** Scattered Pilot Array ******/
+      /** Here lets create an array with all possibles values of the scattered pilot **/
 
-    /*
-    Writes corresponding Scattered Pilot into symbol
-    */
-
-    // 1, 
-    gr_complex 
-    ofdm_frame_structure_impl::write_SP(int SPindex, int d_mode, int SegmentNumber)
-    {
+     
       bitset<11> keyword = 0b11111111111;
       bitset<1> temp, bit9, bit11;
       /* Evolve starting word to generate PRBS*/
-      for (int i=0; i<SPindex; i++)
+      SP_values[0].real(-4.0/3.0);
+
+      SP_values[0].imag(0);
+      for (int i=1; i<216*13; i++)
       {
         bit9 = keyword.test(2);
         bit11 = keyword.test(0);
         temp = bit9 ^ bit11;
         keyword = (keyword >> 1);
+        
+        //(temp.test(0))?keyword.set(10):keyword.reset(10);
         if (temp.test(0))
         {
           keyword.set(10);
@@ -129,144 +125,23 @@ namespace gr {
         {
           keyword.reset(10);
         }
-      }
-      if (keyword.test(0)) /*Return bit value in keyword for SPindex*/
-      {
-        return std::complex<float>(-4.0/3.0, 0);   
-      } else {
-        return std::complex<float>(4.0/3.0, 0);
-      }
-    }
-    int ofdm_frame_structure_impl::get_degree(bitset<204> r, int max)
-    {
-      // Given a binary expression of a GF(2) polynomial, returns the degree < max
-      int degree = 0;
 
-      while ((r.any()) && (degree < max))
-      {
-        degree++;
-        r >>= 1;
-      }
-
-      // If not found, show an appropiated message
-      if (degree == max)
-      {
-        printf("(OFDM Frame Structure) Parity error: degree max = %d\n", degree);
-      }
-      return (degree - 1);
-    }
-
-    void ofdm_frame_structure_impl::parity_TMCC(bitset<204> *TMCCword, int n, int k)
-    {
-      /* Fills the bits 123 to 203 with parity for a given TMCC word */
-      bitset<204> temp_word, g, m, r, one, aux;
-      temp_word = *TMCCword;
-      g.reset();
-      aux.reset();
-      m.reset();
-      r.reset();
-      one.reset();
-      one.set(0);
-
-      int degree_m = 0;
-      int degree_g = 0;
-
-      int degree_r = 0;
-
-      /* Bits B20 to B121 of TMCC information are error-correction coded by means of the shortened code (184,102)
-         of the difference cyclic code (273, 191).
-         Generating polynomial of the (273, 191) code: g(x) = x^82 + x^77 + x^76 + x^71 + x^67 + x^66 + x^56 + x^52 + x^48 + x^40 + x^36 + x^34 + x^24 + x^22 + x^18 + x^10 + x^4 + 1
-      */
-
-      // First, we initialize a variable with the polynomial g(x)
-      g = (one << 82) | (one << 77) | (one << 76) | (one << 71) | (one << 67) | (one << 66) | (one << 56) | (one << 52) | (one << 48) | (one << 40) | (one << 36) | (one << 34) | (one << 24) | (one << 22) | (one << 18) | (one << 10) | (one << 4) | (one);
-      degree_g = this->get_degree(g, 84);
-
-      // Load the TMCCword bits to code to the m variable
-      for (int i = 20; i<122; i++)
-      {
-        temp_word.test(i)?m.set(121 - i):m.reset(121 - i);
-      }
-
-      // Now we should compute the x^(n-k).m(x) polynomial
-      m = m << (n - k);
-
-
-      // Once we have the p(x) and x^(n-k)m(x) the next step is know the difference of degrees
-      degree_m = this->get_degree(m, n - k + 102 +1);
-
-      r = (g << (degree_m - degree_g)) ^ m;
-
-      degree_r = this->get_degree(r, n-k+102);
-      
-      while (degree_r >= degree_g)
-      {
-        r = (g << (degree_r - degree_g)) ^ r;
-        degree_r = this->get_degree(r, n-k+102 +1);
-
-      }
-
-      // Here we have r(x), the parity of the message
-      // Write the parity on the TMCCword
-      for (int j=122; j<204; j++)
-      {
-        aux = r >> (j-122) & one;
-        aux.test(0)?temp_word.set(203+122-j):temp_word.reset(203+122-j);  //TODO: write the indexes in a simpler way
-      }
-
-      *TMCCword = temp_word;
-    }
-    /*
-    Writes bits of the TMCC into symbol
-    */
-    gr_complex 
-    ofdm_frame_structure_impl::write_TMCC(int frame_counter, int SegmentNumber)
-    {
-      //Test TMCC word for writing bit, returns symbol mapped into DBPSK
-      bool current_bit, previous_bit;
-      
-      //First bit, define TMCC word
-      if (frame_counter == 0)
-      //
-      //First Case, decision based only on first bit
-      //
-      {
-        //Assign b0, check for SP0 value
-        gr_complex sp0 = this->write_SP(total_carriers_mod_2*SegmentNumber, d_mode, SegmentNumber);
-        if(sp0.real() < 0)
+        if (keyword.test(0))
         {
-          TMCCword.set(0);
-        } 
-        else 
-        {
-          TMCCword.reset(0);
+          SP_values[i].real(-4.0/3.0);
+          SP_values[i].imag(0);
         }
-        //Assign b1-b16
-        for (int i = 0; i < 16; i++)
+        else
         {
-          if (EsPar)
-          {
-            if (TMCC_sync_word.test(i))
-            {
-              TMCCword.set(i+1);
-            } 
-            else 
-            {
-              TMCCword.reset(i+1);
-            }
-          }
-          else
-          {
-            if (TMCC_sync_word.test(i))
-            {
-              TMCCword.reset(i+1);
-            } 
-            else 
-            {
-              TMCCword.set(i+1);
-            }
-          }
+          SP_values[i].real(4.0/3.0);
+          SP_values[i].imag(0);
         }
+      }
+
+
+      /**** TMCC *****/
+
+
         //Segment type identifier
           //This example only uses Coherent modulation
         TMCCword.set(17);
@@ -1401,34 +1276,203 @@ namespace gr {
         printf("\n");*/
         this->parity_TMCC(&TMCCword, 184, 102); // This function calculates the parity and writes on the b112 to b203 of the TMCCword
 
+        // Here we conform the TMCC for every case. This is to avoid build a TMCC every time that SP0 and w0 changes
+        TMCCword_SP0_w0 = TMCCword;
+        TMCCword_SP0_w1 = TMCCword;
+        TMCCword_SP1_w0 = TMCCword;
+        TMCCword_SP1_w1 = TMCCword;
+
+        // Si es par, wo
+        //Assign b1-b16
+        for (int i = 0; i < 16; i++)
+        {
+          if (TMCC_sync_word.test(i))
+          {
+            // EVEN
+            TMCCword_SP0_w0.set(i+1);
+            TMCCword_SP1_w0.set(i+1); 
+            
+            // ODD
+            TMCCword_SP0_w1.reset(i+1);
+            TMCCword_SP1_w1.reset(i+1);
+          }
+          else
+          {
+            // EVEN
+            TMCCword_SP0_w0.reset(i+1);
+            TMCCword_SP1_w0.reset(i+1);
+
+            // ODD
+            TMCCword_SP0_w1.set(i+1);
+            TMCCword_SP1_w1.set(i+1); 
+          }
+        }
+
+
+        //Assign b0
+        TMCCword_SP0_w0.reset(0);
+        TMCCword_SP0_w1.reset(0);
+        TMCCword_SP1_w0.set(0);
+        TMCCword_SP1_w1.set(0);
+
+
+
         // Codes the TMCCword
         for (int b = 1; b < 204; b++)
         {
-          (TMCCword.test(b-1)^TMCCword.test(b))?TMCCword.set(b):TMCCword.reset(b);
+          (TMCCword_SP0_w0.test(b-1)^TMCCword_SP0_w0.test(b))?TMCCword_SP0_w0.set(b):TMCCword_SP0_w0.reset(b);
+          (TMCCword_SP1_w0.test(b-1)^TMCCword_SP1_w0.test(b))?TMCCword_SP1_w0.set(b):TMCCword_SP1_w0.reset(b);
+          (TMCCword_SP0_w1.test(b-1)^TMCCword_SP0_w1.test(b))?TMCCword_SP0_w1.set(b):TMCCword_SP0_w1.reset(b);
+          (TMCCword_SP1_w1.test(b-1)^TMCCword_SP1_w1.test(b))?TMCCword_SP1_w1.set(b):TMCCword_SP1_w1.reset(b);
         }
-        // Return bit0
-        return sp0;
-      }
+
+      
       //
       //General case, decision based on current bit and previous bit
       //
-      if (frame_counter == 203)
+
+      // Set the SP0 value 
+      TMCC_complex_SP0_w0[0] = tmcc_out_0;
+      TMCC_complex_SP0_w1[0] = tmcc_out_0;
+      TMCC_complex_SP1_w0[0] = tmcc_out_1;
+      TMCC_complex_SP1_w1[0] = tmcc_out_1;
+
+      for (int b = 1; b < 204; b++)
       {
-        EsPar = !EsPar;
+        TMCC_complex_SP0_w0[b] = (TMCCword_SP0_w0.test(b)?tmcc_out_1:tmcc_out_0);
+
+        TMCC_complex_SP0_w1[b] = (TMCCword_SP0_w1.test(b)?tmcc_out_1:tmcc_out_0);
+
+        TMCC_complex_SP1_w0[b] = (TMCCword_SP1_w0.test(b)?tmcc_out_1:tmcc_out_0);
+
+        TMCC_complex_SP1_w1[b] = (TMCCword_SP1_w1.test(b)?tmcc_out_1:tmcc_out_0);
       }
-      current_bit = TMCCword.test(frame_counter);
-      
-      if (current_bit)
+
+    }
+
+    /*
+     * Our virtual destructor.
+     */
+    ofdm_frame_structure_impl::~ofdm_frame_structure_impl()
+    {
+    }
+
+    /*
+    Writes corresponding Scattered Pilot into symbol
+    */
+
+    // 1, 
+    gr_complex 
+    ofdm_frame_structure_impl::write_SP(int SPindex, int d_mode, int SegmentNumber)
+    {
+      bitset<11> keyword = 0b11111111111;
+      bitset<1> temp, bit9, bit11;
+      /* Evolve starting word to generate PRBS*/
+      for (int i=0; i<SPindex; i++)
       {
-        // Send 1
-        return tmcc_out_1;  
-      } 
-      else 
+        bit9 = keyword.test(2);
+        bit11 = keyword.test(0);
+        temp = bit9 ^ bit11;
+        keyword = (keyword >> 1);
+        if (temp.test(0))
+        {
+          keyword.set(10);
+        } 
+        else 
+        {
+          keyword.reset(10);
+        }
+      }
+      if (keyword.test(0)) /*Return bit value in keyword for SPindex*/
       {
-        // Send 0
-        return tmcc_out_0;
+        return std::complex<float>(-4.0/3.0, 0);   
+      } else {
+        return std::complex<float>(4.0/3.0, 0);
       }
     }
+    int ofdm_frame_structure_impl::get_degree(bitset<204> r, int max)
+    {
+      // Given a binary expression of a GF(2) polynomial, returns the degree < max
+      int degree = 0;
+
+      while ((r.any()) && (degree < max))
+      {
+        degree++;
+        r >>= 1;
+      }
+
+      // If not found, show an appropiated message
+      if (degree == max)
+      {
+        printf("(OFDM Frame Structure) Parity error: degree max = %d\n", degree);
+      }
+      return (degree - 1);
+    }
+
+    void ofdm_frame_structure_impl::parity_TMCC(bitset<204> *TMCCword, int n, int k)
+    {
+      /* Fills the bits 123 to 203 with parity for a given TMCC word */
+      bitset<204> temp_word, g, m, r, one, aux;
+      temp_word = *TMCCword;
+      g.reset();
+      aux.reset();
+      m.reset();
+      r.reset();
+      one.reset();
+      one.set(0);
+
+      int degree_m = 0;
+      int degree_g = 0;
+
+      int degree_r = 0;
+
+      /* Bits B20 to B121 of TMCC information are error-correction coded by means of the shortened code (184,102)
+         of the difference cyclic code (273, 191).
+         Generating polynomial of the (273, 191) code: g(x) = x^82 + x^77 + x^76 + x^71 + x^67 + x^66 + x^56 + x^52 + x^48 + x^40 + x^36 + x^34 + x^24 + x^22 + x^18 + x^10 + x^4 + 1
+      */
+
+      // First, we initialize a variable with the polynomial g(x)
+      g = (one << 82) | (one << 77) | (one << 76) | (one << 71) | (one << 67) | (one << 66) | (one << 56) | (one << 52) | (one << 48) | (one << 40) | (one << 36) | (one << 34) | (one << 24) | (one << 22) | (one << 18) | (one << 10) | (one << 4) | (one);
+      degree_g = this->get_degree(g, 84);
+
+      // Load the TMCCword bits to code to the m variable
+      for (int i = 20; i<122; i++)
+      {
+        temp_word.test(i)?m.set(121 - i):m.reset(121 - i);
+      }
+
+      // Now we should compute the x^(n-k).m(x) polynomial
+      m = m << (n - k);
+
+
+      // Once we have the p(x) and x^(n-k)m(x) the next step is know the difference of degrees
+      degree_m = this->get_degree(m, n - k + 102 +1);
+
+      r = (g << (degree_m - degree_g)) ^ m;
+
+      degree_r = this->get_degree(r, n-k+102);
+      
+      while (degree_r >= degree_g)
+      {
+        r = (g << (degree_r - degree_g)) ^ r;
+        degree_r = this->get_degree(r, n-k+102 +1);
+
+      }
+
+      // Here we have r(x), the parity of the message
+      // Write the parity on the TMCCword
+      for (int j=122; j<204; j++)
+      {
+        aux = r >> (j-122) & one;
+        aux.test(0)?temp_word.set(203+122-j):temp_word.reset(203+122-j);  //TODO: write the indexes in a simpler way
+      }
+
+      *TMCCword = temp_word;
+    }
+    /*
+    Writes bits of the TMCC into symbol
+    */
+
 
     void
     ofdm_frame_structure_impl::fill_segment_mode1(gr_complex* in, gr_complex* out, int SegmentNumber, int output_item)
@@ -1565,7 +1609,7 @@ namespace gr {
         else if (j == TMCCPos) 
         {
           /* TMCC */
-          out[index] = this->write_TMCC(frame_counter, SegmentNumber);
+          //out[index] = this->write_TMCC(frame_counter, SegmentNumber);
           TMCCindex++;
         } 
         else if ((j == ACpos1) || (j == ACpos2)) 
@@ -1761,19 +1805,32 @@ namespace gr {
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-          out[index + j] = this->write_SP(total_carriers_mod_2*SegmentPos+j, d_mode, SegmentNumber);
+
+          out[index + j] = SP_values[total_carriers_mod_2*SegmentPos+j];
+    
         } 
         /* TMCC 1 and 2*/
-        else if (j == TMCCPos1)
+        else if ((j == TMCCPos1) | (j == TMCCPos2))
         {
-          out[index + j] = this->write_TMCC(frame_counter, SegmentNumber);
-          TMCC_Temp = out[index + j];
+          if (SP_values[total_carriers_mod_2*SegmentNumber].real() < 0)
+          {
+            TMCC_sym = (EsPar?TMCC_complex_SP1_w0[frame_counter]:TMCC_complex_SP1_w1[frame_counter]);
+
+          }
+          else
+          {
+           TMCC_sym = (EsPar?TMCC_complex_SP0_w0[frame_counter]:TMCC_complex_SP0_w1[frame_counter]); 
+          }
+          out[index + j] = TMCC_sym;
+
+          //TMCC_Temp = out[index + j];
         }
-        else if (j == TMCCPos2)
+        /*else if (j == TMCCPos2)
         {
           out[index + j] = TMCC_Temp;
           TMCC_Temp = 0;
-        } 
+        } */
+
         /* AC1, AC2, AC3 or AC4 */
         else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4)) 
         {
@@ -2050,7 +2107,7 @@ namespace gr {
         //SPindex++;
         /* TMCC 1 and 2*/
         } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
-        out[index] = this->write_TMCC(frame_counter, SegmentNumber);
+        //out[index] = this->write_TMCC(frame_counter, SegmentNumber);
         TMCCindex++;
         /* AC1, AC2, AC3 or AC4 */
         } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) || (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) {
@@ -2195,6 +2252,10 @@ namespace gr {
         }
       }
 
+      if (frame_counter == 203)
+      {
+        EsPar = !EsPar;
+      }
       frame_counter++;  
       d_carrier_pos = (frame_counter % 4);
       frame_counter = (frame_counter % 204);
