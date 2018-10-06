@@ -47,20 +47,20 @@ Source BTS for the test can be downloaded here:  https://mega.nz/#!uXJRlKZL
 
 **Contact Information**
 
-gr-isdbt-tx was developed by:
+You can contact the authors, gr-isdbt-tx was developed by:
 
 Santiago Castro Guzman      santiago.castro@fing.edu.uy
 
-Javier Hernandez Baraibar   www.linkedin.com/in/javier-hernández-baráibar
+Javier Hernandez Baraibar   javier.hernandez@fing.edu.uy
+                            www.linkedin.com/in/javier-hernández-baráibar
                             
 
-or the project supervisors:
+or you can also contact the project supervisors:
+
 
 Dr. Ing. Federico Larroca   flarroca@fing.edu.uy
 
 MsC. Ing. Pablo Flores      pablof@fing.edu.uy
-
-You can also find support in ARTES group, here: https://iie.fing.edu.uy/investigacion/grupos/artes/es/inicio/
 
 
 IIE Instituto de Ingeniería Eléctrica  
