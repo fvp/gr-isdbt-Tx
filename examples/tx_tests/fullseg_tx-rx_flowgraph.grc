@@ -128,7 +128,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>file</key>
@@ -136,7 +136,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1048, 604)</value>
+      <value>(328, 996)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -187,7 +187,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1376, 796)</value>
+      <value>(344, 780)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -230,7 +230,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
@@ -238,7 +238,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1352, 1044)</value>
+      <value>(304, 588)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -340,7 +340,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1080, 440)</value>
+      <value>(1168, 804)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -387,7 +387,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1136, 372)</value>
+      <value>(1056, 396)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -434,7 +434,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1240, 620)</value>
+      <value>(1048, 620)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -458,171 +458,6 @@
     </param>
   </block>
   <block>
-    <key>blocks_stream_to_tagged_stream</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(288, 452)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>180</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_stream_to_tagged_stream_0_0</value>
-    </param>
-    <param>
-      <key>len_tag_key</key>
-      <value>"frame_begin"</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>packet_len</key>
-      <value>72</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>204</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_stream_to_tagged_stream</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(432, 724)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>180</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_stream_to_tagged_stream_0_0_0</value>
-    </param>
-    <param>
-      <key>len_tag_key</key>
-      <value>"frame_begin"</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>packet_len</key>
-      <value>432</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>204</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_stream_to_tagged_stream</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(616, 948)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>180</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_stream_to_tagged_stream_0_0_0_0</value>
-    </param>
-    <param>
-      <key>len_tag_key</key>
-      <value>"frame_begin"</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>packet_len</key>
-      <value>72*6</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>204</value>
-    </param>
-  </block>
-  <block>
     <key>blocks_stream_to_vector</key>
     <param>
       <key>alias</key>
@@ -642,11 +477,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2064, 524)</value>
+      <value>(2592, 68)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -693,11 +528,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2048, 444)</value>
+      <value>(2600, 180)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -744,11 +579,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2032, 364)</value>
+      <value>(2600, 276)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -791,11 +626,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(840, 620)</value>
+      <value>(104, 1012)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1305,7 +1140,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1168, 812)</value>
+      <value>(136, 796)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1352,11 +1187,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1144, 1060)</value>
+      <value>(96, 604)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1415,7 +1250,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1808, 992)</value>
+      <value>(1984, 992)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1860,7 +1695,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2040, 984)</value>
+      <value>(2184, 984)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1911,11 +1746,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1088, 500)</value>
+      <value>(1072, 892)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1966,7 +1801,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1184, 700)</value>
+      <value>(968, 676)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2013,11 +1848,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1392, 940)</value>
+      <value>(896, 484)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2064,11 +1899,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(648, 528)</value>
+      <value>(584, 920)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2107,7 +1942,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 744)</value>
+      <value>(512, 712)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2142,11 +1977,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(952, 968)</value>
+      <value>(480, 512)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2346,15 +2181,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(400, 640)</value>
+      <value>(336, 920)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -2389,11 +2224,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(728, 832)</value>
+      <value>(312, 712)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -2424,15 +2259,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(704, 1080)</value>
+      <value>(280, 512)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -2592,7 +2427,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>2</value>
+      <value>1</value>
     </param>
     <param>
       <key>IsFullSeg</key>
@@ -2600,7 +2435,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2392, 748)</value>
+      <value>(2408, 516)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2639,15 +2474,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>2</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1776, 628)</value>
+      <value>(1728, 596)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -2690,7 +2525,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1776, 400)</value>
+      <value>(2672, 408)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2784,11 +2619,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2256, 508)</value>
+      <value>(2336, 52)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -2835,11 +2670,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2240, 428)</value>
+      <value>(2344, 164)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -2886,11 +2721,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2224, 348)</value>
+      <value>(2360, 260)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>id</key>
@@ -2953,7 +2788,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2072, 664)</value>
+      <value>(2112, 568)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3032,7 +2867,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1736, 792)</value>
+      <value>(1736, 736)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3079,15 +2914,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(608, 624)</value>
+      <value>(64, 904)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -3122,11 +2957,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(936, 816)</value>
+      <value>(72, 696)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -3157,15 +2992,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(912, 1064)</value>
+      <value>(48, 496)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -3200,7 +3035,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1480, 392)</value>
+      <value>(1360, 392)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3384,11 +3219,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1504, 520)</value>
+      <value>(1632, 384)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
@@ -3455,7 +3290,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(2648, 740)</value>
+      <value>(2416, 420)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3502,7 +3337,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1736, 724)</value>
+      <value>(1728, 668)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3662,11 +3497,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(864, 496)</value>
+      <value>(792, 888)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3713,7 +3548,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(904, 712)</value>
+      <value>(728, 680)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3756,11 +3591,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1168, 936)</value>
+      <value>(672, 480)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -3790,24 +3625,6 @@
   <connection>
     <source_block_id>blocks_file_source_0_0_0</source_block_id>
     <sink_block_id>isdbt_hierarchical_divisor_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_stream_to_tagged_stream_0_0</source_block_id>
-    <sink_block_id>isdbt_energy_descrambler_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_stream_to_tagged_stream_0_0_0</source_block_id>
-    <sink_block_id>isdbt_energy_descrambler_0_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_stream_to_tagged_stream_0_0_0_0</source_block_id>
-    <sink_block_id>isdbt_energy_descrambler_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -3969,25 +3786,19 @@
   </connection>
   <connection>
     <source_block_id>isdbt_byte_deinterleaver_0</source_block_id>
-    <sink_block_id>blocks_stream_to_tagged_stream_0_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>isdbt_byte_deinterleaver_0</source_block_id>
     <sink_block_id>isdbt_energy_descrambler_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>isdbt_byte_deinterleaver_0_0</source_block_id>
-    <sink_block_id>blocks_stream_to_tagged_stream_0_0_0</sink_block_id>
+    <sink_block_id>isdbt_energy_descrambler_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>isdbt_byte_deinterleaver_0_0_0</source_block_id>
-    <sink_block_id>blocks_stream_to_tagged_stream_0_0_0_0</sink_block_id>
+    <sink_block_id>isdbt_energy_descrambler_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

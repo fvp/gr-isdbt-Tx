@@ -33,8 +33,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "ofdm_frame_structure_impl.h"
-#include <chrono>
-using namespace std::chrono;
+
 
 namespace gr {
   namespace isdbt {
@@ -157,7 +156,7 @@ namespace gr {
         TMCCword.set(24); //Test case: No changes in system
         TMCCword.set(25); 
         TMCCword.reset(26); //Alarm bit, defaulted in 0 //TODO: fijar parametrico, desde fuera del bloque
-        if (!d_IsFullSeg)
+        if (1) //(!d_IsFullSeg) TODO: should be 1 when partial reception is available. 
         {
           TMCCword.set(27);
         } 
