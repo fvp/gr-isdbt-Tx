@@ -8,14 +8,14 @@ We are still in development stages, and any help and/or feedback is still welcom
 
 This transmitter is currently operational, and commercial TV sets suppporting ISDB-T standard sucessfully decodes all transmision layers (HD, SD and One-Seg). We are using Ettus Research's USRP B100 as an antenna, which is currently discontinued, but any antena from ettus is fully supported. For more information about hardware, please see https://www.ettus.com/product/category/USRP-Bus-Series.
 
-Testing witout antenna is also possible, but you need to use as a reciever the project developed by ARTES group, which you can find here: https://github.com/git-artes/gr-isdbt.
+Testing without antenna is also possible, but you need to use as a reciever the project developed by ARTES group, which you can find here: https://github.com/git-artes/gr-isdbt.
 
 **Build instructions**
 
 For a system wide installation:
 
     git clone https://github.com/jhernandezbaraibar/gr-isdbt-Tx.git 
-    cd gr-isdbt-tx  
+    cd gr-isdbt-Tx  
     mkdir build  
     cd build  
     cmake ../  
@@ -24,11 +24,10 @@ For a system wide installation:
 For a user space installation, or GNU Radio installed in a location different from the default location /usr/local:
 
     git clone https://github.com/jhernandezbaraibar/gr-isdbt-Tx.git
-    cd gr-isdbt-tx  
+    cd gr-isdbt-Tx  
     mkdir build  
     cd build  
-    cmake -DCMAKE_INSTALL_PREFIX=<your_GNURadio_install_dir> ../
-    cmake ../  
+    cmake -DCMAKE_INSTALL_PREFIX=<your_GNURadio_install_dir> ../ 
     make
     make install  
 
@@ -41,9 +40,9 @@ On Debian/Ubuntu based distributions, you may have to run:
 
 The transmitter is now complete regarding operation, we are curreltly working in extra features and optimizing some of the blocks. This project is our final project for our Engineering Degree, and work is now focused on documentation. We will add more examples as soon as we get more time. Please contact us if you have any questions regarding the project, you will be answered asap.
 
-For testing purposes, you may want to try this flowgraph:  https://mega.nz/#!yCAVhC5I
+For testing purposes, you may want to try this flowgraph:  https://mega.nz/#!THxkDKKA!iSUYHXiwHGvPrGbd8vwYZNN3VkrxHo4U4JWpVh19fmM
 
-Source BTS for the test can be downloaded here:  https://mega.nz/#!uXJRlKZL
+Source BTS for the test can be downloaded here:  https://mega.nz/#!uXJRlKZL!R0qNIK1cpk79DWIz1-2Vu9lqkTjW6q1DC1DMQGeQze4
 
 **Contact Information**
 
