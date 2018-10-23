@@ -47,23 +47,27 @@
   </param>
 
   <sink>
-    <name>in0</name>
+    <name>Layer A</name>
     <type>complex</type>
-    <vlen>$segments_a*192</vlen>
+    <vlen>$segments_a*96*(pow(2.0,$mode-1))</vlen>
+  </sink>
+  <!-- Optional Inputs -->
+  <sink>
+    <name>Layer B</name>
+    <type>complex</type>
+    <vlen>$segments_b*96*(pow(2.0,$mode-1))</vlen>
+    <optional>1</optional>
   </sink>
   <sink>
-    <name>in1</name>
+    <name>Layer C</name>
     <type>complex</type>
-    <vlen>$segments_b*192</vlen>
+    <vlen>$segments_c*96*(pow(2.0,$mode-1))</vlen>
+    <optional>1</optional>
   </sink>
-  <sink>
-    <name>in2</name>
-    <type>complex</type>
-    <vlen>$segments_c*192</vlen>
-  </sink>
+
   <source>
     <name>out</name>
     <type>complex</type>
-    <vlen>13*192</vlen>
+    <vlen>13*96*(pow(2.0,$mode-1))</vlen>
   </source>
 </block>

@@ -52,8 +52,9 @@ namespace gr {
     hierarchical_combination::make(int mode, int segments_a, int segments_b, int segments_c)
     {
       d_segments_a = segments_a;
-      d_segments_b = segments_b;
-      d_segments_c = segments_c;
+      // in order to avoid signatures sizes 0 (throw error), we set the size as 1 but is not used
+      d_segments_b = (segments_b > 0)?segments_b:1;
+      d_segments_c = (segments_c > 0)?segments_c:1;
       switch (mode)
       {
         case 1:
@@ -87,7 +88,7 @@ namespace gr {
      */
     hierarchical_combination_impl::hierarchical_combination_impl()
       : gr::sync_block("hierarchical_combination",
-              gr::io_signature::make3(3, 3, d_segments_a*d_active_carriers*sizeof(gr_complex),
+              gr::io_signature::make3(1, 3, d_segments_a*d_active_carriers*sizeof(gr_complex),
                                             d_segments_b*d_active_carriers*sizeof(gr_complex),
                                             d_segments_c*d_active_carriers*sizeof(gr_complex)),
               gr::io_signature::make(1, 1, d_segments_total*d_active_carriers*sizeof(gr_complex))
@@ -107,8 +108,10 @@ namespace gr {
         gr_vector_void_star &output_items)
     {
       const gr_complex *in_a = (const gr_complex *) input_items[0];
+      // The following declarations should be conditional according to the layers in use
       const gr_complex *in_b = (const gr_complex *) input_items[1];
       const gr_complex *in_c = (const gr_complex *) input_items[2];
+
       gr_complex *out = (gr_complex *) output_items[0];
 
       for (int output = 0; output<noutput_items; output++)
@@ -116,12 +119,21 @@ namespace gr {
         //Layer A segments to output
         //printf("Layer A, in index: %i\n", output*d_segments_a*d_active_carriers);
         memcpy(out + output*d_active_carriers*d_segments_total, in_a + output*d_segments_a*d_active_carriers, d_active_carriers*d_segments_a*size_complex);
+
         //Layer B segments to output
+        if (input_items.size() > 1)
+        {
         //printf("Layer B, in index: %i\n", output*d_segments_b*d_active_carriers);
         memcpy(out + d_active_carriers*d_segments_a + output*d_active_carriers*d_segments_total, in_b + output*d_segments_b*d_active_carriers, d_active_carriers*d_segments_b*size_complex);
+        }
+
         //Layer C segments to output
+        if (input_items.size() >= 3)
+        {
         //printf("Layer C, in index: %i\n", output*d_segments_c*d_active_carriers);
+
         memcpy(out + d_active_carriers*d_segments_a + d_active_carriers*d_segments_b + output*d_active_carriers*d_segments_total, in_c + output*d_segments_c*d_active_carriers, d_active_carriers*d_segments_c*size_complex);
+        }      
       }
 
       // Tell runtime system how many output items we produced.
