@@ -49,6 +49,8 @@ namespace gr {
       int d_delay_bits;
       int d_delay_queue;
       int d_segments;
+      int d_tsp_per_frame;
+      float d_cp;
 
       gr_complex symbol_dic_4[4] = {gr_complex(1,1), gr_complex(1,-1), gr_complex(-1,1), gr_complex(-1,-1)
                                     };
@@ -78,7 +80,7 @@ namespace gr {
                                     };
      
      public:
-      mapper_impl(int mode, int mod_scheme, int segments);
+      mapper_impl(int mode, int mod_scheme, int segments, float cp);
       ~mapper_impl();
 
       gr_complex mapQPSK(unsigned char data);

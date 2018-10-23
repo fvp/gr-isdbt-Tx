@@ -47,7 +47,7 @@ namespace gr {
      public:
       typedef boost::shared_ptr<mapper> sptr;
 
-      static sptr make(int mode, int mod_scheme, int segments);
+      static sptr make(int mode, int mod_scheme, int segments, float cp);
     };
 
   } // namespace isdbt

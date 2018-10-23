@@ -4,7 +4,7 @@
   <key>isdbt_mapper</key>
   <category>ISDBT</category>
   <import>import isdbt</import>
-  <make>isdbt.mapper($mode, $mod_scheme, $segments)</make>
+  <make>isdbt.mapper($mode, $mod_scheme, $segments, $cp)</make>
 
   <param>
      <name>Transmission Mode</name>
@@ -49,6 +49,30 @@
     <key>segments</key>
     <type>int</type>
   </param>
+
+ <param>
+  <name>Guard Interval</name>
+  <key>cp</key>
+  <value>0.125</value>
+  <type>enum</type>
+  <option>
+    <name>1/4</name>
+    <key>0.250</key>
+  </option>
+  <option>
+    <name>1/8</name>
+    <key>0.125</key>
+  </option>
+  <option>
+    <name>1/16</name>
+    <key>0.0625</key>
+  </option>
+    <option>
+    <name>1/32</name>
+    <key>0.03125</key>
+    </option>
+</param>
+
 
   <sink>
     <name>in</name>

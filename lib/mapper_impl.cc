@@ -38,16 +38,16 @@ namespace gr {
   namespace isdbt { 
 
     mapper::sptr
-    mapper::make(int mode, int mod_scheme, int segments)
+    mapper::make(int mode, int mod_scheme, int segments, float cp)
     {
       return gnuradio::get_initial_sptr
-        (new mapper_impl(mode, mod_scheme, segments));
+        (new mapper_impl(mode, mod_scheme, segments, cp));
     }
 
     /*
      * The private constructor
      */
-    mapper_impl::mapper_impl(int mode, int mod_scheme, int segments)
+    mapper_impl::mapper_impl(int mode, int mod_scheme, int segments, float cp)
       : gr::block("mapper",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(gr_complex))
@@ -60,13 +60,16 @@ namespace gr {
       d_mod_scheme = mod_scheme;
       d_counter = 0;
       d_input_counter = 0;
+      d_cp = cp;
+
+      d_tsp_per_frame = (int) round((1+d_cp)*pow(2, 9 + d_mode));
 
       //Find totay delay given the modulation parameters
       int factor = (int) (pow(2.0,mode-1));
-      d_delay_bits = (2304*204*8*d_segments - 720)/6;
+      d_delay_bits = (d_tsp_per_frame*204*8*d_segments - 120*d_mod_scheme)/d_mod_scheme;
       //d_delay_bits = (72*d_segments*204*8-720)/6;
       //d_delay_bits = 100;
-      printf("d_delay_bits: %i\n", d_delay_bits);
+      //printf("d_delay_bits: %i\n", d_delay_bits);
 
       switch (d_mod_scheme)
       {
