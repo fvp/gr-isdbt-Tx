@@ -1594,33 +1594,55 @@ namespace gr {
         }
       }
       SPindex = 0;
-      InputIndex = SegmentPos*active_carriers_mod_1;
+      InputIndex = (output_item*d_total_segments+SegmentNumber)*active_carriers_mod_1;
+      index = pow(2, 10+d_mode)*output_item+total_carriers_mod_1*SegmentPos + d_zero_pad_left;
+      
+      gr_complex TMCC_Temp;
 
+      //printf("Segment: %i, Index: %i\n", SegmentNumber, index);
+      //Fill segments with data and relevant bits in relevant positions found
       for (int j = 0; j < total_carriers_mod_1; j++) 
       {
-        index = (int)pow(2, 10 + d_mode)*output_item + total_carriers_mod_1*SegmentPos + j;
-           
+        /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-          /*Scattered Pilot*/
-          out[index] = this->write_SP(total_carriers_mod_1*SegmentPos+j, d_mode, SegmentNumber);
+
+          out[index + j] = SP_values[total_carriers_mod_1*SegmentPos+j];
+    
         } 
-        else if (j == TMCCPos) 
+        /* TMCC 1 */
+        else if (j == TMCCPos)
         {
-          /* TMCC */
-          //out[index] = this->write_TMCC(frame_counter, SegmentNumber);
-          TMCCindex++;
-        } 
+          if (SP_values[total_carriers_mod_1*SegmentNumber].real() < 0)
+          {
+            TMCC_sym = (EsPar?TMCC_complex_SP1_w0[frame_counter]:TMCC_complex_SP1_w1[frame_counter]);
+
+          }
+          else
+          {
+           TMCC_sym = (EsPar?TMCC_complex_SP0_w0[frame_counter]:TMCC_complex_SP0_w1[frame_counter]); 
+          }
+          out[index + j] = TMCC_sym;
+
+          //TMCC_Temp = out[index + j];
+        }
+        /*else if (j == TMCCPos2)
+        {
+          out[index + j] = TMCC_Temp;
+          TMCC_Temp = 0;
+        } */
+
+        /* AC1, AC2, AC3 or AC4 */
         else if ((j == ACpos1) || (j == ACpos2)) 
         {
-          /* AC1 or AC2 */
-
-          out[index] = std::complex<double>(0, 0);
-        } 
+          out[index + j] = std::complex<float>(-4.0/3.0, 0); 
+        }
+        /* Fill with raw data*/
         else 
         {
-          /* Fill with data*/
-          out[index] = in[InputIndex];
+          out[index + j] = in[InputIndex];
+          //out[index + j].real(0);
+          //out[index + j].imag(0);
           InputIndex++;
         }
       }
@@ -2095,26 +2117,56 @@ namespace gr {
         }
       }
       SPindex = 0;
-      InputIndex = SegmentPos*active_carriers_mod_3;
+      InputIndex = (output_item*d_total_segments+SegmentNumber)*active_carriers_mod_3;
+      index = pow(2, 10+d_mode)*output_item+total_carriers_mod_3*SegmentPos + d_zero_pad_left;
+      
+      gr_complex TMCC_Temp;
+
+      //printf("Segment: %i, Index: %i\n", SegmentNumber, index);
+      //Fill segments with data and relevant bits in relevant positions found
       for (int j = 0; j < total_carriers_mod_3; j++) 
       {
-        index = (int) pow(2, 10+d_mode)*output_item+total_carriers_mod_3*SegmentPos+j;
         /*Scattered Pilot*/   
         if ((j % 12) == (3*d_carrier_pos))
         {
-        out[index] = this->write_SP(total_carriers_mod_3*SegmentPos+j, d_mode, SegmentNumber);
-        //SPindex++;
+
+          out[index + j] = SP_values[total_carriers_mod_3*SegmentPos+j];
+    
+        } 
         /* TMCC 1 and 2*/
-        } else if ((j == TMCCPos1) || (j == TMCCPos2) || (j == TMCCPos3) || (j == TMCCPos4)) {
-        //out[index] = this->write_TMCC(frame_counter, SegmentNumber);
-        TMCCindex++;
+        else if ((j == TMCCPos1) | (j == TMCCPos2) | (j == TMCCPos3) | (j == TMCCPos4))
+        {
+          if (SP_values[total_carriers_mod_3*SegmentNumber].real() < 0)
+          {
+            TMCC_sym = (EsPar?TMCC_complex_SP1_w0[frame_counter]:TMCC_complex_SP1_w1[frame_counter]);
+
+          }
+          else
+          {
+           TMCC_sym = (EsPar?TMCC_complex_SP0_w0[frame_counter]:TMCC_complex_SP0_w1[frame_counter]); 
+          }
+          out[index + j] = TMCC_sym;
+
+          //TMCC_Temp = out[index + j];
+        }
+        /*else if (j == TMCCPos2)
+        {
+          out[index + j] = TMCC_Temp;
+          TMCC_Temp = 0;
+        } */
+
         /* AC1, AC2, AC3 or AC4 */
-        } else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) || (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) {
-        out[index] = std::complex<double>(0, 0);
-        /* Fill with data*/
-        } else {
-        out[index] = in[InputIndex];
-        InputIndex++;
+        else if ((j == ACpos1) || (j == ACpos2) || (j == ACpos3) || (j == ACpos4) | (j == ACpos5) || (j == ACpos6) || (j == ACpos7) || (j == ACpos8)) 
+        {
+          out[index + j] = std::complex<float>(-4.0/3.0, 0); 
+        }
+        /* Fill with raw data*/
+        else 
+        {
+          out[index + j] = in[InputIndex];
+          //out[index + j].real(0);
+          //out[index + j].imag(0);
+          InputIndex++;
         }
       }
       return;  

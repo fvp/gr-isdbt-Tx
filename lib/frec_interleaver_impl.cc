@@ -46,9 +46,13 @@ namespace gr {
     static int d_active_carriers;
     static int d_noutput;
 
-    gr_complex out_before_rand[192*13];
-    gr_complex data[192][13] = {}; 
-    gr_complex data_interleaved[13][192] = {};
+      // TODO: This declaration should be dependent on the Mode. 
+      //       Since C++ doesn't allow dynamic size declaration, we use the max size that
+      //       could be required by the Mode 3.
+    
+      gr_complex out_before_rand[384*13];
+      gr_complex data[384][13] = {}; 
+      gr_complex data_interleaved[13][384] = {};
 
     /* TODO: The case when we do not send 1-seg */
     /* in the full-seg mode we assume 1-seg available */
@@ -101,6 +105,8 @@ namespace gr {
       d_mode = mode; 
       d_noutput = d_segments_total*d_active_carriers;
       d_IsFullSeg = IsFullSeg;
+      
+
     }
 
 
