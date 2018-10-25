@@ -108,7 +108,7 @@ namespace gr {
       SP_values[0].real(-4.0/3.0);
 
       SP_values[0].imag(0);
-      for (int i=1; i<216*13; i++)
+      for (int i=1; i<432*13; i++)
       {
         bit9 = keyword.test(2);
         bit11 = keyword.test(0);
@@ -2131,6 +2131,8 @@ namespace gr {
         {
 
           out[index + j] = SP_values[total_carriers_mod_3*SegmentPos+j];
+          //out[index + j].real(0);
+          //out[index + j].imag(0);
     
         } 
         /* TMCC 1 and 2*/

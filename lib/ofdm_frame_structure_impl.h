@@ -131,7 +131,7 @@ namespace gr {
       gr_complex TMCC_complex_SP1_w1[204] = {};
       gr_complex TMCC_sym;
 
-      gr_complex SP_values[216*13] = {};
+      gr_complex SP_values[432*13] = {};
 
       bool primera = true;
       bool EsPar = true;
