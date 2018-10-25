@@ -37,24 +37,48 @@
 namespace gr {
   namespace isdbt {
 
+    int layer_a_tsp;
+    int layer_b_tsp;
+    int layer_c_tsp;
+    int d_tsp_per_frame;
+    int d_segments_A;
+    int d_segments_B;
+    int d_segments_C;
+    int tsp_len = 204;
+    int d_mode;
+    float d_cp;
+
     hierarchical_divisor::sptr
-    hierarchical_divisor::make()
+    hierarchical_divisor::make(int mode, float cp, int segments_A, int mod_scheme_A, float conv_code_A, int segments_B, int mod_scheme_B, float conv_code_B, int segments_C, int mod_scheme_C, float conv_code_C)
     {
-      // TRABAJAR EN GENERALIZAR ESTE BLOQUE
-      //ESTA SOLO PARA MONTECARLO . TS
+      d_mode = mode;
+      d_cp = cp;
+      d_tsp_per_frame = (int) round((1+d_cp)*pow(2, 9 + mode));
+
+      d_segments_A = segments_A;
+      // in order to avoid signatures sizes 0 (throw error), we set the size as 1 but is not used
+      d_segments_B = (segments_B > 0)?segments_B:1;
+      d_segments_C = (segments_C > 0)?segments_C:1;
+
+
+      layer_a_tsp = (int)round((d_segments_A*tsp_len*mod_scheme_A*conv_code_A*96*pow(2, d_mode - 1))/(8*tsp_len));
+      layer_b_tsp = (int)round((d_segments_B*tsp_len*mod_scheme_B*conv_code_B*96*pow(2, d_mode - 1))/(8*tsp_len));
+      layer_c_tsp = (int)round((d_segments_C*tsp_len*mod_scheme_C*conv_code_C*96*pow(2, d_mode - 1))/(8*tsp_len));
+
+
       return gnuradio::get_initial_sptr
-        (new hierarchical_divisor_impl());
+        (new hierarchical_divisor_impl(mode, cp, segments_A, mod_scheme_A, conv_code_A, segments_B, mod_scheme_B, conv_code_B, segments_C, mod_scheme_C, conv_code_C));
     }
 
     /*
      * The private constructor
      */
-    hierarchical_divisor_impl::hierarchical_divisor_impl()
+    hierarchical_divisor_impl::hierarchical_divisor_impl(int mode, float cp, int segments_A, int mod_scheme_A, float conv_code_A, int segments_B, int mod_scheme_B, float conv_code_B, int segments_C, int mod_scheme_C, float conv_code_C)
       : gr::block("hierarchical_divisor",
-              gr::io_signature::make(1, 1, 2304*204*sizeof(unsigned char)),
-              gr::io_signature::make3(3, 3, 126*204*sizeof(unsigned char),
-                                            756*204*sizeof(unsigned char),
-                                            756*204*sizeof(unsigned char))
+              gr::io_signature::make(1, 1, d_tsp_per_frame*204*sizeof(unsigned char)),
+              gr::io_signature::make3(1, 3, layer_a_tsp*204*sizeof(unsigned char),
+                                            layer_b_tsp*204*sizeof(unsigned char),
+                                            layer_c_tsp*204*sizeof(unsigned char))
                                       )
     {}
 
@@ -93,10 +117,10 @@ namespace gr {
       {
         //printf("NUEVO OUTPUT ITEM\n");
 
-        for (int k=0; k<total_tsp_in_multiplex ; k++)
+        for (int k=0; k<d_tsp_per_frame ; k++)
         {
           //Read first TSP from input
-          tsp_info_byte = in[output*total_tsp_in_multiplex*tsp_len + k*tsp_len + 188 + 1];
+          tsp_info_byte = in[output*d_tsp_per_frame*tsp_len + k*tsp_len + 188 + 1];
           layer_flag = tsp_info_byte >>= 4;
           
           switch (layer_flag)
@@ -104,21 +128,21 @@ namespace gr {
             case 1:
             {
               //Copy TSP to output A
-              memcpy(out0+ output*layer_a_tsp*tsp_len + tsp_len*tsp_a, in + k*tsp_len + output*total_tsp_in_multiplex*tsp_len, tsp_len);
+              memcpy(out0+ output*layer_a_tsp*tsp_len + tsp_len*tsp_a, in + k*tsp_len + output*d_tsp_per_frame*tsp_len, tsp_len);
               tsp_a++;
               break;
             }
             case 2:
             {
               //Copy TSP to output B
-              memcpy(out1+ output*layer_b_tsp*tsp_len + tsp_len*tsp_b, in + k*tsp_len + output*total_tsp_in_multiplex*tsp_len, tsp_len);
+              memcpy(out1+ output*layer_b_tsp*tsp_len + tsp_len*tsp_b, in + k*tsp_len + output*d_tsp_per_frame*tsp_len, tsp_len);
               tsp_b++;
               break;
             }
             case 3:
             {
               //Copy TSP to output C
-              memcpy(out2+ output*layer_c_tsp*tsp_len + tsp_len*tsp_c, in + k*tsp_len + output*total_tsp_in_multiplex*tsp_len, tsp_len);
+              memcpy(out2+ output*layer_c_tsp*tsp_len + tsp_len*tsp_c, in + k*tsp_len + output*d_tsp_per_frame*tsp_len, tsp_len);
               tsp_c++;
               break;
             }

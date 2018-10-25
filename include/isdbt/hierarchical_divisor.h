@@ -55,7 +55,7 @@ namespace gr {
        * class. isdbt::hierarchical_divisor::make is the public interface for
        * creating new instances.
        */
-      static sptr make();
+      static sptr make(int mode, float cp, int segments_A, int mod_scheme_A, float conv_code_A, int segments_B, int mod_scheme_B, float conv_code_B, int segments_C, int mod_scheme_C, float conv_code_C);
     };
 
   } // namespace isdbt

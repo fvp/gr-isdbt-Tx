@@ -41,14 +41,11 @@ namespace gr {
       // Nothing to declare in this block.
 
      public:
-      hierarchical_divisor_impl();
+      hierarchical_divisor_impl(int mode, float cp, int segments_A, int mod_scheme_A, float conv_code_A, int segments_B, int mod_scheme_B, float conv_code_B, int segments_C, int mod_scheme_C, float conv_code_C);
       ~hierarchical_divisor_impl();
 
-      int tsp_len = 204;
-      int total_tsp_in_multiplex = 2304;
-      int layer_a_tsp = 126;
-      int layer_b_tsp = 756;
-      int layer_c_tsp = 756;
+
+
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
